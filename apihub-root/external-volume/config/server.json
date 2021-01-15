@@ -13,14 +13,10 @@
     "bricksFabric",
     "bricking",
     "anchoring",
-    "dsu-wizard",
-    "gtin-dsu-wizard",
     "staticServer"
   ],
   "endpointsConfig": {
-    "gtin-dsu-wizard": {
-      "module": "./../../gtin-dsu-wizard"
-    },
+
     "bricking": {
       "domains": {
         "epi": {

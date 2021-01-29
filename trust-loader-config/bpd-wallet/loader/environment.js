@@ -1,5 +1,5 @@
 export default  {
-  "appName": "eLeaflet",
+  "appName": "eGovernance",
   "vault": "browser",
   "agent": "browser",
   "system":   "any",

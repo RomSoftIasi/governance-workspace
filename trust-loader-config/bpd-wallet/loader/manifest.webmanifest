@@ -1,6 +1,6 @@
 {
-  "short_name": "EPI",
-  "name": "EPI",
+  "short_name": "BPD",
+  "name": "BPD",
   "description": "Dossiers' User Interface",
   "theme_color": "rgb(0,52,91)",
   "background_color": "rgb(0,52,91)",
@@ -55,7 +55,7 @@
 	  "purpose": "maskable any"
     }
   ],
-  "start_url": "/leaflet-wallet/loader/",
+  "start_url": "/bpd-wallet/loader/",
   "display": "standalone",
-  "scope": "/leaflet-wallet/loader/"
+  "scope": "/bpd-wallet/loader/"
 }

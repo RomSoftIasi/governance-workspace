@@ -13,6 +13,7 @@
     "bricksFabric",
     "bricking",
     "anchoring",
+    "deployment",
     "staticServer"
   ],
   "endpointsConfig": {
@@ -75,6 +76,16 @@
           "type": "FS",
           "option": {
             "path": "/external-volume/domains/vault/anchors"
+          }
+        }
+      }
+    },
+    "deployment": {
+      "domainStrategies": {
+        "default": {
+          "type": "ControlContainer",
+          "option": {
+            "endpoint": "http://127.0.0.1:1000/deploy"
           }
         }
       }

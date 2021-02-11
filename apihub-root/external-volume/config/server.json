@@ -13,6 +13,7 @@
     "bricksFabric",
     "bricking",
     "anchoring",
+    "clustersController",
     "staticServer"
   ],
   "endpointsConfig": {
@@ -75,6 +76,17 @@
           "type": "FS",
           "option": {
             "path": "/external-volume/domains/vault/anchors"
+          }
+        }
+      }
+    },
+    "clustersController": {
+      "module": "./../../clustersController",
+      "domainStrategies": {
+        "default": {
+          "type": "ControlContainer",
+          "option": {
+            "endpoint": "http://127.0.0.1:1000/deploy"
           }
         }
       }

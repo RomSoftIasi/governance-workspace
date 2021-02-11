@@ -1,0 +1,10 @@
+{
+  "clusters": [
+    {
+      "name": "pl-cluster3"
+    },
+    {
+      "name": "pl-cluster2"
+    }
+  ]
+}

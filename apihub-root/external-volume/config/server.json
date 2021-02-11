@@ -13,7 +13,7 @@
     "bricksFabric",
     "bricking",
     "anchoring",
-    "deployment",
+    "clustersController",
     "staticServer"
   ],
   "endpointsConfig": {
@@ -80,7 +80,8 @@
         }
       }
     },
-    "deployment": {
+    "clustersController": {
+      "module": "./../../clustersController",
       "domainStrategies": {
         "default": {
           "type": "ControlContainer",

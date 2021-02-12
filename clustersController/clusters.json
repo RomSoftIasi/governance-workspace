@@ -6,5 +6,9 @@
     {
       "name": "pl-cluster2"
     }
-  ]
+  ],
+  "clusterTemplate": {
+    "location" : "/d/Pharma/",
+    "shell" : "..\\clustersController\\scripts\\deploy-cluster.sh"
+  }
 }

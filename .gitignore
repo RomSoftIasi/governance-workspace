@@ -20,3 +20,4 @@ dsu-fabric-ssapp
 node_modules
 package-lock.json
 env.json.devel
+opendsuClusterDeployer/K8/.kube/config

@@ -39,7 +39,6 @@ $$.flow.describe('ControlContainer', {
             headers: apiHeaders
         });
     },
-
     commandCluster: function (clusterNumber, jsonData, command, callback) {
         const body = {
             clusterNumber: clusterNumber,
@@ -65,6 +64,14 @@ $$.flow.describe('ControlContainer', {
             path: apiPath,
             body: bodyData,
             headers: apiHeaders
+        });
+    },
+    deployCluster: function (jsonData, callback) {
+        console.log('deployCluster', jsonData);
+        return callback(undefined, {
+            clusterName: jsonData.clusterName,
+            urlConfigRepo: jsonData.urlConfigRepo,
+            configMap: jsonData.configMap,
         });
     },
 });

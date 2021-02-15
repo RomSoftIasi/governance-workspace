@@ -457,6 +457,10 @@ psk-card.item-identifier psk-label label {
     width: 225px;
 }
 
+.bpd-creation-row.bpd-three-buttons-row psk-button button {
+    width: 185px !important;
+}
+
 .bpd-creation-row psk-button.bpd-qr-code-with-text button {
     color: #007bff;
     background: white;

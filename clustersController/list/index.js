@@ -1,4 +1,4 @@
-function startCluster(request, response, next) {
+function listClusters(request, response, next) {
     const receivedDomain = "default";
     const domainConfig = require("../utils").getClusterDomainConfig(receivedDomain);
     if (!domainConfig) {
@@ -8,7 +8,7 @@ function startCluster(request, response, next) {
 
     let flow = $$.flow.start(domainConfig.type);
     flow.init(domainConfig);
-    flow.startCluster(request.params.number, request.body, (err, result) => {
+    flow.listClusters((err, result) => {
         if (err) {
             if (err.code === 'EACCES') {
                 return response.send(409);
@@ -18,4 +18,4 @@ function startCluster(request, response, next) {
         response.send(201, result);
     });
 }
-module.exports = startCluster;
+module.exports = listClusters;

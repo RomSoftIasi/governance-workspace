@@ -1,97 +1,25 @@
-function makeRequest(protocol, hostname, port, method, path, body, headers, callback) {
-    // FOR DEVELOPMENT ONLY
-    return callback(undefined, {
-        protocol: protocol,
-        hostname: hostname,
-        port: port,
-        method: method,
-        path: path,
-        body: body,
-        headers: headers
-    });
-    // END DEVELOPMENT ONLY
-    const http = require("http");
-    const https = require("https");
-
-    if (typeof headers === "function") {
-        callback = headers;
-        headers = undefined;
-    }
-
-    if (typeof body === "function") {
-        callback = body;
-        headers = undefined;
-        body = undefined;
-    }
-    protocol = require(protocol);
-    const options = {
-        hostname: hostname,
-        port: port,
-        path,
-        method,
-        headers
-    };
-    const req = protocol.request(options, response => {
-
-        if (response.statusCode < 200 || response.statusCode >= 300) {
-            return callback({
-                statusCode: response.statusCode,
-                err: new Error("Failed to execute command. StatusCode " + response.statusCode)
-            }, null);
-        }
-        let data = [];
-        response.on('data', chunk => {
-            data.push(chunk);
-        });
-
-        response.on('end', () => {
-            try {
-                const bodyContent = $$.Buffer.concat(data).toString();
-                return callback(undefined, bodyContent);
-            } catch (error) {
-                return callback({
-                    statusCode: 500,
-                    err: error
-                }, null);
-            }
-        });
-    });
-
-    req.on('error', err => {
-        console.log(err);
-        return callback({
-            statusCode: 500,
-            err: err
-        });
-    });
-
-    req.write(body);
-    req.end();
-};
+const fileService = require("../utils/fileService");
 
 $$.flow.describe('ControlContainer', {
-    init: function (domainConfig, clusterNumber, jsonData) {
-        this.commandData = {};
-        this.commandData.clusterNumber = clusterNumber;
-        this.commandData.clusterIdentifier = jsonData.clusterIdentifier;
-        this.commandData.configuration = jsonData.configuration;
-        this.commandData.mode = jsonData.mode;
-
-
+    init: function (domainConfig) {
         const endpointURL = new URL(domainConfig.option.endpoint);
+        this.commandData = {};
         this.commandData.apiEndpoint = endpointURL.hostname;
         this.commandData.apiPort = endpointURL.port;
         this.commandData.protocol = endpointURL.protocol.replace(':', "");
     },
-    startCluster: function (callback) {
+    listClusters: function (callback) {
+        fileService.readClusters(callback);
+    },
+    startCluster: function (clusterNumber, jsonData, callback) {
         const body = {
-            clusterNumber: this.commandData.clusterNumber,
-            clusterIdentifier: this.commandData.clusterIdentifier,
-            configuration: this.commandData.configuration,
-            mode: this.commandData.mode,
+            clusterNumber: clusterNumber,
+            clusterIdentifier: jsonData.clusterIdentifier,
+            configuration: jsonData.configuration,
+            mode: jsonData.mode,
         };
         const bodyData = JSON.stringify(body);
-        const apiPath = "/controlContainer/" + this.commandData.clusterNumber + "/start";
+        const apiPath = "/controlContainer/" + clusterNumber + "/start";
         const apiMethod = 'POST';
         const apiHeaders = {
             'Content-Type': 'application/json',
@@ -100,29 +28,26 @@ $$.flow.describe('ControlContainer', {
         const apiEndpoint = this.commandData.apiEndpoint;
         const apiPort = this.commandData.apiPort;
         const protocol = this.commandData.protocol;
-        try {
-            makeRequest(protocol, apiEndpoint, apiPort, apiMethod, apiPath, bodyData, apiHeaders, (err, result) => {
-                if (err) {
-                    console.log(err);
-                    callback(err, null);
-                    return;
-                }
-                callback(null, result);
-            })
-        } catch (err) {
-            callback(err, null);
-        }
-    },
 
-    commandCluster: function (command, callback) {
+        return callback(undefined, {
+            protocol: protocol,
+            hostname: apiEndpoint,
+            port: apiPort,
+            method: apiMethod,
+            path: apiPath,
+            body: bodyData,
+            headers: apiHeaders
+        });
+    },
+    commandCluster: function (clusterNumber, jsonData, command, callback) {
         const body = {
-            clusterNumber: this.commandData.clusterNumber,
-            clusterIdentifier: this.commandData.clusterIdentifier,
-            configuration: this.commandData.configuration,
-            mode: this.commandData.mode,
+            clusterNumber: clusterNumber,
+            clusterIdentifier: jsonData.clusterIdentifier,
+            configuration: jsonData.configuration,
+            mode: jsonData.mode,
         };
         const bodyData = JSON.stringify(body);
-        const apiPath = "/controlContainer/" + this.commandData.clusterNumber + "/command/" + command;
+        const apiPath = "/controlContainer/" + clusterNumber + "/command/" + command;
         const apiMethod = 'PUT';
         const apiHeaders = {
             'Content-Type': 'application/json',
@@ -131,18 +56,60 @@ $$.flow.describe('ControlContainer', {
         const apiEndpoint = this.commandData.apiEndpoint;
         const apiPort = this.commandData.apiPort;
         const protocol = this.commandData.protocol;
-        try {
-            makeRequest(protocol, apiEndpoint, apiPort, apiMethod, apiPath, bodyData, apiHeaders, (err, result) => {
-                if (err) {
-                    console.log(err);
-                    callback(err, null);
-                    return;
-                }
-                callback(null, result);
-            })
-        } catch (err) {
-            console.log("Deployment smart contract Error: ", err);
-            callback(err, null);
-        }
+        return callback(undefined, {
+            protocol: protocol,
+            hostname: apiEndpoint,
+            port: apiPort,
+            method: apiMethod,
+            path: apiPath,
+            body: bodyData,
+            headers: apiHeaders
+        });
     },
+    deployCluster: function (jsonData, callback) {
+        console.log('deployCluster', jsonData);
+        this._executeDeployment({
+            "clusterName":"pl-cluster1",
+            "urlConfigRepo":"https://github.com/PharmaLedger-IMI/opendsu-cluster-template.git"
+        }, (err, result) => {
+            if (err)
+            {
+                return callback(err);
+            }
+            return callback(undefined, result);
+        })
+        /*return callback(undefined, {
+            clusterName: jsonData.clusterName,
+            urlConfigRepo: jsonData.urlConfigRepo,
+            configMap: jsonData.configMap,
+        });
+         */
+    },
+    _executeDeployment : function (jsonData, callback)
+    {
+        const clusterTemplateRootFolder = require('../clusters.json').clusterTemplate.location;
+        const path = require('path');
+        const clusterMarker = "-".concat(jsonData.clusterName);
+        const repolink = jsonData.urlConfigRepo;
+        const parts = repolink.split('/');
+
+        const repoDir = parts[parts.length-1].replace('.git','');
+        console.log(repoDir);
+        const shellcmd = path.resolve(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, require('../clusters.json').clusterTemplate.shell));
+        //const shellcmd = path.join(path.resolve(),require('../clusters.json').clusterTemplate.shell) ;
+        const exec = require('child_process').exec;
+        const cmd = shellcmd.concat(" ",clusterMarker," ",jsonData.clusterName," ",clusterTemplateRootFolder," ",repolink," ",repoDir);
+        //shellcmd+' -pl-cluster1 pl-cluster1 '+clusterTemplateRootFolder,
+        exec(cmd, (err, stdout, stderr) => {
+            console.log('shell script finished');
+            console.log(stdout);
+            if (err)
+            {
+                console.log('shell execution failed.', err, stderr);
+                return callback(err);
+            }
+            console.log('Cluster deployed')
+            return callback(undefined, "Cluster deployed");
+        })
+    }
 });

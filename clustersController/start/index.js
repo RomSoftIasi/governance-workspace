@@ -8,7 +8,7 @@ function startCluster(request, response, next) {
 
     let flow = $$.flow.start(domainConfig.type);
     flow.init(domainConfig);
-    flow.startCluster(request.params.number, request.body, (err, result) => {
+    flow.startCluster(request.body, (err, result) => {
         if (err) {
             if (err.code === 'EACCES') {
                 return response.send(409);

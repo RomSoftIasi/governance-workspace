@@ -11,11 +11,11 @@ function Deploy(server) {
 
     server.use(`/controlContainer/*`, responseModifierMiddleware);
 
-    server.put(`/controlContainer/:number/start`, requestBodyJSONMiddleware);
-    server.put(`/controlContainer/:number/start`, ClusterStart);
+    server.put(`/controlContainer/start`, requestBodyJSONMiddleware);
+    server.put(`/controlContainer/start`, ClusterStart);
 
-    server.put(`/controlContainer/:number/command/:command`, requestBodyJSONMiddleware);
-    server.put(`/controlContainer/:number/command/:command`, ClusterCommand);
+    server.put(`/controlContainer/command`, requestBodyJSONMiddleware);
+    server.put(`/controlContainer/command`, ClusterCommand);
 
     server.post(`/controlContainer/deploy`, requestBodyJSONMiddleware);
     server.post(`/controlContainer/deploy`, ClusterDeploy);

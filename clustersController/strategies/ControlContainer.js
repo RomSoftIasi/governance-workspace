@@ -11,60 +11,22 @@ $$.flow.describe('ControlContainer', {
     listClusters: function (callback) {
         fileService.readClusters(callback);
     },
-    startCluster: function (clusterNumber, jsonData, callback) {
+    startCluster: function (jsonData, callback) {
         const body = {
-            clusterNumber: clusterNumber,
-            clusterIdentifier: jsonData.clusterIdentifier,
+            clusterName: jsonData.clusterName,
             configuration: jsonData.configuration,
             mode: jsonData.mode,
         };
-        const bodyData = JSON.stringify(body);
-        const apiPath = "/controlContainer/" + clusterNumber + "/start";
-        const apiMethod = 'POST';
-        const apiHeaders = {
-            'Content-Type': 'application/json',
-            'Content-Length': bodyData.length
-        };
-        const apiEndpoint = this.commandData.apiEndpoint;
-        const apiPort = this.commandData.apiPort;
-        const protocol = this.commandData.protocol;
-
-        return callback(undefined, {
-            protocol: protocol,
-            hostname: apiEndpoint,
-            port: apiPort,
-            method: apiMethod,
-            path: apiPath,
-            body: bodyData,
-            headers: apiHeaders
-        });
+        console.log("startCluster", body);
+        return callback(undefined, body);
     },
-    commandCluster: function (clusterNumber, jsonData, command, callback) {
+    commandCluster: function (jsonData, callback) {
         const body = {
-            clusterNumber: clusterNumber,
-            clusterIdentifier: jsonData.clusterIdentifier,
-            configuration: jsonData.configuration,
-            mode: jsonData.mode,
+            clusterName: jsonData.clusterName,
+            command: jsonData.command
         };
-        const bodyData = JSON.stringify(body);
-        const apiPath = "/controlContainer/" + clusterNumber + "/command/" + command;
-        const apiMethod = 'PUT';
-        const apiHeaders = {
-            'Content-Type': 'application/json',
-            'Content-Length': bodyData.length
-        };
-        const apiEndpoint = this.commandData.apiEndpoint;
-        const apiPort = this.commandData.apiPort;
-        const protocol = this.commandData.protocol;
-        return callback(undefined, {
-            protocol: protocol,
-            hostname: apiEndpoint,
-            port: apiPort,
-            method: apiMethod,
-            path: apiPath,
-            body: bodyData,
-            headers: apiHeaders
-        });
+        console.log("commandCluster", body);
+        return callback(undefined, body);
     },
     deployCluster: function (jsonData, callback) {
         console.log('deployCluster', jsonData);

@@ -11,9 +11,9 @@ function deployCluster(request, response, next) {
     flow.deployCluster(request.body, (err, result) => {
         if (err) {
             if (err.code === 'EACCES') {
-                return response.send(409);
+                return response.send(409,{});
             }
-            return response.send(500);
+            return response.send(500,{});
         }
         response.send(201, result);
     });

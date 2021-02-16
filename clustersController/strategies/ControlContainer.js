@@ -30,48 +30,68 @@ $$.flow.describe('ControlContainer', {
     },
     deployCluster: function (jsonData, callback) {
         console.log('deployCluster', jsonData);
-        this._executeDeployment({
+        const testjson = {
             "clusterName":"pl-cluster1",
             "urlConfigRepo":"https://github.com/PharmaLedger-IMI/opendsu-cluster-template.git"
-        }, (err, result) => {
+        };
+        this._executeDeployment(jsonData, (err, result) => {
             if (err)
             {
                 return callback(err);
             }
             return callback(undefined, result);
         })
-        /*return callback(undefined, {
-            clusterName: jsonData.clusterName,
-            urlConfigRepo: jsonData.urlConfigRepo,
-            configMap: jsonData.configMap,
-        });
-         */
+
     },
     _executeDeployment : function (jsonData, callback)
     {
-        const clusterTemplateRootFolder = require('../clusters.json').clusterTemplate.location;
         const path = require('path');
+        const clusterTemplateRootFolder = path.resolve(require('../clusters.json').clusterTemplate.installLocation);
         const clusterMarker = "-".concat(jsonData.clusterName);
         const repolink = jsonData.urlConfigRepo;
         const parts = repolink.split('/');
 
         const repoDir = parts[parts.length-1].replace('.git','');
-        console.log(repoDir);
         const shellcmd = path.resolve(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER, require('../clusters.json').clusterTemplate.shell));
-        //const shellcmd = path.join(path.resolve(),require('../clusters.json').clusterTemplate.shell) ;
+        const appRoot = path.resolve(path.join(process.env.PSK_ROOT_INSTALATION_FOLDER,"../"));
+        //console.log(appRoot);
+
         const exec = require('child_process').exec;
-        const cmd = shellcmd.concat(" ",clusterMarker," ",jsonData.clusterName," ",clusterTemplateRootFolder," ",repolink," ",repoDir);
-        //shellcmd+' -pl-cluster1 pl-cluster1 '+clusterTemplateRootFolder,
+        const cmd = shellcmd.concat(" ",clusterMarker," ",jsonData.clusterName," ",clusterTemplateRootFolder," ",repolink," ",repoDir," ",appRoot);
+
+
         exec(cmd, (err, stdout, stderr) => {
-            console.log('shell script finished');
-            console.log(stdout);
+            //console.log('shell script finished');
+            //console.log(stdout);
             if (err)
             {
+                //script failing
                 console.log('shell execution failed.', err, stderr);
                 return callback(err);
             }
-            console.log('Cluster deployed')
-            return callback(undefined, "Cluster deployed");
+            try {
+            //check output of the cluster template deployer
+            let localclusterlogs = path.join(appRoot,repoDir+clusterMarker,"logs.txt");
+            //console.log (localclusterlogs);
+            localclusterlogs = path.resolve(localclusterlogs);
+            //console.log (localclusterlogs);
+            const logcontent = require('fs').readFileSync(localclusterlogs).toString('utf8');
+            //console.log(logcontent);
+            const indexOfStatus = logcontent.indexOf('200OK');
+
+
+            if (indexOfStatus > 1)
+            {
+                console.log('Cluster deployed')
+                return callback(undefined, "Cluster deployed");
+            }
+            console.log('Cluster fail to be deployed.')
+            return callback(new Error("Cluster fail to be deployed."));
+            }
+            catch (e)
+            {
+                return callback(e);
+            }
         })
     }
 });

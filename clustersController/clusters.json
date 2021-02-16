@@ -8,7 +8,7 @@
     }
   ],
   "clusterTemplate": {
-    "installLocation" : "/d/Pharma/",
+    "installLocation" : "../../",
     "shell" : "..\\clustersController\\scripts\\deploy-cluster.sh"
   }
 }

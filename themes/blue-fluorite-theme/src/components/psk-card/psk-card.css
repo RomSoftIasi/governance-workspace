@@ -289,7 +289,7 @@ psk-card.item-identifier psk-label label {
 
 .bpd-organization-line {
     width: 2500px;
-    height: 37px;
+    height: 38px;
     margin-bottom: 20px;
     border-radius: 5px;
     padding: 0px 20px;
@@ -301,6 +301,16 @@ psk-card.item-identifier psk-label label {
 .bpd-organization-line .card-body
 {
     width: 100% !important;
+    display: flex;
+}
+
+.bpd-organization-line .bpd-hotspot-button button {
+    width: 100%;
+    text-align: left;
+}
+
+.bpd-organization-line .bpd-hotspot-button {
+    width: 95%;
 }
 
 .bpd-organization-card-header {

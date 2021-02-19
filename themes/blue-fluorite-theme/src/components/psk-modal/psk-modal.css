@@ -133,6 +133,10 @@
     margin: 20px;
 }
 
+:host(.bpd-modal) .text-area-content {
+    width: 100%;
+}
+
 :host(.bpd-modal) .bdp-row {
     display: flex;
     justify-content: space-evenly;
@@ -157,4 +161,12 @@
 
 :host(.bpd-modal) .bpd-qr-code-with-text {
     background-color: red;
+}
+
+:host(.bpd-modal) .bpd-hotspot-button {
+    width: 95%;
+}
+
+:host(.bpd-modal) .text-area-content {
+    width: 100% !important;
 }

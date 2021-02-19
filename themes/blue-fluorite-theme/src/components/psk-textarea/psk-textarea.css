@@ -2,3 +2,7 @@ textarea {
     width: 50vw;
     height: 50vh;
 }
+
+.bpd-text-area textarea {
+    height: 250px !important;
+}

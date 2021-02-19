@@ -6,3 +6,7 @@ textarea {
 .bpd-text-area textarea {
     height: 250px !important;
 }
+
+.bpd-text-area{
+    height: 250px
+}

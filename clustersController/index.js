@@ -4,7 +4,7 @@ function Deploy(server) {
 
     const ClusterStart = require('./start');
     const ClusterCommand = require('./command');
-    const ClusterList = require('./list');
+    const JenkinsPipelinesList = require('./list');
     const ClusterDeploy = require('./deploy');
 
     const { responseModifierMiddleware, requestBodyJSONMiddleware } = require('../privatesky/modules/apihub/utils/middlewares');
@@ -20,7 +20,8 @@ function Deploy(server) {
     server.post(`/controlContainer/deploy`, requestBodyJSONMiddleware);
     server.post(`/controlContainer/deploy`, ClusterDeploy);
 
-    server.get(`/controlContainer/listClusters`, ClusterList);
+    server.post(`/controlContainer/listJenkinsPipelines`, requestBodyJSONMiddleware);
+    server.post(`/controlContainer/listJenkinsPipelines`, JenkinsPipelinesList);
 }
 
 module.exports = Deploy;

@@ -8,11 +8,8 @@ function deployCluster(request, response, next) {
 
     let flow = $$.flow.start(domainConfig.type);
     flow.init(domainConfig);
-    flow.deployCluster(request.body, (err, result) => {
+    flow.startPipeline(request.body, (err, result) => {
         if (err) {
-            if (err.code === 'EACCES') {
-                return response.send(409,{});
-            }
             return response.send(500,{});
         }
         response.send(201, result);

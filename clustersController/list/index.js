@@ -1,4 +1,4 @@
-function listClusters(request, response, next) {
+function listJenkinsPipelines(request, response, next) {
     const receivedDomain = "default";
     const domainConfig = require("../utils").getClusterDomainConfig(receivedDomain);
     if (!domainConfig) {
@@ -8,14 +8,11 @@ function listClusters(request, response, next) {
 
     let flow = $$.flow.start(domainConfig.type);
     flow.init(domainConfig);
-    flow.listClusters((err, result) => {
+    flow.listJenkinsPipelines(request.body,(err, result) => {
         if (err) {
-            if (err.code === 'EACCES') {
-                return response.send(409);
-            }
             return response.send(500);
         }
         response.send(201, result);
     });
 }
-module.exports = listClusters;
+module.exports = listJenkinsPipelines;

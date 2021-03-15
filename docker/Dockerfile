@@ -1,9 +1,9 @@
-FROM node:12.16.0
+FROM node:12.21.0
 
 RUN npm install -g node-gyp
 
-ENV TARGET_FOLDER_NAME="ePI-workspace"
-RUN git clone https://github.com/PharmaLedger-IMI/epi-workspace.git $TARGET_FOLDER_NAME
+ENV TARGET_FOLDER_NAME="gov-workspace"
+RUN git clone https://github.com/PharmaLedger-IMI/governance-workspace.git $TARGET_FOLDER_NAME
 
 RUN cd $TARGET_FOLDER_NAME && \
     npm install --unsafe-perm

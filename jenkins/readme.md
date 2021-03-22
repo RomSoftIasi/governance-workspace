@@ -83,6 +83,11 @@ Jenkins tunnel : jenkins:50000
 
 After configuration, before saving, hit 'Test Connection' button to check the connection to the cluster.
 
+## Preparation before using pipelines
+
+1. Configure the Jenkins credentials for the docker registry
+2. Define the Infrastructure pipeline and execute it
+
 ## Jenkins credentials used in pipelines
 
 ####Secrets :
@@ -93,7 +98,25 @@ DOCKER_PASSWORD : password
 DOCKER_REPO : repository where to push images
 ```
 
-###Backup
+# Jenkins Pipelines
+
+## Pipeline definition using scripts from git
+
+1. Define a new pipeline
+2. Pipeline - Pipeline script from SCM
+3. SCM : Git
+4. Repository URL : https://github.com/PharmaLedger-IMI/governance-workspace.git
+5. Script path : path to the script
+
+All pipelines use the same definition, only the 4. and 5. steps can be configured differently, based on git repository and script path 
+
+### Infrastructure pipeline example
+
+5. Script path : jenkins/pipelines/infrastructure/kubectl-container-docker.groovy
+
+
+
+#Backup
 Jenkins doesn't provide an automated process for the backup operation
 Backup the entire $JENKINS_HOME at file system level. Manually clean up the jobs/*/builds.
 

@@ -20,15 +20,17 @@ volumes: [
         }
 
         container('kubectl') {
-            stage('Deploy blockchain configuration'){
+         stage('Remove blockchain nodes'){
+             sh 'kubectl delete -f quorum_network/k8s/deployments -n dev'
+           }
+
+         stage('Remove blockchain configuration'){
                 sh 'kubectl delete -f quorum_network/k8s -n dev'
             }
-            stage('Deploy blockchain nodes'){
-                sh 'kubectl delete -f quorum_network/k8s/deployments -n dev && sleep 5'
-            }
-            stage('Get deployment status'){
-                sh "kubectl get pods -n dev"
-            }
+
+         stage('Get deployment status'){
+            sh "kubectl get pods -n dev"
+         }
         }
     }
   }

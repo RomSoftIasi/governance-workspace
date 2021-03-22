@@ -5,15 +5,13 @@
 //there is no need to configure pod at jenkins level, as we define our pod template on pipeline level using custom defined serviceAccount
 
 
-def label = "worker-${UUID.randomUUID().toString()}"
-
-podTemplate(label: label, serviceAccount: 'jdevmns',namespace: 'jenkins',containers: [
+podTemplate(serviceAccount: 'jdevmns',namespace: 'jenkins',containers: [
   containerTemplate(name: 'kubectl', image: 'mabdockerid/pharma-kubectl:latest', command: 'cat', ttyEnabled: true)
 ],
 volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]){
-  node(label) {
+  node(POD_LABEL) {
     stage('Deploy blockchain network') {
         stage('Get deployment'){
         git url: 'https://github.com/PharmaLedger-IMI/blockchain2-demo.git'

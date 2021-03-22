@@ -4,7 +4,7 @@ podTemplate(serviceAccount: 'jgovmns',namespace: 'jenkins',containers: [
 volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]){
-  node(label) {
+  node(POD_LABEL) {
     stage('Deploy Governance') {
         stage('Get deployment'){
         git url: 'https://github.com/PharmaLedger-IMI/governance-workspace.git'

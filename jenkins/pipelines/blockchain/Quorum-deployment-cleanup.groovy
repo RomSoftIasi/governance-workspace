@@ -24,7 +24,7 @@ volumes: [
                 sh 'kubectl delete -f quorum_network/k8s -n dev'
             }
             stage('Deploy blockchain nodes'){
-                sh 'kubectl delete -f quorum_network/k8s/deployments -n dev'
+                sh 'kubectl delete -f quorum_network/k8s/deployments -n dev && sleep 5'
             }
             stage('Get deployment status'){
                 sh "kubectl get pods -n dev"

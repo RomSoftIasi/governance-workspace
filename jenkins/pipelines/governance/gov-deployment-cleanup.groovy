@@ -12,7 +12,7 @@ volumes: [
 
         container('kubectl') {
             stage('Deploy Governance SSAPP'){
-                sh 'kubectl delete -f docker/k8s -n gov'
+                sh 'kubectl delete -f docker/k8s -n gov && sleep 3'
             }
             stage('Get deployment status'){
                 sh "kubectl get pods -n gov"

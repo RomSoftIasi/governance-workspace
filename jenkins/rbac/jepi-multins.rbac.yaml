@@ -36,7 +36,7 @@ rules:
     verbs: ["create","delete","get","list","patch","update"]
   - apiGroups: [""]
     resources: ["nodes","persistentvolumes","namespaces","persistentvolumeclaims"]
-    verbs: ["create","update", "get", "list", "patch", "watch"]
+    verbs: ["create","update", "get", "list", "patch", "watch", "delete"]
   - apiGroups: ["storage.k8s.io"]
     resources:
       - storageclasses

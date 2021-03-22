@@ -29,9 +29,9 @@ podTemplate(
         }
 
         // Once the testing is finished, trigger the next pipeline by name
-        stage ('Build docker images and publish'){
-            build 'gov-docker'
-        }
+        //stage ('Build docker images and publish'){
+        //    build 'gov-docker'
+        //}
 
       }
 }

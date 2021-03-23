@@ -15,7 +15,7 @@ Jump to [Jenkins configuration](#jenkins-configuration) and continue from there.
 
 ### Clean up the deployment
 
-Change the path to the <i>jenkins</i> directory in the cloned <i>governance-workspace</i> cloned directory and run:
+Change the path to the <i>jenkins</i> directory in the cloned <i>governance-workspace</i> directory and run:
 ```shell
 ./scripts/clean-deployment.sh
 ```

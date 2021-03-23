@@ -60,17 +60,22 @@ $$.flow.describe('ControlContainer', {
     },
     startPipeline: function(jenkinsData, callback){
         console.log('startPipeline : ',jenkinsData);
-        const jenkinsUser = 'admin';//jenkinsData.user;
-        const jenkinsToken = '11de3af3bca9df814e97d75a982d0ad3c6'; //jenkinsData.token;
-        const jenkinsPipelineToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-        const jenkinsPipeline = 'demopipeline';
-        const endpointURL =  new URL('http://127.0.0.1:8090/')//new URL(jenkinsData.jenkinsEndPoint);
+        const jenkinsUser = jenkinsData.user;
+        const jenkinsToken = jenkinsData.token;
+        const jenkinsPipelineToken = jenkinsData.pipelineToken;
+        const jenkinsPipeline = jenkinsData.pipeline;
+        const endpointURL =  new URL(jenkinsData.jenkins);
+
         const jenkinsHostName = endpointURL.hostname;
         const jenkinsPort = endpointURL.port;
         const jenkinsProtocol = endpointURL.protocol.replace(':',"");
-        //http://127.0.0.1:8080/job/demopipeline/buildWithParameters?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c&TestENV1=GGG
-        //const apiPath = '/api/json?tree=jobs%5Bname%2Curl%5D';
-        const apiPath = '/job/'+jenkinsPipeline+'/buildWithParameters?token='+jenkinsPipelineToken
+        let apiPath
+        if (jenkinsPipelineToken)
+        {
+            apiPath = '/job/'+jenkinsPipeline+'/buildWithParameters?token='+jenkinsPipelineToken
+        } else{
+            apiPath = '/job/'+jenkinsPipeline+'/build?delay=0'
+        }
         const apiMethod = 'POST';
 
 
@@ -88,9 +93,9 @@ $$.flow.describe('ControlContainer', {
 
 
         console.log(jenkinsData);
-        const jenkinsUser = 'admin';//jenkinsData.user;
-        const jenkinsToken = '11de3af3bca9df814e97d75a982d0ad3c6'; //jenkinsData.token;
-        const endpointURL =  new URL('http://127.0.0.1:8090/')//new URL(jenkinsData.jenkinsEndPoint);
+        const jenkinsUser = jenkinsData.user;
+        const jenkinsToken = jenkinsData.token;
+        const endpointURL =  new URL(jenkinsData.jenkinsEndPoint);
         const jenkinsHostName = endpointURL.hostname;
         const jenkinsPort = endpointURL.port;
         const jenkinsProtocol = endpointURL.protocol.replace(':',"");

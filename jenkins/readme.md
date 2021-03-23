@@ -1,16 +1,36 @@
-# Quick install
 
-Deploy the default namespaces, RBAC's and Jenkins server
+# Requirements
+
+Have a working cluster and kubectl configured to execute commands in that cluster
+
+# Jenkins Server Quick install
+
+Deploy the default namespaces, RBAC's and Jenkins server by executing the below script
 ```shell
 git clone https://github.com/PharmaLedger-IMI/governance-workspace.git
-cd jenkins
-./scripts/install.sh
+cd ./governance-workspace/jenkins
+./scripts/run-deployment.sh
+```
+Jump to [Jenkins configuration](#jenkins-configuration) and continue from there.
+
+### Clean up the deployment
+
+Change the path to the <i>jenkins</i> directory in the cloned <i>governance-workspace</i> cloned directory and run:
+```shell
+./scripts/clean-deployment.sh
 ```
 
-Continue with Jenkins configuration, plugins, secrets and pipelines.
+# Jenkins Server Custom install
 
 
-#Cluster infrastructure
+## Set up the environment
+
+```shell
+git clone https://github.com/PharmaLedger-IMI/governance-workspace.git
+cd ./governance-workspace/jenkins
+```
+
+## Cluster infrastructure
 
 The pipelines and deployments will be made in specific namespaces and require specific RBAC definitions.
 
@@ -20,7 +40,7 @@ jenkins - for Jenkins operations <br/>
 epi - for ePI workspace <br/>
 gov - for Governance <br/>
 
-Each namespace supported by Jenkins pipelines and by Jenkins itself must be created beforehand using kubectl :
+Each namespace supported by Jenkins pipelines and by Jenkins itself, must be created beforehand using kubectl :
 
 ```shell
 kubectl create namespace jenkins
@@ -30,12 +50,12 @@ kubectl create namespace epi
 kubectl create namespace gov
 ```
 
-### RBAC
+## RBAC
 After namespace's are created, the RBAC's must be defined :
 ```shell
 kubectl apply -f ./rbac
 ```
-#Jenkins deployment
+##Jenkins Server deployment
 
 ### Create volume 
 ```shell
@@ -83,12 +103,12 @@ Jenkins tunnel : jenkins:50000
 
 After configuration, before saving, hit 'Test Connection' button to check the connection to the cluster.
 
-## Preparation before using pipelines
+### Preparation before using pipelines
 
 1. Configure the Jenkins credentials for the docker registry
 2. Define the Infrastructure pipeline and execute it
 
-## Jenkins credentials used in pipelines
+### Jenkins credentials used in pipelines
 
 ####Secrets :
 ```
@@ -98,9 +118,9 @@ DOCKER_PASSWORD : password
 DOCKER_REPO : repository where to push images
 ```
 
-# Jenkins Pipelines
+## Jenkins Pipelines
 
-## Pipeline definition using scripts from git
+### Pipeline definition using scripts from git
 
 1. Define a new pipeline
 2. Pipeline - Pipeline script from SCM
@@ -120,4 +140,4 @@ All pipelines use the same definition, only the 4. and 5. steps can be configure
 Jenkins doesn't provide an automated process for the backup operation
 Backup the entire $JENKINS_HOME at file system level. Manually clean up the jobs/*/builds.
 
-###TODO
+

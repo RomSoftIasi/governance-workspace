@@ -1,5 +1,11 @@
+Table of contents
+- [Prerequisites](#prerequisites)
+- [Jenkins Server Quick install](#jenkins-server-quick-install)
+- [Jenkins Server Custom install](#jenkins-server-custom-install)
+- [Jenkins configuration](#jenkins-configuration)
 
-# Requirements
+
+# Prerequisites
 
 Have a working cluster and kubectl configured to execute commands in that cluster
 
@@ -57,23 +63,23 @@ kubectl apply -f ./rbac
 ```
 ##Jenkins Server deployment
 
-### Create volume 
+## Create volume 
 ```shell
 kubectl apply -f ./jenkins/jenkins.pv.yaml
 ```
-### Create volume claim
+## Create volume claim
 ```shell
 kubectl apply -f ./jenkins/jenkins.pvc.yaml
 ```
-### Jenkins server deployment
+## Jenkins server deployment
 ```shell
 kubectl apply -f ./jenkins/jenkins.development.yaml
 ```
-### Jenkins service
+## Jenkins service
 ```shell
 kubectl apply -f ./jenkins/jenkins.service.yaml
 ```
-### Jenkins configuration
+# Jenkins configuration
 
 Connect to Jenkins pod and obtain admin password
 
@@ -93,7 +99,7 @@ Log into Jenkins and install recommended plugins. After installation and creatio
 Kubernetes - the plugin integrates Jenkins with Kubernetes
 Configure the Kubernetes plugin : Manage Jenkins -> Manage Nodes and Clouds -> Configure Clouds
 
-### Default values for Jenkins Kubernetes plugin to operate in current cluster
+## Default values for Jenkins Kubernetes plugin to operate in current cluster
 ```
 Kubernetes URL : https://kubernetes.default:443
 Kubernetes namespace : jenkins
@@ -103,12 +109,12 @@ Jenkins tunnel : jenkins:50000
 
 After configuration, before saving, hit 'Test Connection' button to check the connection to the cluster.
 
-### Preparation before using pipelines
+## Preparation before using pipelines
 
 1. Configure the Jenkins credentials for the docker registry
 2. Define the Infrastructure pipeline and execute it
 
-### Jenkins credentials used in pipelines
+## Jenkins credentials used in pipelines
 
 ####Secrets :
 ```

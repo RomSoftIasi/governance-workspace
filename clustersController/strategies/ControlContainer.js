@@ -1,69 +1,15 @@
-function makeRequest(protocol, hostname, port, method, path, body, headers,authJson, callback) {
 
-    const http = require("http");
-    const https = require("https");
-
-    protocol = require(protocol);
-    const options = {
-        hostname: hostname,
-        port: port,
-
-        path,
-        method,
-        headers
-    };
-    // auth : authJson,
-    //         json: true,
-    console.log(options);
-
-    const req = protocol.request(options, response => {
-        console.log('waiting response');
-        if (response.statusCode < 200 || response.statusCode >= 300) {
-            return callback({
-                statusCode: response.statusCode,
-                err: new Error("Failed to execute command. StatusCode " + response.statusCode)
-            }, null);
-        }
-        let data = [];
-        response.on('data', chunk => {
-            data.push(chunk);
-        });
-
-        response.on('end', () => {
-            try {
-                const bodyContent = $$.Buffer.concat(data).toString();
-                return callback(undefined, bodyContent);
-            } catch (error) {
-                return callback({
-                    statusCode: 500,
-                    err: error
-                }, null);
-            }
-        });
-    });
-
-    req.on('error', err => {
-        console.log(err);
-        return callback({
-            statusCode: 500,
-            err: err
-        });
-    });
-
-    req.write(body);
-    req.end();
-}
 
 $$.flow.describe('ControlContainer', {
     init: function (domainConfig) {
 
     },
-    startPipeline: function(jenkinsData, callback){
+    startPipeline: function(jenkinsData,jenkinsPipeline, callback){
         console.log('startPipeline : ',jenkinsData);
         const jenkinsUser = jenkinsData.user;
         const jenkinsToken = jenkinsData.token;
         const jenkinsPipelineToken = jenkinsData.pipelineToken;
-        const jenkinsPipeline = jenkinsData.pipeline;
+
         const endpointURL =  new URL(jenkinsData.jenkins);
 
         const jenkinsHostName = endpointURL.hostname;
@@ -77,18 +23,79 @@ $$.flow.describe('ControlContainer', {
             apiPath = '/job/'+jenkinsPipeline+'/build?delay=0'
         }
         const apiMethod = 'POST';
+        const jenkinsServer = {
+            jenkinsHostName,
+            jenkinsPort,
+            jenkinsProtocol,
+            jenkinsUser,
+            jenkinsToken,
+            jenkinsPipeline
+        }
 
-
-        this.__InvokeJenkinsAPI(jenkinsHostName,jenkinsPort, jenkinsProtocol, apiMethod,apiPath, {}, jenkinsUser, jenkinsToken, (err, data) => {
+        require('../utils/jenkinsRequest').invokeJenkinsAPI(jenkinsHostName,jenkinsPort, jenkinsProtocol, apiMethod,apiPath, {}, jenkinsUser, jenkinsToken, (err, data) => {
             if (err)
             {
                 return callback(err, undefined);
             }
-            console.log('data received from jenkins:',data);
+            //console.log('data received from jenkins:',data);
+            //console.log('jenkins job queue position :',data.headers.location);
+            require('../utils/jenkinsPipeline').getJobExecutionStatus(jenkinsData,data.headers.location,jenkinsServer, (err, data)=>{
+                if (err)
+                {
+                    console.log(err);
+                    return callback(err, undefined);
+                }
+                //console.log(data)
+                return callback(undefined, data);
+            })
 
-            return callback(undefined, data);
         });
     },
+
+    executeClusterOperation: function(jenkinsData, callback){
+        console.log('executeClusterOperation started for : ',jenkinsData.clusterOperation);
+        const pipelines = [];
+        if (jenkinsData.clusterOperation === 'initiateNetwork')
+        {
+            pipelines.push('gov-tests');
+            pipelines.push('gov-docker');
+        }
+        const result = {
+            clusterOperation : 'initiateNetwork',
+            blockchainNetwork: jenkinsData.name,
+            pipelines:[]
+        }
+
+      let execPipeline = (jenkinsData, currentPipeline) => this.startPipeline(jenkinsData,currentPipeline, (err, data) => {
+          if (err)
+          {
+              result.pipelines.push({
+                  name: currentPipeline,
+                  result: 'EXCEPTION',
+                  log: err
+              });
+              return callback(result, undefined);
+          }
+          result.pipelines.push({
+              name: currentPipeline,
+              result: data.result,
+              buildNo: data.buildNo,
+              log: data.log,
+              artifactFileName: data.artifactFileName
+          });
+          if (pipelines.length === 0)
+          {
+              //console.log(result);
+              console.log('Cluster operation finished : ', jenkinsData.clusterOperation);
+              return callback(undefined, result);
+          }
+          console.log('Continue with next pipeline. Pipelines remaining : ',pipelines);
+          execPipeline(jenkinsData, pipelines.shift());
+      });
+
+        execPipeline(jenkinsData,pipelines.shift());
+    },
+
     listJenkinsPipelines: function (jenkinsData, callback) {
 
 
@@ -103,7 +110,7 @@ $$.flow.describe('ControlContainer', {
         const apiMethod = 'POST';
 
 
-        this.__InvokeJenkinsAPI(jenkinsHostName,jenkinsPort, jenkinsProtocol, apiMethod,apiPath, {}, jenkinsUser, jenkinsToken, (err, data) => {
+        require('../utils/jenkinsRequest').invokeJenkinsAPI(jenkinsHostName,jenkinsPort, jenkinsProtocol, apiMethod,apiPath, {}, jenkinsUser, jenkinsToken, (err, data) => {
             if (err)
             {
                 return callback(err, undefined);
@@ -120,30 +127,7 @@ $$.flow.describe('ControlContainer', {
         });
 
     },
-    __InvokeJenkinsAPI : function(jenkinsHostName,jenkinsPort, jenkinsProtocol, apiMethod,apiPath,body,jenkinsUser, jenkinsToken, callback){
 
-        const bodyData = JSON.stringify(body);
-        const authBase64 = Buffer.from(jenkinsUser+':'+jenkinsToken).toString('base64');
-        const auth = 'Basic '+authBase64;
-        const apiHeaders = {
-            'authorization': auth,
-            'cache-control': 'no-cache'
-        };
-
-        try {
-            makeRequest(jenkinsProtocol, jenkinsHostName, jenkinsPort, apiMethod, apiPath, bodyData, apiHeaders,auth, (err, result) => {
-                if (err) {
-                    console.log(err);
-                    callback(err, null);
-                    return;
-                }
-                callback (null, result);
-            })
-        }catch (err) {
-            console.log("Jenkins call Error: ",err);
-            callback(err, null);
-        }
-    },
     startCluster: function (jsonData, callback) {
         const body = {
             clusterName: jsonData.clusterName,

@@ -170,3 +170,7 @@
 :host(.bpd-modal) .text-area-content {
     width: 100% !important;
 }
+
+:host([opened]) .psk-modal {
+    top: 10vh !important;
+}

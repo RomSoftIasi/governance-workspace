@@ -373,7 +373,9 @@ psk-card.item-identifier psk-label label {
     display: block;
 }
 
-.bpd-translucent-buttons psk-button button {
+.bpd-translucent-buttons psk-button button,
+.bpd-translucent-buttons psk-button button:disabled
+{
     color: #007bff;
     background-color: white;
     border-color: white;

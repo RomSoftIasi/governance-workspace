@@ -27,7 +27,7 @@ spec:
           imagePullPolicy: IfNotPresent
           env:
             - name: JAVA_OPTS
-              value: -Xmx2048m -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85
+              value: -Xmx2048m -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85 -Dhudson.model.DirectoryBrowserSupport.CSP="sandbox allow-scripts;"
           ports:
             - containerPort: 8080
               protocol: TCP

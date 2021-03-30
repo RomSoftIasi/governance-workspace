@@ -4,53 +4,26 @@ $$.flow.describe('ControlContainer', {
     init: function (domainConfig) {
 
     },
-    startPipeline: function(jenkinsData,jenkinsPipeline, callback){
-        console.log('startPipeline : ',jenkinsData);
+    __getJenkinsServer(jenkinsData){
         const jenkinsUser = jenkinsData.user;
         const jenkinsToken = jenkinsData.token;
-        const jenkinsPipelineToken = jenkinsData.pipelineToken;
+
 
         const endpointURL =  new URL(jenkinsData.jenkins);
 
         const jenkinsHostName = endpointURL.hostname;
         const jenkinsPort = endpointURL.port;
         const jenkinsProtocol = endpointURL.protocol.replace(':',"");
-        let apiPath
-        if (jenkinsPipelineToken)
-        {
-            apiPath = '/job/'+jenkinsPipeline+'/buildWithParameters?token='+jenkinsPipelineToken
-        } else{
-            apiPath = '/job/'+jenkinsPipeline+'/build?delay=0'
-        }
-        const apiMethod = 'POST';
-        const jenkinsServer = {
+
+        return {
             jenkinsHostName,
             jenkinsPort,
             jenkinsProtocol,
             jenkinsUser,
-            jenkinsToken,
-            jenkinsPipeline
+            jenkinsToken
         }
-
-        require('../utils/jenkinsRequest').invokeJenkinsAPI(jenkinsHostName,jenkinsPort, jenkinsProtocol, apiMethod,apiPath, {}, jenkinsUser, jenkinsToken, (err, data) => {
-            if (err)
-            {
-                return callback(err, undefined);
-            }
-            //console.log('data received from jenkins:',data);
-            //console.log('jenkins job queue position :',data.headers.location);
-            require('../utils/jenkinsPipeline').getJobExecutionStatus(jenkinsData,data.headers.location,jenkinsServer, (err, data)=>{
-                if (err)
-                {
-                    console.log(err);
-                    return callback(err, undefined);
-                }
-                //console.log(data)
-                return callback(undefined, data);
-            })
-
-        });
     },
+
 
     executeClusterOperation: function(jenkinsData, callback){
         console.log('executeClusterOperation started for : ',jenkinsData.clusterOperation);
@@ -65,8 +38,10 @@ $$.flow.describe('ControlContainer', {
             blockchainNetwork: jenkinsData.name,
             pipelines:[]
         }
+        const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        const jenkinsPipelineToken = jenkinsData.pipelineToken;
 
-      let execPipeline = (jenkinsData, currentPipeline) => this.startPipeline(jenkinsData,currentPipeline, (err, data) => {
+      let execPipeline = (jenkinsServer,jenkinsPipelineToken, currentPipeline) => require('../utils/jenkinsPipeline').startPipeline(jenkinsServer,jenkinsPipelineToken,currentPipeline, (err, data) => {
           if (err)
           {
               result.pipelines.push({
@@ -74,26 +49,32 @@ $$.flow.describe('ControlContainer', {
                   result: 'EXCEPTION',
                   log: err
               });
+              if (!result.log)
+              {
+                  result.log='';
+              }
+              result.log = result.log + err + '\n';
+              result.pipelines = JSON.stringify(result.pipelines);
               return callback(result, undefined);
           }
           result.pipelines.push({
               name: currentPipeline,
               result: data.result,
               buildNo: data.buildNo,
-              log: data.log,
               artifactFileName: data.artifactFileName
           });
           if (pipelines.length === 0)
           {
+              result.pipelines = JSON.stringify(result.pipelines);
               //console.log(result);
               console.log('Cluster operation finished : ', jenkinsData.clusterOperation);
               return callback(undefined, result);
           }
           console.log('Continue with next pipeline. Pipelines remaining : ',pipelines);
-          execPipeline(jenkinsData, pipelines.shift());
+          execPipeline(jenkinsServer,jenkinsPipelineToken, pipelines.shift());
       });
 
-        execPipeline(jenkinsData,pipelines.shift());
+        execPipeline(jenkinsServer,jenkinsPipelineToken,pipelines.shift());
     },
 
     listJenkinsPipelines: function (jenkinsData, callback) {
@@ -138,12 +119,25 @@ $$.flow.describe('ControlContainer', {
         return callback(undefined, body);
     },
     commandCluster: function (jsonData, callback) {
-        const body = {
-            clusterName: jsonData.clusterName,
-            command: jsonData.command
-        };
-        console.log("commandCluster", body);
-        return callback(undefined, body);
+        console.log("commandCluster", jsonData);
+        const command = jsonData.command;
+
+        if (command === "jenkinsLog"){
+            const jenkinsData = jsonData.jenkinsData;
+            const buildNo = jsonData.buildNo;
+            const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+            jenkinsServer.jenkinsPipeline = jsonData.jenkinsPipeline;
+            console.log(jenkinsServer);
+            require('../utils/jenkinsPipeline').getJobConsoleLogStatus(jenkinsData, jenkinsServer, buildNo, (err, data)=>{
+                if (err)
+                {
+                    console.log(err);
+                    return callback(err, undefined);
+                }
+                //console.log(data)
+                return callback(undefined, data);
+            })
+        }
     }
 
 });

@@ -1,4 +1,4 @@
-function getJobExecutionStatus(jenkinsData, jenkinsQueue, jenkinsServer, callback){
+function getJobExecutionStatus(jenkinsQueue, jenkinsServer, callback){
     // check the queue
     //GET : http://127.0.0.1:8090/queue/item/106/api/json
     // get from json body :
@@ -23,29 +23,22 @@ function getJobExecutionStatus(jenkinsData, jenkinsQueue, jenkinsServer, callbac
 
     // loop every 10 sec to see if job is started or still in queue mode
     //apiPath =  http://127.0.0.1:8090/queue/item/80/
-    loopUntilBuildStarts(jenkinsData, jenkinsQueue, jenkinsServer, (err, data) => {
+    loopUntilBuildStarts(jenkinsQueue, jenkinsServer, (err, data) => {
         if (err) {return callback(err)}
         //we got build no
         //console.log('build no : ', data);
         const buildNo = data;
-        loopUntilBuildFinishes(jenkinsData, jenkinsServer, buildNo, (err, buildResult) => {
+        loopUntilBuildFinishes(jenkinsServer, buildNo, (err, buildResult) => {
             if (err) {return callback(err, undefined)}
-            //console.log(buildResult);
-            getJobConsoleLogStatus(jenkinsData, jenkinsServer, buildNo, (err, data) => {
-                if (err) {return callback(err, undefined)}
-                buildResult.log = data;
-                return callback(undefined, buildResult);
-            })
-
+            console.log(buildResult);
+            return callback(undefined, buildResult);
         })
     })
-
-
 }
 
-function loopUntilBuildStarts(jenkinsData, jenkinsQueue, jenkinsServer, callback){
+function loopUntilBuildStarts(jenkinsQueue, jenkinsServer, callback){
 
-    checkIfJobStarted(jenkinsData, jenkinsQueue, jenkinsServer, (err, data) => {
+    checkIfJobStarted(jenkinsQueue, jenkinsServer, (err, data) => {
         if (err) {return callback(err,undefined)}
         if (data !== -1)
         {
@@ -54,13 +47,13 @@ function loopUntilBuildStarts(jenkinsData, jenkinsQueue, jenkinsServer, callback
         }
         setTimeout( () =>{
             console.log('Pipeline is in queue. Waiting for build to start : ',jenkinsServer.jenkinsPipeline);
-            loopUntilBuildStarts(jenkinsData, jenkinsQueue, jenkinsServer, callback)
+            loopUntilBuildStarts(jenkinsQueue, jenkinsServer, callback)
         }, 10*1000 );
     })
 
 }
 
-function checkIfJobStarted(jenkinsData, jenkinsQueue, jenkinsServer, callback){
+function checkIfJobStarted(jenkinsQueue, jenkinsServer, callback){
     const queueApiPath = jenkinsQueue.substring(jenkinsQueue.indexOf('/queue'))+'api/json'
     const apiMethod = 'GET';
     require('./jenkinsRequest').invokeJenkinsAPI(jenkinsServer.jenkinsHostName,
@@ -83,9 +76,9 @@ function checkIfJobStarted(jenkinsData, jenkinsQueue, jenkinsServer, callback){
 }
 
 
-function loopUntilBuildFinishes(jenkinsData, jenkinsServer, buildNo, callback){
+function loopUntilBuildFinishes(jenkinsServer, buildNo, callback){
 
-    checkIfJobFinished(jenkinsData, jenkinsServer, buildNo,(err, data) => {
+    checkIfJobFinished(jenkinsServer, buildNo,(err, data) => {
         if (err) {return callback(err,undefined)}
         if (data)
         {
@@ -94,14 +87,14 @@ function loopUntilBuildFinishes(jenkinsData, jenkinsServer, buildNo, callback){
         }
         setTimeout( () =>{
             console.log('Checking pipeline execution status : ',jenkinsServer.jenkinsPipeline);
-            loopUntilBuildFinishes(jenkinsData, jenkinsServer, buildNo, callback)
+            loopUntilBuildFinishes(jenkinsServer, buildNo, callback)
         }, 10*1000 );
     })
 
 }
 
 
-function checkIfJobFinished(jenkinsData, jenkinsServer, buildNo, callback){
+function checkIfJobFinished(jenkinsServer, buildNo, callback){
     // GET http://localhost:8090/job/initiateNetwork/11/api/json
     // json body :
     // "artifacts": [],
@@ -154,6 +147,46 @@ function getJobConsoleLogStatus(jenkinsData, jenkinsServer, buildNo, callback){
         });
 }
 
+function getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken){
+    let apiPath
+    if (jenkinsPipelineToken)
+    {
+        apiPath = '/job/'+jenkinsPipeline+'/buildWithParameters?token='+jenkinsPipelineToken
+    } else{
+        apiPath = '/job/'+jenkinsPipeline+'/build?delay=0'
+    }
+    return apiPath;
+}
+function startPipeline(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, callback){
+    console.log('startPipeline : ',jenkinsServer);
+
+    const apiPath = getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken);
+    const apiMethod = 'POST';
+    jenkinsServer.jenkinsPipeline = jenkinsPipeline;
+
+    require('./jenkinsRequest').invokeJenkinsAPI(jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort,
+        jenkinsServer.jenkinsProtocol, apiMethod,apiPath, {},
+        jenkinsServer.jenkinsUser, jenkinsServer.jenkinsToken, (err, data) => {
+            if (err)
+            {
+                return callback(err, undefined);
+            }
+            //console.log('data received from jenkins:',data);
+            //console.log('jenkins job queue position :',data.headers.location);
+            getJobExecutionStatus(data.headers.location,jenkinsServer, (err, data)=>{
+                if (err)
+                {
+                    console.log(err);
+                    return callback(err, undefined);
+                }
+                //console.log(data)
+                return callback(undefined, data);
+            })
+
+        });
+}
+
 module.exports = {
-    getJobExecutionStatus : getJobExecutionStatus
+    getJobConsoleLogStatus,
+    startPipeline
 }

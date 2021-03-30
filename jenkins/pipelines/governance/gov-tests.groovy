@@ -8,7 +8,7 @@ podTemplate(
             container('node'){
                 sh 'git clone http://github.com/PrivateSky/privatesky.git'
                 stage ('Build dev-install'){
-                    sh 'cd privatesky && npm run dev-install'
+                    sh 'cd privatesky && npm run dev-install --unsafe-perm'
                 }
                 stage ('Build'){
                     sh 'cd privatesky && npm run build'

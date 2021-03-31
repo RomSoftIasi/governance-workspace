@@ -15,7 +15,20 @@ function commandCluster(request, response, next) {
             }
             return response.send(500);
         }
-        response.send(201, result);
+        if ( typeof result.on === 'function')
+        {
+            console.log('raw handling with headers');
+
+            response.statusCode = result.statusCode;
+            response.headers = result.headers;
+            response.setHeader('Content-Type','application/raw');
+            result.pipe(response);
+
+        }else {
+            console.log('json handling')
+            response.send(201, result);
+        }
+
     });
 }
 

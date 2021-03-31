@@ -61,12 +61,12 @@ $$.flow.describe('ControlContainer', {
               name: currentPipeline,
               result: data.result,
               buildNo: data.buildNo,
-              artifactFileName: data.artifactFileName
+              artifacts: data.artifacts
           });
           if (pipelines.length === 0)
           {
               result.pipelines = JSON.stringify(result.pipelines);
-              //console.log(result);
+              console.log(result);
               console.log('Cluster operation finished : ', jenkinsData.clusterOperation);
               return callback(undefined, result);
           }
@@ -91,7 +91,9 @@ $$.flow.describe('ControlContainer', {
         const apiMethod = 'POST';
 
 
-        require('../utils/jenkinsRequest').invokeJenkinsAPI(jenkinsHostName,jenkinsPort, jenkinsProtocol, apiMethod,apiPath, {}, jenkinsUser, jenkinsToken, (err, data) => {
+        require('./jenkinsRequest').getJenkinsHandler(jenkinsProtocol,jenkinsHostName,jenkinsPort)
+            .setCredentials(jenkinsUser,jenkinsToken)
+            .callAPI(apiMethod,apiPath,{}, (err, data) => {
             if (err)
             {
                 return callback(err, undefined);
@@ -128,16 +130,32 @@ $$.flow.describe('ControlContainer', {
             const jenkinsServer = this.__getJenkinsServer(jenkinsData);
             jenkinsServer.jenkinsPipeline = jsonData.jenkinsPipeline;
             console.log(jenkinsServer);
-            require('../utils/jenkinsPipeline').getJobConsoleLogStatus(jenkinsData, jenkinsServer, buildNo, (err, data)=>{
+            require('../utils/jenkinsPipeline').getJobConsoleLogAsText(jenkinsData, jenkinsServer, buildNo, (err, data)=>{
                 if (err)
                 {
                     console.log(err);
                     return callback(err, undefined);
                 }
-                //console.log(data)
                 return callback(undefined, data);
             })
-        }
+        } else
+            if (command === "jenkinsArtefact")
+            {
+                const jenkinsData = jsonData.jenkinsData;
+                const artefactName = jsonData.artefactName;
+                const buildNo = jsonData.buildNo;
+                const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+                jenkinsServer.jenkinsPipeline = jsonData.jenkinsPipeline;
+                console.log(jenkinsServer);
+                require('../utils/jenkinsPipeline').getArtefactProducedByJob(jenkinsData, jenkinsServer, artefactName,buildNo, (err, data)=>{
+                    if (err)
+                    {
+                        console.log(err);
+                        return callback(err, undefined);
+                    }
+                    return callback(undefined, data);
+                })
+            }
     }
 
 });

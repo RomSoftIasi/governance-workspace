@@ -1,3 +1,5 @@
+
+
 function getJobExecutionStatus(jenkinsQueue, jenkinsServer, callback){
     // check the queue
     //GET : http://127.0.0.1:8090/queue/item/106/api/json
@@ -56,8 +58,9 @@ function loopUntilBuildStarts(jenkinsQueue, jenkinsServer, callback){
 function checkIfJobStarted(jenkinsQueue, jenkinsServer, callback){
     const queueApiPath = jenkinsQueue.substring(jenkinsQueue.indexOf('/queue'))+'api/json'
     const apiMethod = 'GET';
-    require('./jenkinsRequest').invokeJenkinsAPI(jenkinsServer.jenkinsHostName,
-        jenkinsServer.jenkinsPort, jenkinsServer.jenkinsProtocol, apiMethod,queueApiPath, {}, jenkinsServer.jenkinsUser, jenkinsServer.jenkinsToken, (err, data) => {
+    require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol,jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort)
+        .setCredentials(jenkinsServer.jenkinsUser,jenkinsServer.jenkinsToken)
+        .callAPI(apiMethod,queueApiPath,{}, (err, data) => {
             if (err)
             {
                 return callback(err, undefined);
@@ -106,8 +109,9 @@ function checkIfJobFinished(jenkinsServer, buildNo, callback){
     // build is now finished and the result of the build is returned
     const buildApiPath = '/job/'+jenkinsServer.jenkinsPipeline+'/'+buildNo+'/api/json'
     const apiMethod = 'GET';
-    require('./jenkinsRequest').invokeJenkinsAPI(jenkinsServer.jenkinsHostName,
-        jenkinsServer.jenkinsPort, jenkinsServer.jenkinsProtocol, apiMethod,buildApiPath, {}, jenkinsServer.jenkinsUser, jenkinsServer.jenkinsToken, (err, data) => {
+    require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol,jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort)
+        .setCredentials(jenkinsServer.jenkinsUser,jenkinsServer.jenkinsToken)
+        .callAPI(apiMethod,buildApiPath,{}, (err, data) => {
             if (err)
             {
                 return callback(err, undefined);
@@ -115,15 +119,19 @@ function checkIfJobFinished(jenkinsServer, buildNo, callback){
             const body = JSON.parse(data.body);
             if (body.result === 'SUCCESS' || body.result === 'FAILURE' || body.result === 'ABORTED' || body.result === 'UNSTABLE')
             {
-                let artifactFileName = '';
+                let artifactFileNames = [];
                 if (body.artifacts.length > 0){
-                    artifactFileName = body.artifacts[0].fileName;
+                    console.log(body);
+                    body.artifacts.map(elem => artifactFileNames.push({
+                        relativePath: elem.relativePath,
+                        fileName: elem.fileName
+                    }))
                 }
                 return callback(undefined, {
                     buildNo,
                     result: body.result,
                     jenkinsPipeline: jenkinsServer.jenkinsPipeline,
-                    artifactFileName : artifactFileName
+                    artifacts : artifactFileNames
                 })
             } else {
                 //build is in progress
@@ -133,17 +141,34 @@ function checkIfJobFinished(jenkinsServer, buildNo, callback){
         });
 }
 
-
-function getJobConsoleLogStatus(jenkinsData, jenkinsServer, buildNo, callback){
+function getJobConsoleLogAsText(jenkinsData, jenkinsServer, buildNo, callback){
     //http://localhost:8090/job/initiateNetwork/14/consoleText
     const buildApiPath = '/job/'+jenkinsServer.jenkinsPipeline+'/'+buildNo+'/consoleText'
     const apiMethod = 'GET';
-    require('./jenkinsRequest').invokeJenkinsAPI(jenkinsServer.jenkinsHostName,
-        jenkinsServer.jenkinsPort, jenkinsServer.jenkinsProtocol, apiMethod,buildApiPath, {}, jenkinsServer.jenkinsUser, jenkinsServer.jenkinsToken, (err, data) => {
+    require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol,jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort)
+        .setCredentials(jenkinsServer.jenkinsUser,jenkinsServer.jenkinsToken)
+        .callAPI(apiMethod,buildApiPath,{},(err, data) => {
             if (err) {
                 return callback(err, undefined);
             }
             return callback(undefined, data.body)
+        })
+
+}
+
+
+
+function getArtefactProducedByJob(jenkinsData, jenkinsServer, artefactName,buildNo, callback){
+    //http://localhost:8090/job/gov-tests/38/artifact/privatesky/testReport.html
+    const buildApiPath = '/job/'+jenkinsServer.jenkinsPipeline+'/'+buildNo+'/artifact/'+artefactName;
+    const apiMethod = 'GET';
+    require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol,jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort)
+        .setCredentials(jenkinsServer.jenkinsUser,jenkinsServer.jenkinsToken)
+        .callRawAPI(apiMethod,buildApiPath,{}, (err, response) => {
+            if (err) {
+                return callback(err, undefined);
+            }
+            return callback(undefined, response);
         });
 }
 
@@ -164,9 +189,9 @@ function startPipeline(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, callb
     const apiMethod = 'POST';
     jenkinsServer.jenkinsPipeline = jenkinsPipeline;
 
-    require('./jenkinsRequest').invokeJenkinsAPI(jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort,
-        jenkinsServer.jenkinsProtocol, apiMethod,apiPath, {},
-        jenkinsServer.jenkinsUser, jenkinsServer.jenkinsToken, (err, data) => {
+    require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol,jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort)
+        .setCredentials(jenkinsServer.jenkinsUser,jenkinsServer.jenkinsToken)
+        .callAPI(apiMethod,apiPath,{}, (err, data) => {
             if (err)
             {
                 return callback(err, undefined);
@@ -187,6 +212,7 @@ function startPipeline(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, callb
 }
 
 module.exports = {
-    getJobConsoleLogStatus,
-    startPipeline
+    startPipeline,
+    getArtefactProducedByJob,
+    getJobConsoleLogAsText
 }

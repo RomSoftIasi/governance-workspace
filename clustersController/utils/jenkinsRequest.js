@@ -35,7 +35,7 @@ function getJenkinsHandler(protocol,hostname,port ){
 
         setCredentials(options);
 
-        console.log(options);
+        //console.log(options);
 
         const req = httpApi.request(options, response => {
             // console.log('waiting response',response);

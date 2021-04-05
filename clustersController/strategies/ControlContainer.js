@@ -1,8 +1,9 @@
 
 
 $$.flow.describe('ControlContainer', {
-    init: function (domainConfig) {
-
+    init: function (domainConfig, jenkinsClusterStatus) {
+        //console.log('Init flow - ContainerControl for', domainConfig);
+        this.jenkinsClusterStatus = jenkinsClusterStatus;
     },
     __getJenkinsServer(jenkinsData){
         const jenkinsUser = jenkinsData.user;
@@ -24,24 +25,42 @@ $$.flow.describe('ControlContainer', {
         }
     },
 
+    getClusterStatus : function(blockchainNetwork, callback){
+      const status = this.jenkinsClusterStatus.getStatus(blockchainNetwork);
+      if (status)
+      {
+          //got status
+          return callback(undefined, status);
+      }else {
+          return callback(undefined, {
+              status: 'Pending'
+          })
+      }
+    },
 
     executeClusterOperation: function(jenkinsData, callback){
         console.log('executeClusterOperation started for : ',jenkinsData.clusterOperation);
         const pipelines = [];
+        const blockchainNetwork = jenkinsData.blockchainNetwork;
         if (jenkinsData.clusterOperation === 'initiateNetwork')
         {
+            //pipelines.push('gov-3min');
+            //pipelines.push('gov-3min');
+            //pipelines.push('gov-3min');
+            //pipelines.push('gov-docker');
             pipelines.push('gov-tests');
-            pipelines.push('gov-docker');
         }
+        console.log('Planned pipelines',pipelines);
         const result = {
             clusterOperation : 'initiateNetwork',
-            blockchainNetwork: jenkinsData.name,
+            blockchainNetwork: jenkinsData.blockchainNetwork,
             pipelines:[]
         }
         const jenkinsServer = this.__getJenkinsServer(jenkinsData);
         const jenkinsPipelineToken = jenkinsData.pipelineToken;
 
-      let execPipeline = (jenkinsServer,jenkinsPipelineToken, currentPipeline) => require('../utils/jenkinsPipeline').startPipeline(jenkinsServer,jenkinsPipelineToken,currentPipeline, (err, data) => {
+      let execPipeline = (jenkinsServer,jenkinsPipelineToken, currentPipeline) => require('../utils/jenkinsPipeline')
+          .startPipeline(jenkinsServer,jenkinsPipelineToken,currentPipeline, (err, data) => {
           if (err)
           {
               result.pipelines.push({
@@ -55,7 +74,7 @@ $$.flow.describe('ControlContainer', {
               }
               result.log = result.log + err + '\n';
               result.pipelines = JSON.stringify(result.pipelines);
-              return callback(result, undefined);
+              return this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
           }
           result.pipelines.push({
               name: currentPipeline,
@@ -68,13 +87,18 @@ $$.flow.describe('ControlContainer', {
               result.pipelines = JSON.stringify(result.pipelines);
               console.log(result);
               console.log('Cluster operation finished : ', jenkinsData.clusterOperation);
-              return callback(undefined, result);
+              return this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
           }
           console.log('Continue with next pipeline. Pipelines remaining : ',pipelines);
           execPipeline(jenkinsServer,jenkinsPipelineToken, pipelines.shift());
       });
 
         execPipeline(jenkinsServer,jenkinsPipelineToken,pipelines.shift());
+        console.log('releasing the request');
+        callback(undefined,{
+            clusterOperation : jenkinsData.clusterOperation,
+            status: 'Operation started'
+        });
     },
 
     listJenkinsPipelines: function (jenkinsData, callback) {

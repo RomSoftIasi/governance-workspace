@@ -85,11 +85,11 @@ function loopUntilBuildFinishes(jenkinsServer, buildNo, callback){
         if (err) {return callback(err,undefined)}
         if (data)
         {
-            console.log('Pipeline execution finished :', data);
+            console.log('Pipeline execution finished. Build No :', buildNo);
             return callback(undefined, data);
         }
         setTimeout( () =>{
-            console.log('Checking pipeline execution status : ',jenkinsServer.jenkinsPipeline);
+            console.log('Checking pipeline execution status. Build No : ',jenkinsServer.jenkinsPipeline, buildNo);
             loopUntilBuildFinishes(jenkinsServer, buildNo, callback)
         }, 10*1000 );
     })
@@ -121,7 +121,7 @@ function checkIfJobFinished(jenkinsServer, buildNo, callback){
             {
                 let artifactFileNames = [];
                 if (body.artifacts.length > 0){
-                    console.log(body);
+                    //console.log(body);
                     body.artifacts.map(elem => artifactFileNames.push({
                         relativePath: elem.relativePath,
                         fileName: elem.fileName
@@ -135,7 +135,7 @@ function checkIfJobFinished(jenkinsServer, buildNo, callback){
                 })
             } else {
                 //build is in progress
-                callback(undefined)
+                return callback(undefined)
             }
 
         });
@@ -183,7 +183,7 @@ function getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken){
     return apiPath;
 }
 function startPipeline(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, callback){
-    console.log('startPipeline : ',jenkinsServer);
+    console.log('startPipeline : ',jenkinsPipeline);
 
     const apiPath = getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken);
     const apiMethod = 'POST';

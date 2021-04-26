@@ -24,10 +24,10 @@ volumes: [
              sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s/deployments -n dev'
          }
          stage('Remove blockchain configuration'){
-             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl remove -f ./k8s -n dev'
+             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s -n dev'
          }
          stage('Remove blockchain node connection'){
-             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl remove -f ./jenkins -n jenkins'
+             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./jenkins -n jenkins'
          }
          stage('Get deployment status'){
              sh "kubectl get pods -n dev"

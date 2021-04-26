@@ -14,22 +14,23 @@ volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]){
   node(label) {
-    stage('Deploy blockchain network') {
-        stage('Get deployment'){
-        git url: 'https://github.com/PharmaLedger-IMI/blockchain2-demo.git'
+    stage('Clean blockchain network') {
+        stage('Get quorum deployment'){
+            sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
         }
 
         container('kubectl') {
          stage('Remove blockchain nodes'){
-             sh 'kubectl delete -f quorum_network/k8s/deployments -n dev'
-           }
-
+             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s/deployments -n dev'
+         }
          stage('Remove blockchain configuration'){
-                sh 'kubectl delete -f quorum_network/k8s -n dev'
-            }
-
+             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl remove -f ./k8s -n dev'
+         }
+         stage('Remove blockchain node connection'){
+             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl remove -f ./jenkins -n jenkins'
+         }
          stage('Get deployment status'){
-            sh "kubectl get pods -n dev"
+             sh "kubectl get pods -n dev"
          }
         }
     }

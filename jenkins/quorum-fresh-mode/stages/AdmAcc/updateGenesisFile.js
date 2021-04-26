@@ -2,7 +2,7 @@
 function updateGenesisFile(){
     const fs = require('fs');
     let genesisFile = fs.readFileSync('./k8s/templates/01-quorum-genesis.yaml.template').toString();
-    const admAccData = JSON.parse(fs.readFileSync('./stages/admAcc.json').toString());
+    const admAccData = JSON.parse(fs.readFileSync('./stages/AdmAcc/admAcc.json').toString());
 
     const updateAcc = () => {
         genesisFile = genesisFile.replace('%AdmAcc', admAccData.account);

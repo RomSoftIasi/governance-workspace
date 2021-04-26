@@ -50,7 +50,7 @@ function createAdmAcc(callback){
 function storeAdmAccToFile(admAccData){
     const fs = require('fs');
     const data = JSON.stringify(admAccData);
-    fs.writeFileSync('./stages/admAcc.json',data);
+    fs.writeFileSync('./stages/AdmAcc/admAcc.json',data);
 }
 
 

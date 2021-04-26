@@ -10,7 +10,7 @@ function createOrgAcc(){
         privateKey: newAccount.privateKey,
         address: newAccount.address
     }
-    fs.writeFileSync('./stages/stage2/orgAcc.json',JSON.stringify(orgAccData));
+    fs.writeFileSync('./stages/OrgAcc/orgAcc.json',JSON.stringify(orgAccData));
 }
 
 module.exports = {

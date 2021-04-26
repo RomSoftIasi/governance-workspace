@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ref-quorum-node1
+  namespace: jenkins
+spec:
+  type: ExternalName
+  externalName: quorum-node1.dev.svc.cluster.local
+  ports:
+    - port: 8545

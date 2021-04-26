@@ -1,0 +1,187 @@
+
+
+
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# the key used for private transactions
+# quorum transaction manager keys
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node1-tm-key-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node1-tm-key-config
+data:
+  tm.key: |-
+    {"data":{"bytes":"wWgkMgCOvL7fzFzCwnlbpaS4YVteVzjoCsiwtW/lfEM="},"type":"unlocked"}
+  tm.pub: |-
+    NkRFZsp9FA7QFIWZTSWflJ9+ieMkwJ7aamf+ftnv0BM=
+---
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# nodekey (enode) (geth/ethereum)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node1-nodekey-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node1-nodekey-config
+data:
+  nodekey: |
+    dec6e3008a19b3908c8beb6f45bd65b4d853bb13e8124f8c919fdc57866a78c7
+---
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# nodekey (enode) (geth/ethereum)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node1-enode-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node1-enode-config
+data:
+  enode: |
+    60380ae7841943b431cc59a4da1b917ef43a13b9548436c5df35c39e28ee88a08514c52d4a1c8b565754c2a9207e004809ac45076171dcbfdcdf9cad0ddc4d11
+
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# the key used for private transactions
+# quorum transaction manager keys
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node2-tm-key-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node2-tm-key-config
+data:
+  tm.key: |-
+    {"data":{"bytes":"7xpWKXr6/jJ782sVC/CVsoELH3OCbBk7xhTNhldWjGY="},"type":"unlocked"}
+  tm.pub: |-
+    jyPmTXxHu36mBwHr9MHksxMn/PcUgQD4vxbzK1PPnyo=
+---
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# nodekey (enode) (geth/ethereum)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node2-nodekey-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node2-nodekey-config
+data:
+  nodekey: |
+    14bacca7f787d5aa8c825c102bf71cca3df6a2154efd41689cd536e8dfc240e6
+---
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# nodekey (enode) (geth/ethereum)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node2-enode-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node2-enode-config
+data:
+  enode: |
+    f633e5bad740e7b33e82452b8e88b8503dcd65611e98e3dad7e2fd62e34066f39d80228a117026e268b8a4c6afc9fff1084485de9430228b94f3820627c0fefd
+
+
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# the key used for private transactions
+# quorum transaction manager keys
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node3-tm-key-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node3-tm-key-config
+data:
+  tm.key: |-
+    {"data":{"bytes":"H/dCsUHgZ3yISOZhfb64ZK1LvOpYuv0UXDYJmCRrlM8="},"type":"unlocked"}
+  tm.pub: |-
+    vyOBR4NlNbVwXB+5I8QhxogUgZ3YJIZ5hlK8VG2f8mo=
+---
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# nodekey (enode) (geth/ethereum)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node3-nodekey-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node3-nodekey-config
+data:
+  nodekey: |
+    ccaef2d50e7222dd93bc56f19b9666ca7d26f104628a039470b2152745846bb0
+---
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# nodekey (enode) (geth/ethereum)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node3-enode-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node3-enode-config
+data:
+  enode: |
+    d07a35d6a45822f0d0df9b04141658946d850ae3ce34f21df7e142b3baf1c553a500162d7543bd146dbc7badd6e838f2bb3eaac05d8d55fc283cce598d5a6fb4
+
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# the key used for private transactions
+# quorum transaction manager keys
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node4-tm-key-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node4-tm-key-config
+data:
+  tm.key: |-
+    {"data":{"bytes":"3JOVaxCOVwm/t7tpYZPCnB0tzsrbfIuk+dRQoK74lAY="},"type":"unlocked"}
+  tm.pub: |-
+    6gqHqtmDAJGrmAph+ruqENgAaN1PywIhn6Y/WrEBt2I=
+---
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# nodekey (enode) (geth/ethereum)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node4-nodekey-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node4-nodekey-config
+data:
+  nodekey: |
+    c4ff0655ee281105ba563592fcfc0516ea88393c01f36675ccf418f2b8737548
+---
+# kubectl create configmap game-config --from-file=configure-pod-container/dd1/key
+# nodekey (enode) (geth/ethereum)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-node4-enode-config
+
+  labels:
+    app: qubernetes
+    name: quorum-node4-enode-config
+data:
+  enode: |
+    d57d56da6bbe5bdd8293de2eaa4592d12a9995b7b44f0525e615bdbb3d60dc6627d13e6221b3e54c20704a00c0aa71fe62b25f23400eb4d800c0da3fdcdbc265

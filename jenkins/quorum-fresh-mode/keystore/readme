@@ -1,0 +1,3 @@
+Here will be created the data key file to be used by geth.
+To use with geth, copy this file to your Ethereum keystore folder
+(usually ~/.ethereum/keystore).

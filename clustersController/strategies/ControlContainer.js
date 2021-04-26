@@ -66,7 +66,7 @@ $$.flow.describe('ControlContainer', {
               result.pipelines.push({
                   name: currentPipeline,
                   result: 'EXCEPTION',
-                  log: err
+                  log: err.toString()
               });
               if (!result.log)
               {
@@ -74,6 +74,7 @@ $$.flow.describe('ControlContainer', {
               }
               result.log = result.log + err + '\n';
               result.pipelines = JSON.stringify(result.pipelines);
+              result.pipelinesStatus = 'ERROR';
               return this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
           }
           result.pipelines.push({
@@ -85,6 +86,7 @@ $$.flow.describe('ControlContainer', {
           if (pipelines.length === 0)
           {
               result.pipelines = JSON.stringify(result.pipelines);
+              result.pipelinesStatus = 'SUCCESS';
               console.log(result);
               console.log('Cluster operation finished : ', jenkinsData.clusterOperation);
               return this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );

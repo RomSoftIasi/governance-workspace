@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - image: mabdockerid/pharma-gov:latest
-          imagePullPolicy: ""
+          imagePullPolicy: Always
           name: governance
           ports:
             - containerPort: 8080

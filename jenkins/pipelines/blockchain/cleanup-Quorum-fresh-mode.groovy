@@ -20,17 +20,33 @@ volumes: [
         }
 
         container('kubectl') {
-         stage('Remove blockchain nodes'){
-             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s/deployments -n dev'
+        try{
+             stage('Remove blockchain nodes'){
+                 sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s/deployments -n dev'
+            }
+         } catch (err){
+            unstable (message: "${STAGE_NAME} is unstable.")
          }
-         stage('Remove blockchain configuration'){
-             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s -n dev'
+         try{
+             stage('Remove blockchain configuration'){
+                 sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s -n dev'
+             }
+         } catch (err){
+            unstable (message: "${STAGE_NAME} is unstable.")
          }
-         stage('Remove blockchain node connection'){
-             sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./jenkins -n jenkins'
+         try{
+             stage('Remove blockchain node connection'){
+                 sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./jenkins -n jenkins'
+             }
+         } catch (err){
+            unstable (message: "${STAGE_NAME} is unstable.")
          }
-         stage('Remove kubernetes secrets'){
-            sh ' kubectl delete secret eth-adapter-config -n dev'
+         try{
+             stage('Remove kubernetes secrets'){
+                sh ' kubectl delete secret eth-adapter-config -n dev'
+             }
+         } catch (err){
+            unstable (message: "${STAGE_NAME} is unstable.")
          }
          stage('Get deployment status'){
              sh "kubectl get pods -n dev"

@@ -29,6 +29,9 @@ volumes: [
          stage('Remove blockchain node connection'){
              sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./jenkins -n jenkins'
          }
+         stage('Remove kubernetes secrets'){
+            sh ' kubectl delete secret eth-adapter-config -n dev'
+         }
          stage('Get deployment status'){
              sh "kubectl get pods -n dev"
          }

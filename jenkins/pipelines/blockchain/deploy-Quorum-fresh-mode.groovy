@@ -1,9 +1,3 @@
-// deploy blockchain2 demo on namespace dev
-// create namespace dev
-// run jdev-multins.rbac.yaml
-// have kubernetes plugin installed and configured
-//there is no need to configure pod at jenkins level, as we define our pod template on pipeline level using custom defined serviceAccount
-
 
 podTemplate(serviceAccount: 'jdevmns',namespace: 'jenkins',containers: [
   containerTemplate(name: 'kubectl', image: 'mabdockerid/pharma-kubectl:latest', command: 'cat', ttyEnabled: true)
@@ -22,11 +16,14 @@ volumes: [
     stage('Deploy blockchain network') {
         stage('Get governance repo'){
             sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
+            sh 'git clone https://github.com/groundnuty/k8s-wait-for.git'
         }
 
         container('node'){
-            sh 'cd governance-workspace/jenkins/quorum-fresh-mode && npm install'
-            sh 'cd governance-workspace/jenkins/quorum-fresh-mode && node ./stages/AdmAcc/stage.js'
+            stage('Configure blockchain'){
+                sh 'cd governance-workspace/jenkins/quorum-fresh-mode && npm install'
+                sh 'cd governance-workspace/jenkins/quorum-fresh-mode && node ./stages/AdmAcc/stage.js'
+            }
         }
 
         container('kubectl') {
@@ -40,16 +37,36 @@ volumes: [
                 sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl apply -f ./jenkins -n jenkins'
             }
             stage('Get deployment status'){
-                sh "sleep 120s && kubectl get pods -n dev"
+                sh 'cd k8s-wait-for && chmod 755 ./wait_for.sh && ./wait_for.sh pod -lname=quorum-node1-deployment -n dev'
+                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node2-deployment -n dev'
+                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node3-deployment -n dev'
+                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node4-deployment -n dev'
+                sh 'sleep 30s'
+                sh "kubectl get pods -n dev"
             }
         }
 
         container('node'){
-            sh 'cd governance-workspace/jenkins/quorum-fresh-mode && node ./stages/OrgAcc/stage.js'
-            sh 'cd governance-workspace/jenkins/quorum-fresh-mode && node ./stages/deployAnchoringSC/stage.js'
+            stage('Create OrgAcc'){
+                sh 'cd governance-workspace/jenkins/quorum-fresh-mode && node ./stages/OrgAcc/stage.js'
+            }
+
+            stage('Deploy smart contract AnchoringSC'){
+                sh 'cd governance-workspace/jenkins/quorum-fresh-mode && node ./stages/deployAnchoringSC/stage.js'
+            }
+
+        }
+
+        container('kubectl'){
+            stage('create EthAdapterConfig kubernetes secrets'){
+                sh 'cd governance-workspace/jenkins/quorum-fresh-mode && chmod 755 ./scripts/createEthAdapterConfig.sh && ./scripts/createEthAdapterConfig.sh'
+            }
+        }
+
+        stage ('Prepare artefacts'){
+            archiveArtifacts artifacts: 'governance-workspace/jenkins/quorum-fresh-mode/stages/deployAnchoringSC/anchoringSCInfo.json', fingerprint: true
         }
     }
   }
 }
 }
-

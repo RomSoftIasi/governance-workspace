@@ -44,11 +44,7 @@ $$.flow.describe('ControlContainer', {
         const blockchainNetwork = jenkinsData.blockchainNetwork;
         if (jenkinsData.clusterOperation === 'initiateNetwork')
         {
-            //pipelines.push('gov-3min');
-            //pipelines.push('gov-3min');
-            //pipelines.push('gov-3min');
-            //pipelines.push('gov-docker');
-            pipelines.push('gov-tests');
+            pipelines.push('deploy-Quorum-fresh-mode');
         }
         console.log('Planned pipelines',pipelines);
         const result = {

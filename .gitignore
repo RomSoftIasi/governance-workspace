@@ -1,4 +1,5 @@
 cardinal
+bpd-ssapp
 mobile/scan-app
 privatesky
 menu-wallet-prototype
@@ -20,3 +21,4 @@ node_modules
 package-lock.json
 env.json.devel
 opendsuClusterDeployer/K8/.kube/config
+seed

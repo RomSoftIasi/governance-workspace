@@ -141,9 +141,7 @@ function checkIfJobFinished(jenkinsServer, buildNo, callback){
         });
 }
 
-function getJobConsoleLogAsText(jenkinsData, jenkinsServer, buildNo, callback){
-    //http://localhost:8090/job/initiateNetwork/14/consoleText
-    const buildApiPath = '/job/'+jenkinsServer.jenkinsPipeline+'/'+buildNo+'/consoleText'
+function getArtefactProducedByJobAsText(jenkinsData, jenkinsServer, buildNo, buildApiPath, callback){
     const apiMethod = 'GET';
     require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol,jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort)
         .setCredentials(jenkinsServer.jenkinsUser,jenkinsServer.jenkinsToken)
@@ -153,15 +151,26 @@ function getJobConsoleLogAsText(jenkinsData, jenkinsServer, buildNo, callback){
             }
             return callback(undefined, data.body)
         })
+}
+
+function getJobConsoleLogAsText(jenkinsData, jenkinsServer, buildNo, callback){
+    //http://localhost:8090/job/initiateNetwork/14/consoleText
+    const buildApiPath = '/job/'+jenkinsServer.jenkinsPipeline+'/'+buildNo+'/consoleText'
+
+    getArtefactProducedByJobAsText(jenkinsData, jenkinsServer, buildNo,buildApiPath, callback);
 
 }
 
-
+function getJobArtefactAsText(jenkinsData, jenkinsServer,artefactName, buildNo, callback){
+    const buildApiPath = '/job/'+jenkinsServer.jenkinsPipeline+'/'+buildNo+'/artifact/'+artefactName;
+    getArtefactProducedByJobAsText(jenkinsData, jenkinsServer, buildNo,buildApiPath, callback);
+}
 
 function getArtefactProducedByJob(jenkinsData, jenkinsServer, artefactName,buildNo, callback){
     //http://localhost:8090/job/gov-tests/38/artifact/privatesky/testReport.html
     const buildApiPath = '/job/'+jenkinsServer.jenkinsPipeline+'/'+buildNo+'/artifact/'+artefactName;
     const apiMethod = 'GET';
+    console.log(buildApiPath);
     require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol,jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort)
         .setCredentials(jenkinsServer.jenkinsUser,jenkinsServer.jenkinsToken)
         .callRawAPI(apiMethod,buildApiPath,{}, (err, response) => {
@@ -214,5 +223,6 @@ function startPipeline(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, callb
 module.exports = {
     startPipeline,
     getArtefactProducedByJob,
-    getJobConsoleLogAsText
+    getJobConsoleLogAsText,
+    getJobArtefactAsText
 }

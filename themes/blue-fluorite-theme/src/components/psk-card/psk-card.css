@@ -238,11 +238,11 @@ psk-card.item-identifier psk-label label {
 
 }
 
-.bpd-create-organization-button psk-label {
+.bpd-create-organization-button label {
     font-size: 15px;
 }
 
-.bpd-organization-elements psk-for-each {
+.bpd-organization-elements {
     display: flex;
     flex-wrap: wrap;
 }
@@ -262,24 +262,6 @@ psk-card.item-identifier psk-label label {
     display: block;
     margin-right: 30px;
     margin-bottom: 20px;
-}
-
-.bpd-organization-box,
-.bpd-organization-line
-{
-    background-color: #007bff;
-    border-radius: 10px;
-}
-
-.bpd-organization-box,
-.bpd-buttons-row .bpd-organization-card .bpd-organization-card-content {
-    width: 180px;
-    height: 120px;
-}
-
-.bpd-buttons-row.bpd-wide-cards .bpd-organization-card .bpd-organization-card-content {
-    width: 320px;
-    height: 120px;
 }
 
 .bpd-buttons-row.bpd-wide-cards {
@@ -313,23 +295,7 @@ psk-card.item-identifier psk-label label {
     width: 95%;
 }
 
-.bpd-organization-card-header {
-    position: absolute;
-    right: 5px;
-}
-
-.bpd-organization-card-content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding-top: 15px;
-}
-
-.bpd-organization-card-content psk-icon {
-    font-size: 60px;
-}
-
-.bpd-organization-card psk-label {
+.bpd-organization-card label {
     display: flex;
     align-items: center;
     justify-content: center;

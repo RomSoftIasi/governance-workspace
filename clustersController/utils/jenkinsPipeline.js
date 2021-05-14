@@ -181,13 +181,16 @@ function getArtefactProducedByJob(jenkinsData, jenkinsServer, artefactName,build
         });
 }
 
-function getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken){
+function getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken, formDataFile){
     let apiPath
     if (jenkinsPipelineToken)
     {
         apiPath = '/job/'+jenkinsPipeline+'/buildWithParameters?token='+jenkinsPipelineToken
     } else{
         apiPath = '/job/'+jenkinsPipeline+'/build?delay=0'
+    } if (formDataFile)
+    {
+        apiPath = '/job/'+jenkinsPipeline+'/buildWithParameters?delay=0'
     }
     return apiPath;
 }
@@ -220,8 +223,38 @@ function startPipeline(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, callb
         });
 }
 
+function startPipelineWithFormDataFile(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, formDataFile, callback){
+    console.log('startPipeline with file parameter : ',jenkinsPipeline);
+
+    const apiPath = getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken,formDataFile);
+    const apiMethod = 'POST';
+    jenkinsServer.jenkinsPipeline = jenkinsPipeline;
+
+    require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol,jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort)
+        .setCredentials(jenkinsServer.jenkinsUser,jenkinsServer.jenkinsToken)
+        .isFileMultipartFormData(formDataFile.content, formDataFile.fieldName, formDataFile.fileName)
+        .callAPI(apiMethod,apiPath,{}, (err, data) => {
+            if (err)
+            {
+                return callback(err, undefined);
+            }
+            //console.log('data received from jenkins:',data);
+            //console.log('jenkins job queue position :',data.headers.location);
+            getJobExecutionStatus(data.headers.location,jenkinsServer, (err, data)=>{
+                if (err)
+                {
+                    console.log(err);
+                    return callback(err, undefined);
+                }
+                //console.log(data)
+                return callback(undefined, data);
+            })
+
+        });
+}
 module.exports = {
     startPipeline,
+    startPipelineWithFormDataFile,
     getArtefactProducedByJob,
     getJobConsoleLogAsText,
     getJobArtefactAsText

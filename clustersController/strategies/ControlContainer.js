@@ -71,6 +71,25 @@ $$.flow.describe('ControlContainer', {
 
             });
     },
+    __executePipelineWithFileParameter: function(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, result,formDataFile, callback){
+        require('../utils/jenkinsPipeline')
+            .startPipelineWithFormDataFile(jenkinsServer,jenkinsPipelineToken,currentPipeline, formDataFile, (err, data) => {
+                if (err)
+                {
+                    this.__execPipelineErrorSignal(result,currentPipeline,blockchainNetwork);
+                    return callback(err, undefined);
+                }
+                result.pipelines.push({
+                    name: currentPipeline,
+                    result: data.result,
+                    buildNo: data.buildNo,
+                    artifacts: data.artifacts
+                });
+
+                return callback(undefined, result, data);
+
+            });
+    },
     __finishPipelinesExecution: function (result, jenkinsData, blockchainNetwork){
         result.pipelines = JSON.stringify(result.pipelines);
         result.pipelinesStatus = 'SUCCESS';
@@ -85,6 +104,7 @@ $$.flow.describe('ControlContainer', {
         if (jenkinsData.clusterOperation === 'initiateNetwork')
         {
             pipelines.push('deploy-Quorum-fresh-mode');
+            pipelines.push('deploy-eth-adaptor');
         }
         console.log('Planned pipelines',pipelines);
         const clusterOperationResult = {
@@ -94,7 +114,7 @@ $$.flow.describe('ControlContainer', {
         }
         const jenkinsServer = this.__getJenkinsServer(jenkinsData);
         const jenkinsPipelineToken = jenkinsData.pipelineToken;
-        const currentPipeline = pipelines.shift();
+        let currentPipeline = pipelines.shift();
         this.__executePipeline(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) =>{
             if (err) { return;}
             const downloadJsonData = {
@@ -108,8 +128,22 @@ $$.flow.describe('ControlContainer', {
                     return this.__execPipelineErrorSignal(clusterResult,currentPipeline,blockchainNetwork);
                 }
                 clusterResult.EthAdapterJoiningJSON = data;
+                const buffer = new Buffer(data);
+                const base64data = buffer.toString('base64');
+                //console.log(base64data);
+                currentPipeline = pipelines.shift();
+                const formDataFile = {
+                    content: base64data,
+                    fieldName: 'ethJoinFile',
+                    fileName: 'ethJoin.json'
+                };
+                this.__executePipelineWithFileParameter(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, clusterResult, formDataFile,(err, clusterResult ) => {
+                    if (err) { return;}
 
-                this.__finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+                    this.__finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+                })
+
+
             });
         });
 

@@ -165,6 +165,7 @@ spec:
            --rpcaddr 0.0.0.0 \
            --rpcport 8545 \
            --port 30303 \
+           --rpcvhosts quorum-node2 \
            --rpccorsdomain=\"*\" \
             2>&1 | tee -a /etc/quorum/qdata/logs/quorum.log;"
         ports:

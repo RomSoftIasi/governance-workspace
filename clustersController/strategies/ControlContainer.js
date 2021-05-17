@@ -37,7 +37,66 @@ $$.flow.describe('ControlContainer', {
           })
       }
     },
+    __execPipelineErrorSignal: function(result,currentPipeline,blockchainNetwork){
+        result.pipelines.push({
+            name: currentPipeline,
+            result: 'EXCEPTION',
+            log: err.toString()
+        });
+        if (!result.log)
+        {
+            result.log='';
+        }
+        result.log = result.log + err + '\n';
+        result.pipelines = JSON.stringify(result.pipelines);
+        result.pipelinesStatus = 'ERROR';
+        this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
+    },
+    __executePipeline: function(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, result, callback){
+        require('../utils/jenkinsPipeline')
+            .startPipeline(jenkinsServer,jenkinsPipelineToken,currentPipeline, (err, data) => {
+                if (err)
+                {
+                    this.__execPipelineErrorSignal(result,currentPipeline,blockchainNetwork);
+                    return callback(err, undefined);
+                }
+                result.pipelines.push({
+                    name: currentPipeline,
+                    result: data.result,
+                    buildNo: data.buildNo,
+                    artifacts: data.artifacts
+                });
 
+                return callback(undefined, result, data);
+
+            });
+    },
+    __executePipelineWithFileParameter: function(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, result,formDataFile, callback){
+        require('../utils/jenkinsPipeline')
+            .startPipelineWithFormDataFile(jenkinsServer,jenkinsPipelineToken,currentPipeline, formDataFile, (err, data) => {
+                if (err)
+                {
+                    this.__execPipelineErrorSignal(result,currentPipeline,blockchainNetwork);
+                    return callback(err, undefined);
+                }
+                result.pipelines.push({
+                    name: currentPipeline,
+                    result: data.result,
+                    buildNo: data.buildNo,
+                    artifacts: data.artifacts
+                });
+
+                return callback(undefined, result, data);
+
+            });
+    },
+    __finishPipelinesExecution: function (result, jenkinsData, blockchainNetwork){
+        result.pipelines = JSON.stringify(result.pipelines);
+        result.pipelinesStatus = 'SUCCESS';
+        console.log(result);
+        console.log('Cluster operation finished : ', jenkinsData.clusterOperation);
+        this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
+    },
     executeClusterOperation: function(jenkinsData, callback){
         console.log('executeClusterOperation started for : ',jenkinsData.clusterOperation);
         const pipelines = [];
@@ -45,59 +104,56 @@ $$.flow.describe('ControlContainer', {
         if (jenkinsData.clusterOperation === 'initiateNetwork')
         {
             pipelines.push('deploy-Quorum-fresh-mode');
+            pipelines.push('deploy-eth-adaptor');
         }
         console.log('Planned pipelines',pipelines);
-        const result = {
+        const clusterOperationResult = {
             clusterOperation : 'initiateNetwork',
             blockchainNetwork: jenkinsData.blockchainNetwork,
             pipelines:[]
         }
         const jenkinsServer = this.__getJenkinsServer(jenkinsData);
         const jenkinsPipelineToken = jenkinsData.pipelineToken;
+        let currentPipeline = pipelines.shift();
+        this.__executePipeline(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) =>{
+            if (err) { return;}
+            const downloadJsonData = {
+                jenkinsData: jenkinsData,
+                artefactName: executionResultData.artifacts[0].relativePath,
+                buildNo: executionResultData.buildNo,
+                jenkinsPipeline: currentPipeline
+            };
+            this.__downloadArtefactAsText(downloadJsonData, (err, data) => {
+                if (err){
+                    return this.__execPipelineErrorSignal(clusterResult,currentPipeline,blockchainNetwork);
+                }
+                clusterResult.EthAdapterJoiningJSON = data;
+                const buffer = new Buffer(data);
+                const base64data = buffer.toString('base64');
+                //console.log(base64data);
+                currentPipeline = pipelines.shift();
+                const formDataFile = {
+                    content: base64data,
+                    fieldName: 'ethJoinFile',
+                    fileName: 'ethJoin.json'
+                };
+                this.__executePipelineWithFileParameter(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, clusterResult, formDataFile,(err, clusterResult ) => {
+                    if (err) { return;}
 
-      let execPipeline = (jenkinsServer,jenkinsPipelineToken, currentPipeline) => require('../utils/jenkinsPipeline')
-          .startPipeline(jenkinsServer,jenkinsPipelineToken,currentPipeline, (err, data) => {
-          if (err)
-          {
-              result.pipelines.push({
-                  name: currentPipeline,
-                  result: 'EXCEPTION',
-                  log: err.toString()
-              });
-              if (!result.log)
-              {
-                  result.log='';
-              }
-              result.log = result.log + err + '\n';
-              result.pipelines = JSON.stringify(result.pipelines);
-              result.pipelinesStatus = 'ERROR';
-              return this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
-          }
-          result.pipelines.push({
-              name: currentPipeline,
-              result: data.result,
-              buildNo: data.buildNo,
-              artifacts: data.artifacts
-          });
-          if (pipelines.length === 0)
-          {
-              result.pipelines = JSON.stringify(result.pipelines);
-              result.pipelinesStatus = 'SUCCESS';
-              console.log(result);
-              console.log('Cluster operation finished : ', jenkinsData.clusterOperation);
-              return this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
-          }
-          console.log('Continue with next pipeline. Pipelines remaining : ',pipelines);
-          execPipeline(jenkinsServer,jenkinsPipelineToken, pipelines.shift());
-      });
+                    this.__finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+                })
 
-        execPipeline(jenkinsServer,jenkinsPipelineToken,pipelines.shift());
+
+            });
+        });
+
         console.log('releasing the request');
         callback(undefined,{
             clusterOperation : jenkinsData.clusterOperation,
             status: 'Operation started'
         });
     },
+
 
     listJenkinsPipelines: function (jenkinsData, callback) {
 
@@ -142,6 +198,36 @@ $$.flow.describe('ControlContainer', {
         console.log("startCluster", body);
         return callback(undefined, body);
     },
+    __downloadArtefactAsRaw: function(jsonData, callback) {
+        const jenkinsData = jsonData.jenkinsData;
+        const artefactName = jsonData.artefactName;
+        const buildNo = jsonData.buildNo;
+        const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        jenkinsServer.jenkinsPipeline = jsonData.jenkinsPipeline;
+        console.log(jenkinsServer);
+        require('../utils/jenkinsPipeline').getArtefactProducedByJob(jenkinsData, jenkinsServer, artefactName, buildNo, (err, data) => {
+            if (err) {
+                console.log(err);
+                return callback(err, undefined);
+            }
+            return callback(undefined, data);
+        })
+    },
+    __downloadArtefactAsText: function(jsonData, callback) {
+        const jenkinsData = jsonData.jenkinsData;
+        const artefactName = jsonData.artefactName;
+        const buildNo = jsonData.buildNo;
+        const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        jenkinsServer.jenkinsPipeline = jsonData.jenkinsPipeline;
+
+        require('../utils/jenkinsPipeline').getJobArtefactAsText(jenkinsData, jenkinsServer, artefactName, buildNo, (err, data) => {
+            if (err) {
+                console.log(err);
+                return callback(err, undefined);
+            }
+            return callback(undefined, data);
+        })
+    },
     commandCluster: function (jsonData, callback) {
         console.log("commandCluster", jsonData);
         const command = jsonData.command;
@@ -163,20 +249,7 @@ $$.flow.describe('ControlContainer', {
         } else
             if (command === "jenkinsArtefact")
             {
-                const jenkinsData = jsonData.jenkinsData;
-                const artefactName = jsonData.artefactName;
-                const buildNo = jsonData.buildNo;
-                const jenkinsServer = this.__getJenkinsServer(jenkinsData);
-                jenkinsServer.jenkinsPipeline = jsonData.jenkinsPipeline;
-                console.log(jenkinsServer);
-                require('../utils/jenkinsPipeline').getArtefactProducedByJob(jenkinsData, jenkinsServer, artefactName,buildNo, (err, data)=>{
-                    if (err)
-                    {
-                        console.log(err);
-                        return callback(err, undefined);
-                    }
-                    return callback(undefined, data);
-                })
+                this.__downloadArtefactAsRaw(jsonData, callback);
             }
     }
 

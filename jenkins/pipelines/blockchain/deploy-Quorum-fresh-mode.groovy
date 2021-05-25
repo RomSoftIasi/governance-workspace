@@ -54,7 +54,6 @@ volumes: [
             stage('Deploy smart contract AnchoringSC'){
                 sh 'git clone https://github.com/PharmaLedger-IMI/ethadapter.git'
                 sh 'cp ethadapter/SmartContracts/contracts/anchoringSC.sol governance-workspace/jenkins/quorum-fresh-mode/anchoring-sc/anchoringSC.sol'
-                sh 'cd governance-workspace/jenkins/quorum-fresh-mode/anchoring-sc && ls'
                 sh 'cd governance-workspace/jenkins/quorum-fresh-mode && node ./stages/deployAnchoringSC/stage.js'
             }
 

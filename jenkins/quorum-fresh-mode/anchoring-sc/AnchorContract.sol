@@ -267,6 +267,10 @@ contract AnchorContract {
 
     }
 
+    function Check() public view returns (int){
+        return 0;
+    }
+
 
     //utility functions
     function isEmptyBytes32(bytes32 data) private pure returns (bool)

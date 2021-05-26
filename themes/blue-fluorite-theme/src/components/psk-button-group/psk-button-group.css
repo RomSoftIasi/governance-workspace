@@ -245,24 +245,7 @@ psk-button-group.bpd-organization-menu .list-group > * {
     min-height: 30px;
 }
 
-psk-button-group.bpd-organization-menu .list-group > .bpd-organization-button {
-    background-color: white;
-    border: 0;
-    color: black;
-    font-size: 12px;
-}
 
-psk-button-group.bpd-organization-menu .list-group > .bpd-organization-button button{
-    width: 100%;
-    background: white;
-    color: black;
-    border: 0px;
-    padding: 0;
-}
-
-psk-button-group.bpd-organization-menu .list-group > .bpd-organization-button button:hover{
-    background: rgba(0,0,0,0.05) !important;
-}
 
 @media screen and (max-width:991px) {
     .options-menu {

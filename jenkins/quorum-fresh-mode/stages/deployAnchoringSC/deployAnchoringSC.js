@@ -66,11 +66,11 @@ function sendTransaction(web3, transaction, callback) {
 
 function getAnchoringSCInfo(){
     const solc = require('solc');
-    const sourceContract = require('fs').readFileSync('./anchoring-sc/AnchorContract.sol','utf8');
+    const sourceContract = require('fs').readFileSync('./anchoring-sc/anchoringSC.sol','utf8');
     const compilerInput = {
         language: 'Solidity',
         sources: {
-            'AnchorContract.sol' : {
+            'anchoringSC.sol' : {
                 content: sourceContract
             }
         },
@@ -88,8 +88,8 @@ function getAnchoringSCInfo(){
     const fs = require('fs');
     fs.writeFileSync('./stages/deployAnchoringSC/SCCompiled.json',JSON.stringify(output),{encoding:'utf8'});
 
-    const bytecode = output.contracts["AnchorContract.sol"]["AnchorContract"].evm.bytecode.object;
-    const abi = output.contracts["AnchorContract.sol"]["AnchorContract"].abi;
+    const bytecode = output.contracts["anchoringSC.sol"]["anchoringSC"].evm.bytecode.object;
+    const abi = output.contracts["anchoringSC.sol"]["anchoringSC"].abi;
 
     fs.writeFileSync('./stages/deployAnchoringSC/anchoringSCInfo.json',JSON.stringify({abi: abi}),{encoding:'utf8'});
     return {abi, bytecode };
@@ -123,7 +123,7 @@ function waitForTransactionToFinish(web3, hash, callback) {
 function executeAnchoringSCDeployment() {
     const Web3 = require('web3');
     const web3 = new Web3('http://ref-quorum-node1:8545'); // your geth
-    deployAnchoringSC(web3,"AnchorContract", [], (err, data) =>{
+    deployAnchoringSC(web3,"anchoringSC", [], (err, data) =>{
         if (err){
             console.log(err);
             return process.exit(1);

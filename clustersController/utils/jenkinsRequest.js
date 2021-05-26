@@ -1,6 +1,35 @@
 function getJenkinsHandler(protocol,hostname,port ){
     let handler = {};
     let credentials;
+    let formDataHeaders;
+    let formDataFilePayload;
+
+    handler.isFileMultipartFormData = function(content,fieldName, fileName){
+      formDataHeaders = "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW";
+
+      const boundary = '----WebKitFormBoundary7MA4YWxkTrZu0gW';
+      let data = '--'+boundary+ '\r\n';
+      data += 'Content-Disposition: form-data;';
+      data += ' name=\"'+fieldName+'\";'
+      data += ' filename=\"'+fileName+'\"\r\n';
+      data += "Content-Type: text/plain\r\n\r\n";
+
+      formDataFilePayload = Buffer.concat([
+        Buffer.from(data, "utf8"),
+        Buffer.from(content, "utf8"),
+        Buffer.from("\r\n--" + boundary + "--", "utf8"),
+      ]);
+      return handler;
+    };
+
+    function setMultipartFormDataHeaders (requestOptions){
+      if (typeof(formDataHeaders) !== 'undefined'){
+          requestOptions.headers['content-type'] = formDataHeaders;
+      }
+      return requestOptions;
+    }
+
+
 
     handler.setCredentials = function(jenkinsUser, jenkinsToken){
         credentials ={jenkinsUser, jenkinsToken};
@@ -14,6 +43,15 @@ function getJenkinsHandler(protocol,hostname,port ){
 
         return requestOptions;
     }
+
+    function writeBodyOnRequest(req, body){
+        if (typeof(formDataHeaders) !== 'undefined'){
+            req.write(formDataFilePayload);
+            return;
+        }
+        req.write(body);
+    }
+
     function makeHttpRequest(method, path,body, options, callback) {
         let httpApi = require(protocol);
         const defaultOptions = {
@@ -34,7 +72,7 @@ function getJenkinsHandler(protocol,hostname,port ){
         }
 
         setCredentials(options);
-
+        setMultipartFormDataHeaders(options);
         //console.log(options);
 
         const req = httpApi.request(options, response => {
@@ -79,7 +117,8 @@ function getJenkinsHandler(protocol,hostname,port ){
             });
         });
 
-        req.write(body);
+        //req.write(body);
+        writeBodyOnRequest(req,body);
         req.end();
     }
     handler.callAPI = function(apiMethod,apiPath,body, callback){

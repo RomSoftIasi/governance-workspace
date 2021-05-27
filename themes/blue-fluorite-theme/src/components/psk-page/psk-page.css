@@ -11,14 +11,6 @@
     scroll-behavior: smooth;
 }
 
-:host.bpd-ssapp {
-    height: 100% !important;
-}
-
-:host(.bpd-ssapp) {
-    height: 100% !important;
-}
-
 .page-title {
     /*width: 100%;*/
     /*line-height: 4.375rem;*/

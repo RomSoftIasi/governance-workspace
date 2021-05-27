@@ -2,19 +2,3 @@ textarea {
     width: 50vw;
     height: 50vh;
 }
-
-.bpd-text-area textarea {
-    height: 120px !important;
-}
-
-.bpd-text-area{
-    height: 120px
-}
-
-.bpd-log-text-area textarea {
-    height: 250px !important;
-}
-
-.bpd-log-text-area{
-    height: 250px
-}

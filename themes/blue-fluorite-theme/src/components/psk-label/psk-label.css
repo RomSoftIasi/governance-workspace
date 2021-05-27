@@ -107,20 +107,3 @@ psk-label.success.small label {
     font-size: 30px;
     font-weight: bold;
 }
-
-.bpd-organization-card-label,
-.bpd-create-organization-label {
-    font-size: 15px;
-    font-family: sans-serif;
-    font-weight: 100;
-}
-
-.bpd-modal-title {
-    color: black !important;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.bpd-input psk-label {
-    font-size: 20px;
-}

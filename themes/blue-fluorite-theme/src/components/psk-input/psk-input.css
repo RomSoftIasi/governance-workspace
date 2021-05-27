@@ -19,14 +19,6 @@ div.copy-clipboard-input+psk-condition {
     border: 1px solid rgba(87, 42, 87, 1);
 }
 
-.bpd-input .form-group {
-    width: 450px;
-}
-
-.bpd-date-input .form-group {
-    width: 315px;
-}
-
 @media screen and (max-width:991px) {
     .marketplace-search-bar {
         width: 200px;

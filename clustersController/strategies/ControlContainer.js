@@ -37,7 +37,7 @@ $$.flow.describe('ControlContainer', {
           })
       }
     },
-    __execPipelineErrorSignal: function(result,currentPipeline,blockchainNetwork){
+    __execPipelineErrorSignal: function(err, result,currentPipeline,blockchainNetwork){
         result.pipelines.push({
             name: currentPipeline,
             result: 'EXCEPTION',
@@ -57,7 +57,7 @@ $$.flow.describe('ControlContainer', {
             .startPipeline(jenkinsServer,jenkinsPipelineToken,currentPipeline, (err, data) => {
                 if (err)
                 {
-                    this.__execPipelineErrorSignal(result,currentPipeline,blockchainNetwork);
+                    this.__execPipelineErrorSignal(err, result,currentPipeline,blockchainNetwork);
                     return callback(err, undefined);
                 }
                 result.pipelines.push({
@@ -76,7 +76,7 @@ $$.flow.describe('ControlContainer', {
             .startPipelineWithFormDataFile(jenkinsServer,jenkinsPipelineToken,currentPipeline, formDataFile, (err, data) => {
                 if (err)
                 {
-                    this.__execPipelineErrorSignal(result,currentPipeline,blockchainNetwork);
+                    this.__execPipelineErrorSignal(err, result,currentPipeline,blockchainNetwork);
                     return callback(err, undefined);
                 }
                 result.pipelines.push({
@@ -125,7 +125,7 @@ $$.flow.describe('ControlContainer', {
             };
             this.__downloadArtefactAsText(downloadJsonData, (err, data) => {
                 if (err){
-                    return this.__execPipelineErrorSignal(clusterResult,currentPipeline,blockchainNetwork);
+                    return this.__execPipelineErrorSignal(err, clusterResult,currentPipeline,blockchainNetwork);
                 }
                 clusterResult.EthAdapterJoiningJSON = data;
                 const buffer = new Buffer(data);

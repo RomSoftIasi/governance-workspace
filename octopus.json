@@ -248,7 +248,7 @@
                 },
                 {
                     "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/bpd-wallet/apps/dossier-explorer-ssapp/readme"
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/bpd-wallet/apps-patch/dossier-explorer-ssapp/readme"
                 }
             ]
         },

@@ -1,11 +1,9 @@
 {
     "workDir": ".",
-    "dependencies": [
-        {
+    "dependencies": [{
             "name": "cardinal",
             "src": "http://github.com/privatesky/cardinal.git",
-            "actions": [
-                {
+            "actions": [{
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false
@@ -21,10 +19,23 @@
             ]
         },
         {
+            "name": "webcardinal",
+            "src": "https://github.com/webcardinal/webcardinal-bundler",
+            "actions": [{
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run build"
+                }
+            ]
+        },
+        {
             "name": "privatesky",
             "src": "http://github.com/privatesky/privatesky.git",
-            "actions": [
-                {
+            "actions": [{
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false
@@ -37,18 +48,15 @@
         },
         {
             "name": "build privatesky",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm run build"
-                }
-            ]
+            "actions": [{
+                "type": "execute",
+                "cmd": "cd privatesky && npm run build"
+            }]
         },
         {
             "name": "menu-wallet-prototype",
             "src": "http://github.com/privatesky/menu-wallet-prototype.git",
-            "actions": [
-                {
+            "actions": [{
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false
@@ -62,8 +70,7 @@
         {
             "name": "apihub-root/bpd-wallet/loader",
             "src": "http://github.com/privatesky/trust-loader.git",
-            "actions": [
-                {
+            "actions": [{
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false
@@ -76,9 +83,8 @@
         },
         {
             "name": "bpd-ssapp",
-            "src": "https://github.com/PrivateSky/bpd.git",
-            "actions": [
-                {
+            "src": "https://github.com/paiusCatalin/bpd.git",
+            "actions": [{
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false
@@ -89,14 +95,10 @@
                 }
             ]
         },
-
-
-
         {
             "name": "dossier-explorer-wallet-prototype",
             "src": "https://github.com/PrivateSky/dossier-explorer-wallet-prototype.git",
-            "actions": [
-                {
+            "actions": [{
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false
@@ -107,15 +109,10 @@
                 }
             ]
         },
-
-
-
-
         {
             "name": "dossier-explorer-ssapp",
             "src": "https://github.com/PrivateSky/dossier-explorer-ssapp.git",
-            "actions": [
-                {
+            "actions": [{
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false
@@ -126,48 +123,42 @@
                 }
             ]
         }
-
-
     ],
-    "build": [
-        {
+    "build": [{
             "name": "cardinal-wallet-build",
             "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm run build-dossier"
-                }
-            ]
+            "actions": [{
+                "type": "execute",
+                "cmd": "cd cardinal && npm run build-dossier"
+            }]
         },
-
         {
-            "name": "blue-fluorite-theme-wallet-build",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/blue-fluorite-theme && npm install"
-                }
-            ]
+            "name": "webcardinal-wallet-build",
+            "actions": [{
+                "type": "execute",
+                "cmd": "cd webcardinal && npm run build-dossier"
+            }]
         },
         {
             "name": "blue-fluorite-theme-wallet-build",
             "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
-                }
-            ]
+            "actions": [{
+                "type": "execute",
+                "cmd": "cd themes/blue-fluorite-theme && npm install"
+            }]
         },
-
-
+        {
+            "name": "blue-fluorite-theme-wallet-build",
+            "src": "",
+            "actions": [{
+                "type": "execute",
+                "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+            }]
+        },
         {
             "name": "dossier-explorer-wallet-prototype-build",
             "src": "",
-            "actions": [
-                {
+            "actions": [{
                     "type": "execute",
                     "cmd": "cd dossier-explorer-wallet-prototype && npm run build"
                 },
@@ -181,12 +172,10 @@
                 }
             ]
         },
-
         {
             "name": "dsu-explorer_bind_to_dossier-explorer-ssapp",
             "src": "",
-            "actions": [
-                {
+            "actions": [{
                     "type": "execute",
                     "cmd": "cd dossier-explorer-ssapp && npm run build"
                 },
@@ -204,12 +193,10 @@
                 }
             ]
         },
-
         {
             "name": "bpd-wallet_bind_to_bpd-ssapp",
             "src": "",
-            "actions": [
-                {
+            "actions": [{
                     "type": "execute",
                     "cmd": "cd bpd-ssapp && npm run build"
                 },
@@ -230,8 +217,7 @@
         {
             "name": "bpd-wallet_bind_to_menu-wallet-prototype",
             "src": "",
-            "actions": [
-                {
+            "actions": [{
                     "type": "execute",
                     "cmd": "cd menu-wallet-prototype && npm run build"
                 },
@@ -248,8 +234,7 @@
         {
             "name": "bpd-wallet_bind_to_dossier-explorer-ssapp",
             "src": "",
-            "actions": [
-                {
+            "actions": [{
                     "type": "execute",
                     "cmd": "cd dossier-explorer-ssapp && npm run build"
                 },
@@ -269,21 +254,18 @@
         },
         {
             "name": "trust-loader-config",
-            "actions": [
-                {
-                    "type": "copy",
-                    "src": "./trust-loader-config",
-                    "target": "./apihub-root",
-                    "options": {
-                        "overwrite": true
-                    }
+            "actions": [{
+                "type": "copy",
+                "src": "./trust-loader-config",
+                "target": "./apihub-root",
+                "options": {
+                    "overwrite": true
                 }
-            ]
+            }]
         },
         {
             "name": "copy-bundles",
-            "actions": [
-                {
+            "actions": [{
                     "type": "execute",
                     "cmd": "cd apihub-root/bpd-wallet/loader && npm install"
                 }

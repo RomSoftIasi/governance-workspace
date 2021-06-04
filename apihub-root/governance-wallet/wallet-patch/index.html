@@ -6,19 +6,25 @@
     <title>PSK App Core</title>
     PLACEHOLDER_THAT_WILL_BE_REPLACED_BY_SW_OR_SERVER_WITH_BASE_TAG
     <link href="assets/css/main.css" rel="stylesheet" type="text/css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
 
     <script src="scripts/bundles/iframeBoot.js"></script>
     <script src="scripts/bundles/webshims.js"></script>
     <script src="scripts/bundles/pskruntime.js"></script>
 
-    <link rel="stylesheet" href="webcardinal/webcardinal.css">
-    <script type="module" src="webcardinal/webcardinal.js"></script>
+    <link href="webcardinal/webcardinal.css" rel="stylesheet">
+    <script src="webcardinal/webcardinal.js" type="module"></script>
 </head>
 
 <body>
-    <webc-app-root></webc-app-root>
+<webc-app-root>
+<!--    <webc-app-container>-->
+<!--        <header slot="before" style="background: red;">Header</header>-->
+<!--        <webc-app-router></webc-app-router>-->
+<!--        <footer slot="after" style="background: green;">Footer</footer>-->
+<!--    </webc-app-container>-->
+</webc-app-root>
 </body>
 
 </html>

@@ -1,87 +1,33 @@
 {
-  "theme": "blue-fluorite-theme",
-  "pages": [
-    {
-      "name": "eGovernance Solutions",
-      "path": "/home",
-      "tag": "home",
-      "src": "home.html"
-    },
-    {
-      "name": "Governance Dashboard",
-      "path": "/governance-dashboard",
-      "children": [
-        {
-          "name": "Governance Dashboard",
-          "path": "/governance-dashboard",
-          "tag": "governance-dashboard",
-          "src": "governance-dashboard.html"
-        },
-        {
-          "name": "Voting Dashboard",
-          "path": "/voting-dashboard",
-          "tag": "voting-dashboard",
-          "src": "voting-dashboard.html"
-        },
-        {
-          "name": "New Voting Session",
-          "path": "/new-voting-session",
-          "tag": "new-voting-session",
-          "src": "new-voting-session.html",
-          "indexed": false
-        },
-        {
-          "name": "New Voting Session - Consultation",
-          "path": "/new-voting-session-consultation",
-          "tag": "new-voting-session-consultation",
-          "src": "new-voting-session-consultation.html",
-          "indexed": false
-        },
-        {
-          "name": "New Voting Session - Generic",
-          "path": "/new-voting-session-generic",
-          "tag": "new-voting-session-generic",
-          "src": "new-voting-session-generic.html",
-          "indexed": false
-        },
-        {
-          "name": "New Voting Session - Fixed Structure",
-          "path": "/new-voting-session-fixed-structure",
-          "tag": "new-voting-session-fixed-structure",
-          "src": "new-voting-session-fixed-structure.html",
-          "indexed": false
-        },
-        {
-          "name": "Perform Vote",
-          "path": "/perform-vote",
-          "tag": "perform-vote",
-          "src": "perform-vote.html",
-          "indexed": false
-        },
-        {
-          "name": "Voting Results",
-          "path": "/voting-results",
-          "tag": "voting-results",
-          "src": "voting-results.html",
-          "indexed": false
-        }
-      ]
-    },
-    {
-      "name": "Organizations",
-      "path": "/organizations",
-      "tag": "organizations",
-      "src": "organizations.html"
-    },
-    {
-      "name": "Tools",
-      "path": "/tools",
-      "tag": "tools",
-      "src": "tools.html"
-    }
-  ],
-  "pagesFallback": {
-    "name": "404",
-    "src": "./manage-organizations.html"
-  }
+	"pages": [
+		{
+			"name": "eGovernance Solutions",
+			"path": "/home",
+			"tag": "home",
+			"src": "home.html",
+			"indexed": false
+		},
+		{
+			"name": "Governance Dashboard",
+			"path": "/governance-dashboard",
+			"tag": "governance-dashboard",
+			"src": "governance-dashboard.html"
+		},
+		{
+			"name": "Organizations",
+			"path": "/organizations",
+			"tag": "organizations",
+			"src": "organizations.html"
+		},
+		{
+			"name": "Tools",
+			"path": "/tools",
+			"tag": "tools",
+			"src": "tools.html"
+		}
+	],
+	"pagesFallback": {
+		"name": "404",
+		"src": "./home.html"
+	}
 }

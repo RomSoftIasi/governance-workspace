@@ -82,6 +82,45 @@
             ]
         },
         {
+            "name": "governance-wallet-prototype",
+            "src": "http://github.com/privatesky/menu-wallet-prototype.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd governance-wallet-prototype && npm install"
+                },
+                {
+                    "type": "remove",
+                    "target": "./governance-wallet-prototype/bin/build.file"
+                },
+                {
+                    "type": "copy",
+                    "src": "./apihub-root/governance-wallet/build/build.file",
+                    "target": "./governance-wallet-prototype/bin/build.file"
+                }
+            ]
+        },
+        {
+            "name": "apihub-root/governance-wallet/loader",
+            "src": "http://github.com/privatesky/trust-loader.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/governance-wallet/loader && npm install"
+                }
+            ]
+        },
+        {
             "name": "bpd-ssapp",
             "src": "https://github.com/PrivateSky/bpd.git",
             "actions": [{
@@ -249,6 +288,46 @@
                 {
                     "type": "execute",
                     "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/bpd-wallet/apps-patch/dossier-explorer-ssapp/readme"
+                }
+            ]
+        },
+        {
+            "name": "governance-wallet_bind_to_governance-wallet-prototype",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd governance-wallet-prototype && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./governance-wallet-prototype/seed",
+                    "target": "./apihub-root/governance-wallet/wallet-patch/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                }
+            ]
+        },
+        {
+            "name": "governance-wallet_bind_to_bpd-ssapp",
+            "src": "",
+            "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd bpd-ssapp && npm run build"
+                },
+                {
+                    "type": "copy",
+                    "src": "./bpd-ssapp/seed",
+                    "target": "./apihub-root/governance-wallet/apps-patch/bpd-ssapp/seed",
+                    "options": {
+                        "overwrite": true
+                    }
+                },
+                {
+                    "type": "execute",
+                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/governance-wallet/apps-patch/bpd-ssapp/readme"
                 }
             ]
         },

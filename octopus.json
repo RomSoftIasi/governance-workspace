@@ -347,10 +347,12 @@
             "actions": [{
                     "type": "execute",
                     "cmd": "cd apihub-root/bpd-wallet/loader && npm install"
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/governance-wallet/loader && npm install"
                 }
-
             ]
         }
-
     ]
 }

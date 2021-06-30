@@ -11,11 +11,11 @@ kubectl delete -f ./rbac
 
 echo 'Remove namespaces'
 
-kubectl create namespace jenkins
-kubectl create namespace test
-kubectl create namespace dev
-kubectl create namespace epi
-kubectl create namespace gov
+kubectl delete namespace jenkins
+kubectl delete namespace test
+kubectl delete namespace dev
+kubectl delete namespace epi
+kubectl delete namespace gov
 
 
 kubectl get pods -n jenkins

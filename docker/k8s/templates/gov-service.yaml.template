@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: governance-service
+  name: %gov-metadata-name%-service
 spec:
   selector:
-    app: governance
-  type: LoadBalancer
+    app: %gov-app-label%
+  type: ClusterIP
   ports:
       - protocol: TCP
         port: 80

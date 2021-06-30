@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: governance-deployment
+  name: %gov-metadata-name%
   labels:
-    app: governance
+    app: %gov-app-label%
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: governance
+      app: %gov-app-label%
   template:
     metadata:
       labels:
-        app: governance
+        app: %gov-app-label%
     spec:
       containers:
-        - image: mabdockerid/pharma-gov:latest
+        - image: public.ecr.aws/n4q1q0z2/pharmaledger-governance:%DOCKERIMAGEVERSION%
           imagePullPolicy: Always
           name: governance
           ports:

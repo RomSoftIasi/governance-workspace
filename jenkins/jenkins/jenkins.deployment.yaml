@@ -21,10 +21,40 @@ spec:
         app: jenkins
     spec:
       serviceAccountName: jenkins
+      initContainers:
+        - name: defaultdata
+          image: mabdockerid/jenkinspharma:0.1
+          imagePullPolicy: Always
+          command: [ "sh" ]
+          args:
+            - "-cx"
+            - "
+               ls /var/jenkins-backup;
+               cd /var/jenkins_home;
+               rm -r *;
+               echo \"Jenkins home data\";
+               ls;
+               cd /var/jenkins-backup;
+               echo \"Copy data to Jenkins home\";
+               cp -r . /var/jenkins_home;
+               cd /var/jenkins_home;
+               echo \"Jenkins home data content\";
+               ls;
+               cd users;
+               ls;
+               cd ../plugins;
+               ls;
+               echo \"Restored from the predefined data\" > restored.data;
+              "
+          volumeMounts:
+            - mountPath: /var/jenkins_home
+              name: jenkins
       containers:
         - name: jenkins
           image: jenkins/jenkins:2.263.4-lts-alpine
           imagePullPolicy: IfNotPresent
+          tty: true
+          stdin: true
           env:
             - name: JAVA_OPTS
               value: -Xmx2048m -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85 -Dhudson.model.DirectoryBrowserSupport.CSP="sandbox allow-scripts;"

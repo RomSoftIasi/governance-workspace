@@ -1,10 +1,10 @@
 
 echo 'Remove Jenkins Installation'
 
-kubectl delete -f ./jenkins/jenkins.service.yaml
-kubectl delete -f ./jenkins/jenkins.deployment.yaml
-kubectl delete -f ./jenkins/jenkins.pvc.yaml
-kubectl delete -f ./jenkins/jenkins.pv.yaml
+kubectl delete -f ./docker/k8s/jenkins.service.yaml
+kubectl delete -f ./docker/k8s/jenkins.deployment.yaml
+kubectl delete -f ./docker/k8s/jenkins.pvc.yaml
+kubectl delete -f ./docker/k8s/jenkins.pv.yaml
 
 echo 'Remove defined RBAC''s'
 kubectl delete -f ./rbac

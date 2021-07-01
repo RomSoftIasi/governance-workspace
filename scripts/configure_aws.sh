@@ -13,16 +13,13 @@ aws ecr-public get-login-password --region us-east-1 | docker login --username A
 
 echo 'Creating kubernetes secrets aws-config ...'
 
-sed "s/%AWS_ACCESS_KEY_ID%/$AWS_ACCESS_KEY_ID/g" docker/k8s/templates/aws.json.template | sed "s/%AWS_SECRET_ACCESS_KEY%/$AWS_SECRET_ACCESS_KEY/g" > docker/k8s/templates/aws.json
-
 kubectl create secret generic aws-config \
     --save-config --dry-run=client \
-    --from-file=docker/k8s/templates/aws.json \
+    --from-literal=aws_key_id="$AWS_ACCESS_KEY_ID" \
+    --from-literal=aws_access_key="$AWS_SECRET_ACCESS_KEY" \
     -o yaml |
-  kubectl apply -f -
-
-rm docker/k8s/templates/aws.json
+  kubectl apply -n jenkins -f -
 
 #uncomment to see the stored secret
-#kubectl get secret aws-config -o go-template='{{range $k,$v := .data}}{{printf "%s: " $k}}{{if not $v}}{{$v}}{{else}}{{$v | base64decode}}{{end}}{{"\n"}}{{end}}'
+#kubectl get secret -n jenkins aws-config -o go-template='{{range $k,$v := .data}}{{printf "%s: " $k}}{{if not $v}}{{$v}}{{else}}{{$v | base64decode}}{{end}}{{"\n"}}{{end}}'
 echo 'Created kubernetes secrets aws-config.'

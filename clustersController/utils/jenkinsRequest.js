@@ -73,12 +73,12 @@ function getJenkinsHandler(protocol,hostname,port ){
 
         setCredentials(options);
         setMultipartFormDataHeaders(options);
-        //console.log(options);
+        console.log(options);
 
         const req = httpApi.request(options, response => {
             // console.log('waiting response',response);
             // console.log('waiting response queue position',response.headers.location);
-            //const qposition = response.headers.location;
+            // const qposition = response.headers.location;
             if (response.statusCode < 200 || response.statusCode >= 300) {
                 return callback({
                     statusCode: response.statusCode,

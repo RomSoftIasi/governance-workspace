@@ -25,6 +25,15 @@ $$.flow.describe('ControlContainer', {
         }
     },
 
+    deleteClusterStatus: function (blockchainNetwork, callback) {
+        const success = this.jenkinsClusterStatus.deleteStatus(blockchainNetwork);
+        if (!success) {
+            return callback(`Cluster status not found: ${blockchainNetwork}`);
+        }
+
+        callback(undefined, {success: success});
+    },
+
     getClusterStatus : function(blockchainNetwork, callback){
       const status = this.jenkinsClusterStatus.getStatus(blockchainNetwork);
       if (status)
@@ -55,11 +64,10 @@ $$.flow.describe('ControlContainer', {
     __executePipeline: function(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, result, callback){
         require('../utils/jenkinsPipeline')
             .startPipeline(jenkinsServer,jenkinsPipelineToken,currentPipeline, (err, data) => {
-                if (err)
-                {
-                    this.__execPipelineErrorSignal(err, result,currentPipeline,blockchainNetwork);
-                    return callback(err, undefined);
+                if (err) {
+                    return callback(err, result);
                 }
+
                 result.pipelines.push({
                     name: currentPipeline,
                     result: data.result,
@@ -97,15 +105,54 @@ $$.flow.describe('ControlContainer', {
         console.log('Cluster operation finished : ', jenkinsData.clusterOperation);
         this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
     },
-    executeClusterOperation: function(jenkinsData, callback){
+
+    executeClusterOperation: function (jenkinsData, callback) {
+        if (jenkinsData.clusterOperation === 'initiateNetworkUsingBlockchain') {
+            return this.executeInitiateNetworkUsingBlockchain(jenkinsData, callback);
+        }
+
+        if (jenkinsData.clusterOperation === "initiateNetwork") {
+            return this.executeInitiateNetwork(jenkinsData, callback);
+        }
+
+        const err = `Invalid cluster operation requested: ${jenkinsData.clusterOperation}`;
+        console.log(err);
+        callback(new Error(err));
+    },
+
+    executeInitiateNetwork: function (jenkinsData, callback) {
+        console.log(jenkinsData);
+        const blockchainNetwork = jenkinsData.blockchainNetwork;
+        const clusterOperationResult = {
+            clusterOperation: 'initiateNetwork',
+            blockchainNetwork: blockchainNetwork,
+            pipelines: []
+        }
+        const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        const jenkinsPipelineToken = jenkinsData.pipelineToken;
+        const pipeline = "test_pipeline";
+        this.__executePipeline(jenkinsServer, jenkinsPipelineToken, pipeline, blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) => {
+            if (err) {
+                return this.__execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+            }
+
+            this.__finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+        });
+
+        console.log('releasing the request');
+        callback(undefined,{
+            clusterOperation : jenkinsData.clusterOperation,
+            status: 'Operation started'
+        });
+    },
+
+    executeInitiateNetworkUsingBlockchain: function(jenkinsData, callback){
         console.log('executeClusterOperation started for : ',jenkinsData.clusterOperation);
         const pipelines = [];
         const blockchainNetwork = jenkinsData.blockchainNetwork;
-        if (jenkinsData.clusterOperation === 'initiateNetwork')
-        {
-            pipelines.push('deploy-Quorum-fresh-mode');
-            pipelines.push('deploy-eth-adaptor');
-        }
+        pipelines.push('deploy-Quorum-fresh-mode');
+        pipelines.push('deploy-eth-adaptor');
+
         console.log('Planned pipelines',pipelines);
         const clusterOperationResult = {
             clusterOperation : 'initiateNetwork',
@@ -116,7 +163,10 @@ $$.flow.describe('ControlContainer', {
         const jenkinsPipelineToken = jenkinsData.pipelineToken;
         let currentPipeline = pipelines.shift();
         this.__executePipeline(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) =>{
-            if (err) { return;}
+            if (err) {
+                return this.__execPipelineErrorSignal(err, clusterResult, currentPipeline, blockchainNetwork);
+            }
+
             const downloadJsonData = {
                 jenkinsData: jenkinsData,
                 artefactName: executionResultData.artifacts[0].relativePath,

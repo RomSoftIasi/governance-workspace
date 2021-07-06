@@ -3,6 +3,7 @@ function getJenkinsHandler(protocol,hostname,port ){
     let credentials;
     let formDataHeaders;
     let formDataFilePayload;
+    let formDataParametersPayload;
 
     handler.isFileMultipartFormData = function(content,fieldName, fileName){
       formDataHeaders = "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW";
@@ -29,7 +30,21 @@ function getJenkinsHandler(protocol,hostname,port ){
       return requestOptions;
     }
 
+    handler.setPipelineParametersFormData = function (pipelineParameters) {
+        formDataHeaders = "multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW";
+        const boundary = "------WebKitFormBoundary7MA4YWxkTrZu0gW";
+        const contentDisposition = "Content-Disposition: form-data; name=\"";
 
+        let data = boundary;
+        Object.keys(pipelineParameters).forEach(key => {
+            data += `\r\n${contentDisposition}${key}\"\r\n\r\n${pipelineParameters[key]}\r\n${boundary}`;
+        });
+
+        data += "--";
+        formDataParametersPayload = Buffer.from(data, "utf8");
+
+        return handler;
+    }
 
     handler.setCredentials = function(jenkinsUser, jenkinsToken){
         credentials ={jenkinsUser, jenkinsToken};
@@ -44,11 +59,17 @@ function getJenkinsHandler(protocol,hostname,port ){
         return requestOptions;
     }
 
-    function writeBodyOnRequest(req, body){
-        if (typeof(formDataHeaders) !== 'undefined'){
+    function writeBodyOnRequest(req, body) {
+        if (typeof formDataFilePayload !== "undefined") {
             req.write(formDataFilePayload);
             return;
         }
+
+        if (typeof formDataParametersPayload !== "undefined") {
+            req.write(formDataParametersPayload);
+            return;
+        }
+
         req.write(body);
     }
 

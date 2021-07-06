@@ -181,39 +181,31 @@ function getArtefactProducedByJob(jenkinsData, jenkinsServer, artefactName,build
         });
 }
 
-// TODO:
-function getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken, formDataFile){
-    let apiPath
-    if (jenkinsPipelineToken)
-    {
-        apiPath = '/job/'+jenkinsPipeline+'/buildWithParameters?token='+jenkinsPipelineToken
-    } else{
-        apiPath = '/job/'+jenkinsPipeline+'/build?delay=0'
-    } if (formDataFile)
-    {
-        apiPath = '/job/'+jenkinsPipeline+'/buildWithParameters?delay=0'
+function getBuildPipelineApiPath(jenkinsPipeline, useFormData = false) {
+    if (useFormData) {
+        return `/job/${jenkinsPipeline}/buildWithParameters?delay=0`;
     }
-    return apiPath;
-}
-function startPipeline(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, callback){
-    console.log('startPipeline : ',jenkinsPipeline);
 
-    const apiPath = getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken);
+    return `/job/${jenkinsPipeline}/build?delay=0`;
+}
+
+function startPipeline(jenkinsServer, jenkinsPipeline, callback) {
+    console.log('startPipeline : ', jenkinsPipeline);
+
+    const apiPath = getBuildPipelineApiPath(jenkinsPipeline);
     const apiMethod = 'POST';
     jenkinsServer.jenkinsPipeline = jenkinsPipeline;
 
-    require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol,jenkinsServer.jenkinsHostName,jenkinsServer.jenkinsPort)
-        .setCredentials(jenkinsServer.jenkinsUser,jenkinsServer.jenkinsToken)
-        .callAPI(apiMethod,apiPath,{}, (err, data) => {
-            if (err)
-            {
+    require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol, jenkinsServer.jenkinsHostName, jenkinsServer.jenkinsPort)
+        .setCredentials(jenkinsServer.jenkinsUser, jenkinsServer.jenkinsToken)
+        .callAPI(apiMethod, apiPath, {}, (err, data) => {
+            if (err) {
                 return callback(err, undefined);
             }
             //console.log('data received from jenkins:',data);
             //console.log('jenkins job queue position :',data.headers.location);
-            getJobExecutionStatus(data.headers.location,jenkinsServer, (err, data)=>{
-                if (err)
-                {
+            getJobExecutionStatus(data.headers.location, jenkinsServer, (err, data) => {
+                if (err) {
                     console.log(err);
                     return callback(err, undefined);
                 }
@@ -224,10 +216,28 @@ function startPipeline(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, callb
         });
 }
 
-function startPipelineWithFormDataFile(jenkinsServer,jenkinsPipelineToken,jenkinsPipeline, formDataFile, callback){
+function startParametrizedPipeline(jenkinsServer, jenkinsPipeline, pipelineParameters, callback) {
+    console.log('startPipeline : ', jenkinsPipeline);
+    const apiPath = getBuildPipelineApiPath(jenkinsPipeline, true);
+    const apiMethod = 'POST';
+    jenkinsServer.jenkinsPipeline = jenkinsPipeline;
+
+    require('./jenkinsRequest').getJenkinsHandler(jenkinsServer.jenkinsProtocol, jenkinsServer.jenkinsHostName, jenkinsServer.jenkinsPort)
+        .setCredentials(jenkinsServer.jenkinsUser, jenkinsServer.jenkinsToken)
+        .setPipelineParametersFormData(pipelineParameters)
+        .callAPI(apiMethod, apiPath, {}, (err, data) => {
+            if (err) {
+                return callback(err, undefined);
+            }
+
+            getJobExecutionStatus(data.headers.location, jenkinsServer, callback);
+        });
+}
+
+function startPipelineWithFormDataFile(jenkinsServer,jenkinsPipeline, formDataFile, callback){
     console.log('startPipeline with file parameter : ',jenkinsPipeline);
 
-    const apiPath = getBuildPipelineApiPath(jenkinsPipeline,jenkinsPipelineToken,formDataFile);
+    const apiPath = getBuildPipelineApiPath(jenkinsPipeline, true);
     const apiMethod = 'POST';
     jenkinsServer.jenkinsPipeline = jenkinsPipeline;
 
@@ -255,6 +265,7 @@ function startPipelineWithFormDataFile(jenkinsServer,jenkinsPipelineToken,jenkin
 }
 module.exports = {
     startPipeline,
+    startParametrizedPipeline,
     startPipelineWithFormDataFile,
     getArtefactProducedByJob,
     getJobConsoleLogAsText,

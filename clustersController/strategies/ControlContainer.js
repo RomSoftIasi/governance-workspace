@@ -76,9 +76,45 @@ $$.flow.describe('ControlContainer', {
         this.jenkinsClusterStatus.setStatus(blockchainNetwork, result);
     },
 
-    __executePipeline: function(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, result, callback){
+    __executePipeline: function (jenkinsServer, currentPipeline, result, callback) {
+        require('../utils/jenkinsPipeline').startPipeline(jenkinsServer, currentPipeline, (err, data) => {
+            if (err) {
+                return callback(err, result);
+            }
+
+            result.pipelines.push({
+                name: currentPipeline,
+                result: data.result,
+                buildNo: data.buildNo,
+                artifacts: data.artifacts
+            });
+
+            return callback(undefined, result, data);
+
+        });
+    },
+
+    __executeParametrizedPipeline: function (jenkinsServer, currentPipeline, pipelineParameters, result, callback) {
+        // parametrizedPipeline
+        require('../utils/jenkinsPipeline').startParametrizedPipeline(jenkinsServer, currentPipeline, pipelineParameters, (err, data) => {
+            if (err) {
+                return callback(err, result);
+            }
+
+            result.pipelines.push({
+                name: currentPipeline,
+                result: data.result,
+                buildNo: data.buildNo,
+                artifacts: data.artifacts
+            });
+
+            return callback(undefined, result, data);
+        });
+    },
+
+    __executePipelineWithFileParameter: function (jenkinsServer, currentPipeline, blockchainNetwork, result, formDataFile, callback) {
         require('../utils/jenkinsPipeline')
-            .startPipeline(jenkinsServer,jenkinsPipelineToken,currentPipeline, (err, data) => {
+            .startPipelineWithFormDataFile(jenkinsServer, currentPipeline, formDataFile, (err, data) => {
                 if (err) {
                     return callback(err, result);
                 }
@@ -91,33 +127,15 @@ $$.flow.describe('ControlContainer', {
                 });
 
                 return callback(undefined, result, data);
-
             });
     },
-    __executePipelineWithFileParameter: function(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, result,formDataFile, callback){
-        require('../utils/jenkinsPipeline')
-            .startPipelineWithFormDataFile(jenkinsServer,jenkinsPipelineToken,currentPipeline, formDataFile, (err, data) => {
-                if (err)
-                {
-                    return this.__execPipelineErrorSignal(err, result,currentPipeline,blockchainNetwork);
-                }
-                result.pipelines.push({
-                    name: currentPipeline,
-                    result: data.result,
-                    buildNo: data.buildNo,
-                    artifacts: data.artifacts
-                });
 
-                return callback(undefined, result, data);
-
-            });
-    },
-    __finishPipelinesExecution: function (result, jenkinsData, blockchainNetwork){
+    __finishPipelinesExecution: function (result, jenkinsData, blockchainNetwork) {
         result.pipelines = JSON.stringify(result.pipelines);
         result.pipelinesStatus = 'SUCCESS';
         console.log(result);
         console.log('Cluster operation finished : ', jenkinsData.clusterOperation);
-        this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
+        this.jenkinsClusterStatus.setStatus(blockchainNetwork, result);
     },
 
     executeClusterOperation: function (jenkinsData, callback) {
@@ -129,11 +147,51 @@ $$.flow.describe('ControlContainer', {
             return this.executeInitiateNetwork(jenkinsData, callback);
         }
 
+        if (jenkinsData.clusterOperation === "initiateNetworkWithParameters") {
+            return this.executeInitiateNetworkWithParameters(jenkinsData, callback);
+        }
+
         const err = `Invalid cluster operation requested: ${jenkinsData.clusterOperation}`;
         console.log(err);
         callback({
             errType: "internalError",
             errMessage: err
+        });
+    },
+
+    executeInitiateNetworkWithParameters: function (jenkinsData, callback) {
+        console.log(jenkinsData);
+        const blockchainNetwork = jenkinsData.blockchainNetwork;
+        const clusterOperationResult = {
+            clusterOperation: 'initiateNetwork',
+            blockchainNetwork: blockchainNetwork,
+            pipelines: []
+        }
+
+        const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
+
+        // TODO: Update this
+        const pipeline = "test_pipeline";
+        const pipelineParameters = jenkinsData.parametrizedPipeline;
+        this.__executeParametrizedPipeline(jenkinsServer, pipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
+            if (err) {
+                return this.__execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+            }
+
+            this.__finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+        });
+
+        console.log('releasing the request');
+        callback(undefined, {
+            clusterOperation: jenkinsData.clusterOperation,
+            status: 'Operation started'
         });
     },
 
@@ -155,9 +213,9 @@ $$.flow.describe('ControlContainer', {
             });
         }
 
-        const jenkinsPipelineToken = jenkinsData.pipelineToken;
+        // TODO: Update this
         const pipeline = "test_pipeline";
-        this.__executePipeline(jenkinsServer, jenkinsPipelineToken, pipeline, blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) => {
+        this.__executePipeline(jenkinsServer, pipeline, blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) => {
             if (err) {
                 return this.__execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
             }
@@ -194,9 +252,8 @@ $$.flow.describe('ControlContainer', {
             });
         }
 
-        const jenkinsPipelineToken = jenkinsData.pipelineToken;
         let currentPipeline = pipelines.shift();
-        this.__executePipeline(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) =>{
+        this.__executePipeline(jenkinsServer, currentPipeline,blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) =>{
             if (err) {
                 return this.__execPipelineErrorSignal(err, clusterResult, currentPipeline, blockchainNetwork);
             }
@@ -221,13 +278,12 @@ $$.flow.describe('ControlContainer', {
                     fieldName: 'ethJoinFile',
                     fileName: 'ethJoin.json'
                 };
-                this.__executePipelineWithFileParameter(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, clusterResult, formDataFile,(err, clusterResult ) => {
+
+                this.__executePipelineWithFileParameter(jenkinsServer, currentPipeline,blockchainNetwork, clusterResult, formDataFile,(err, clusterResult ) => {
                     if (err) { return;}
 
                     this.__finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
-                })
-
-
+                });
             });
         });
 
@@ -238,10 +294,7 @@ $$.flow.describe('ControlContainer', {
         });
     },
 
-
     listJenkinsPipelines: function (jenkinsData, callback) {
-
-
         console.log(jenkinsData);
         const jenkinsUser = jenkinsData.user;
         const jenkinsToken = jenkinsData.token;

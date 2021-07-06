@@ -13,8 +13,9 @@ function ClusterInitiateNetwork(jenkinsClusterStatus) {
         flow.init(domainConfig, jenkinsClusterStatus);
         flow.executeClusterOperation(request.body, (err, result) => {
             if (err) {
-                return response.send(500, {});
+                return response.send(500, {err: err});
             }
+
             response.send(202, result);
         });
     }

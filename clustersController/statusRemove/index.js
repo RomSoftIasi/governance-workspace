@@ -14,10 +14,8 @@ function ClusterStatusRemove(jenkinsClusterStatus) {
         flow.init(domainConfig, jenkinsClusterStatus);
         flow.deleteClusterStatus(blockchainNetwork, (err, result) => {
             if (err) {
-                return response.send(500, {
-                    errMessage: err,
-                    errType: "internalError"
-                });
+                console.log(err);
+                return response.send(500, {});
             }
 
             response.send(201, result);

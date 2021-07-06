@@ -5,30 +5,40 @@ $$.flow.describe('ControlContainer', {
         //console.log('Init flow - ContainerControl for', domainConfig);
         this.jenkinsClusterStatus = jenkinsClusterStatus;
     },
-    __getJenkinsServer(jenkinsData){
+
+    __getJenkinsServer(jenkinsData) {
         const jenkinsUser = jenkinsData.user;
         const jenkinsToken = jenkinsData.token;
 
+        try {
+            const endpointURL = new URL(jenkinsData.jenkins);
 
-        const endpointURL =  new URL(jenkinsData.jenkins);
+            const jenkinsHostName = endpointURL.hostname;
+            const jenkinsPort = endpointURL.port;
+            const jenkinsProtocol = endpointURL.protocol.replace(':', "");
 
-        const jenkinsHostName = endpointURL.hostname;
-        const jenkinsPort = endpointURL.port;
-        const jenkinsProtocol = endpointURL.protocol.replace(':',"");
-
-        return {
-            jenkinsHostName,
-            jenkinsPort,
-            jenkinsProtocol,
-            jenkinsUser,
-            jenkinsToken
+            return {
+                jenkinsHostName,
+                jenkinsPort,
+                jenkinsProtocol,
+                jenkinsUser,
+                jenkinsToken
+            };
+        } catch (err) {
+            return {
+                err: err
+            };
         }
     },
 
     deleteClusterStatus: function (blockchainNetwork, callback) {
         const success = this.jenkinsClusterStatus.deleteStatus(blockchainNetwork);
         if (!success) {
-            return callback(`Cluster status not found: ${blockchainNetwork}`);
+            const errMessage = `Cluster status not found: ${blockchainNetwork}`;
+            return callback({
+                errMessage: errMessage,
+                errType: "internalError"
+            });
         }
 
         callback(undefined, {success: success});
@@ -46,21 +56,26 @@ $$.flow.describe('ControlContainer', {
           })
       }
     },
-    __execPipelineErrorSignal: function(err, result,currentPipeline,blockchainNetwork){
+
+    __execPipelineErrorSignal: function (err, result, currentPipeline, blockchainNetwork) {
         result.pipelines.push({
             name: currentPipeline,
             result: 'EXCEPTION',
-            log: err.toString()
+            log: JSON.stringify({
+                errType: "internalError",
+                errMessage: err
+            })
         });
-        if (!result.log)
-        {
-            result.log='';
+
+        if (!result.log) {
+            result.log = '';
         }
-        result.log = result.log + err + '\n';
+        result.log = result.log + JSON.stringify(err) + '\n';
         result.pipelines = JSON.stringify(result.pipelines);
         result.pipelinesStatus = 'ERROR';
-        this.jenkinsClusterStatus.setStatus(blockchainNetwork,result );
+        this.jenkinsClusterStatus.setStatus(blockchainNetwork, result);
     },
+
     __executePipeline: function(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, result, callback){
         require('../utils/jenkinsPipeline')
             .startPipeline(jenkinsServer,jenkinsPipelineToken,currentPipeline, (err, data) => {
@@ -84,8 +99,7 @@ $$.flow.describe('ControlContainer', {
             .startPipelineWithFormDataFile(jenkinsServer,jenkinsPipelineToken,currentPipeline, formDataFile, (err, data) => {
                 if (err)
                 {
-                    this.__execPipelineErrorSignal(err, result,currentPipeline,blockchainNetwork);
-                    return callback(err, undefined);
+                    return this.__execPipelineErrorSignal(err, result,currentPipeline,blockchainNetwork);
                 }
                 result.pipelines.push({
                     name: currentPipeline,
@@ -117,7 +131,10 @@ $$.flow.describe('ControlContainer', {
 
         const err = `Invalid cluster operation requested: ${jenkinsData.clusterOperation}`;
         console.log(err);
-        callback(new Error(err));
+        callback({
+            errType: "internalError",
+            errMessage: err
+        });
     },
 
     executeInitiateNetwork: function (jenkinsData, callback) {
@@ -128,7 +145,16 @@ $$.flow.describe('ControlContainer', {
             blockchainNetwork: blockchainNetwork,
             pipelines: []
         }
+
         const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
+
         const jenkinsPipelineToken = jenkinsData.pipelineToken;
         const pipeline = "test_pipeline";
         this.__executePipeline(jenkinsServer, jenkinsPipelineToken, pipeline, blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) => {
@@ -160,6 +186,14 @@ $$.flow.describe('ControlContainer', {
             pipelines:[]
         }
         const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
+
         const jenkinsPipelineToken = jenkinsData.pipelineToken;
         let currentPipeline = pipelines.shift();
         this.__executePipeline(jenkinsServer,jenkinsPipelineToken, currentPipeline,blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) =>{
@@ -253,6 +287,14 @@ $$.flow.describe('ControlContainer', {
         const artefactName = jsonData.artefactName;
         const buildNo = jsonData.buildNo;
         const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
+
         jenkinsServer.jenkinsPipeline = jsonData.jenkinsPipeline;
         console.log(jenkinsServer);
         require('../utils/jenkinsPipeline').getArtefactProducedByJob(jenkinsData, jenkinsServer, artefactName, buildNo, (err, data) => {
@@ -268,6 +310,13 @@ $$.flow.describe('ControlContainer', {
         const artefactName = jsonData.artefactName;
         const buildNo = jsonData.buildNo;
         const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
         jenkinsServer.jenkinsPipeline = jsonData.jenkinsPipeline;
 
         require('../utils/jenkinsPipeline').getJobArtefactAsText(jenkinsData, jenkinsServer, artefactName, buildNo, (err, data) => {
@@ -286,6 +335,13 @@ $$.flow.describe('ControlContainer', {
             const jenkinsData = jsonData.jenkinsData;
             const buildNo = jsonData.buildNo;
             const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+            if (jenkinsServer.err) {
+                return callback({
+                    errType: "internalError",
+                    errMessage: jenkinsServer.err,
+                    jenkinsData: jenkinsData
+                });
+            }
             jenkinsServer.jenkinsPipeline = jsonData.jenkinsPipeline;
             console.log(jenkinsServer);
             require('../utils/jenkinsPipeline').getJobConsoleLogAsText(jenkinsData, jenkinsServer, buildNo, (err, data)=>{

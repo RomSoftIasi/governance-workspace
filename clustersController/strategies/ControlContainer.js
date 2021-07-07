@@ -151,6 +151,10 @@ $$.flow.describe('ControlContainer', {
             return this.executeInitiateNetworkWithParameters(jenkinsData, callback);
         }
 
+        if (jenkinsData.clusterOperation === "removeNetworkWithParameters") {
+            return this.executeRemoveNetworkWithParameters(jenkinsData, callback);
+        }
+
         const err = `Invalid cluster operation requested: ${jenkinsData.clusterOperation}`;
         console.log(err);
         callback({
@@ -159,11 +163,11 @@ $$.flow.describe('ControlContainer', {
         });
     },
 
-    executeInitiateNetworkWithParameters: function (jenkinsData, callback) {
+    executeRemoveNetworkWithParameters: function (jenkinsData, callback) {
         console.log(jenkinsData);
         const blockchainNetwork = jenkinsData.blockchainNetwork;
         const clusterOperationResult = {
-            clusterOperation: 'initiateNetwork',
+            clusterOperation: 'removeNetworkWithParameters',
             blockchainNetwork: blockchainNetwork,
             pipelines: []
         }
@@ -177,8 +181,42 @@ $$.flow.describe('ControlContainer', {
             });
         }
 
-        // TODO: Update this
-        const pipeline = "test_pipeline";
+        const pipeline = "clean_usecase_installation";
+        const pipelineParameters = jenkinsData.parametrizedPipeline;
+        this.__executeParametrizedPipeline(jenkinsServer, pipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
+            if (err) {
+                return this.__execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+            }
+
+            this.__finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+        });
+
+        console.log('releasing the request');
+        callback(undefined, {
+            clusterOperation: jenkinsData.clusterOperation,
+            status: 'Operation started'
+        });
+    },
+
+    executeInitiateNetworkWithParameters: function (jenkinsData, callback) {
+        console.log(jenkinsData);
+        const blockchainNetwork = jenkinsData.blockchainNetwork;
+        const clusterOperationResult = {
+            clusterOperation: 'initiateNetworkWithParameters',
+            blockchainNetwork: blockchainNetwork,
+            pipelines: []
+        }
+
+        const jenkinsServer = this.__getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
+
+        const pipeline = "install_usecase_installation";
         const pipelineParameters = jenkinsData.parametrizedPipeline;
         this.__executeParametrizedPipeline(jenkinsServer, pipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
             if (err) {
@@ -213,8 +251,7 @@ $$.flow.describe('ControlContainer', {
             });
         }
 
-        // TODO: Update this
-        const pipeline = "test_pipeline";
+        const pipeline = "install_usecase_installation";
         this.__executePipeline(jenkinsServer, pipeline, blockchainNetwork, clusterOperationResult, (err, clusterResult, executionResultData) => {
             if (err) {
                 return this.__execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);

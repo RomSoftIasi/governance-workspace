@@ -1,7 +1,6 @@
-
-function ClusterInitiateNetwork(jenkinsClusterStatus) {
+function ClusterStatusRemove(jenkinsClusterStatus) {
     return function (request, response, next) {
-        console.log('ClusterInitiateNetwork API command received ....')
+        console.log('ClusterStatus API command received ....')
         const receivedDomain = "default";
         const domainConfig = require("../utils").getClusterDomainConfig(receivedDomain);
         if (!domainConfig) {
@@ -9,15 +8,19 @@ function ClusterInitiateNetwork(jenkinsClusterStatus) {
             return response.send(500);
         }
 
+        const blockchainNetwork = request.params.networkId;
+        console.log('Delete status for : ', blockchainNetwork);
         let flow = $$.flow.start(domainConfig.type);
         flow.init(domainConfig, jenkinsClusterStatus);
-        flow.executeClusterOperation(request.body, (err, result) => {
+        flow.deleteClusterStatus(blockchainNetwork, (err, result) => {
             if (err) {
-                return response.send(500, {err: err});
+                console.log(err);
+                return response.send(500, {});
             }
 
-            response.send(202, result);
+            response.send(201, result);
         });
     }
 }
-module.exports = ClusterInitiateNetwork;
+
+module.exports = ClusterStatusRemove;

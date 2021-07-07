@@ -9,6 +9,7 @@ function Deploy(server) {
     const JenkinsPipelinesList = require('./list');
     const ClusterInitiateNetwork = require('./deploy')(jenkinsClusterStatus);
     const ClusterStatus = require('./status')(jenkinsClusterStatus);
+    const ClusterStatusRemove = require('./statusRemove')(jenkinsClusterStatus);
 
     const { responseModifierMiddleware, requestBodyJSONMiddleware } = require('../privatesky/modules/apihub/utils/middlewares');
 
@@ -25,6 +26,9 @@ function Deploy(server) {
 
     server.get(`/controlContainer/status/:networkId`, requestBodyJSONMiddleware);
     server.get(`/controlContainer/status/:networkId`, ClusterStatus);
+
+    server.delete(`/controlContainer/status/:networkId`, requestBodyJSONMiddleware);
+    server.delete(`/controlContainer/status/:networkId`, ClusterStatusRemove);
 
     server.post(`/controlContainer/listJenkinsPipelines`, requestBodyJSONMiddleware);
     server.post(`/controlContainer/listJenkinsPipelines`, JenkinsPipelinesList);

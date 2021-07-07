@@ -1,15 +1,15 @@
-function jenkinsClusterStatus(){
+function jenkinsClusterStatus() {
     let handler = {};
     let statusMap = new Map();
-    handler.getStatus = function (jenkinsCluster){
-       // console.log('get status for : ', jenkinsCluster);
-       // console.log('Current status map: ', statusMap);
-        if (statusMap.has(jenkinsCluster)){
+    handler.getStatus = function (jenkinsCluster) {
+        console.log('get status for : ', jenkinsCluster);
+        console.log('Current status map: ', statusMap);
+        if (statusMap.has(jenkinsCluster)) {
             const data = statusMap.get(jenkinsCluster);
-            statusMap.delete(jenkinsCluster);
             console.log('Status found : ', data);
             return data;
         }
+
         console.log('Status NOT found for : ', jenkinsCluster);
         return undefined;
     }
@@ -20,12 +20,27 @@ function jenkinsClusterStatus(){
         } else {
             statusMap.set(jenkinsCluster, jenkinsClusterOperationResult)
         }
+
         console.log('Recorded status. Current global status map : ', statusMap);
     }
-    //console.log('Status initiated :', handler);
+
+    handler.deleteStatus = function (jenkinsCluster) {
+        console.log('delete status for: ', jenkinsCluster);
+        console.log('Current status map: ', statusMap);
+        if (statusMap.has(jenkinsCluster)) {
+            statusMap.delete(jenkinsCluster);
+            console.log('Status deleted for: ', jenkinsCluster);
+            return true;
+        }
+
+        console.log('Status NOT found for: ', jenkinsCluster);
+        return false;
+    }
+
+    console.log('Status initiated :', handler);
     return handler;
 }
 
 module.exports = {
-    jenkinsClusterStatus : jenkinsClusterStatus
+    jenkinsClusterStatus: jenkinsClusterStatus
 }

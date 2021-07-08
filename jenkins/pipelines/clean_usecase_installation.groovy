@@ -1,4 +1,4 @@
-podTemplate(serviceAccount: 'jenkins',namespace: 'jenkins',containers: [
+podTemplate(serviceAccount: 'jdefaultmns',namespace: 'jenkins',containers: [
       containerTemplate(name: 'kubectl', image: 'public.ecr.aws/n4q1q0z2/pharmaledger-kubectl-jenkins-agent:1.0', command: 'cat', ttyEnabled: true)
     ],
     volumes: [

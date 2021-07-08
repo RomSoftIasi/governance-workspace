@@ -45,7 +45,7 @@ podTemplate(serviceAccount: 'jdefaultmns',namespace: 'jenkins',containers: [
                     }
 
                     try{
-                        stage('Remove config map'){
+                        stage('List resources on default namespace'){
                             sh 'kubectl get deployments -n default'
                             sh 'kubectl get pods  -n default'
                             sh 'kubectl get services -n default'

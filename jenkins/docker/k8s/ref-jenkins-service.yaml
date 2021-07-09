@@ -1,0 +1,10 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: jenkins
+  namespace: default
+spec:
+  type: ExternalName
+  externalName: jenkins.jenkins.svc.cluster.local
+  ports:
+    - port: 80

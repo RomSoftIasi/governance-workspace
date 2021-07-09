@@ -1,4 +1,4 @@
-function jenkinsClusterStatus() {
+function jenkinsOperationStatus() {
     let handler = {};
     let statusMap = new Map();
     handler.getStatus = function (jenkinsCluster) {
@@ -42,5 +42,5 @@ function jenkinsClusterStatus() {
 }
 
 module.exports = {
-    jenkinsClusterStatus: jenkinsClusterStatus
+    jenkinsOperationStatus: jenkinsOperationStatus
 }

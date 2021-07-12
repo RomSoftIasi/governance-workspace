@@ -3,8 +3,8 @@ RUN mkdir /var/jenkins-backup
 
 ENV BACKUP_BRANCH_NAME="%BACKUP_BRANCH_NAME%"
 ENV JENKINS_BACKUP_REPOSITORY = "%JENKINS_BACKUP_REPOSITORY%"
-RUN git clone --single-branch --branch %BACKUP_BRANCH_NAME% %JENKINS_BACKUP_REPOSITORY%
-COPY  ./jenkins-backup/%BACKUP_BRANCH_NAME%/jenkins_home/ /var/jenkins-backup/
+RUN git clone --single-branch --branch %BACKUP_BRANCH_NAME% %JENKINS_BACKUP_REPOSITORY% %BACKUP_BRANCH_NAME%
+RUN cd %BACKUP_BRANCH_NAME% && cp  %BACKUP_BRANCH_NAME%/jenkins_home/ /var/jenkins-backup/
 
 CMD [ "sh" ]
 

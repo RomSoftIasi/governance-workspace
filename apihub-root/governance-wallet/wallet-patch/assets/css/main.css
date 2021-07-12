@@ -153,3 +153,98 @@ label.home-title {
     width: 80%;
     font-size: 18px;
 }
+
+/*  */
+
+html,
+body,
+.container,
+.main-container {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+}
+
+.container.main-container {
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 0 5%;
+}
+
+.container.main-container,
+.container.main-container .container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.container.main-container > .container {
+    overflow: auto;
+    scroll-behavior: smooth;
+}
+
+@media screen and (prefers-reduced-motion: reduce) {
+    .container.main-container > .container {
+        scroll-behavior: auto;
+    }
+}
+
+.container.main-container > .container::-webkit-scrollbar {
+    width: 0.5rem;
+}
+
+.container.main-container > .container::-webkit-scrollbar-track {
+    background-color: rgba(0, 135, 152, 0.25);
+}
+
+.container.main-container > .container::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 135, 152, 1);
+    border-radius: 0.5rem;
+}
+
+.container.main-container main {
+    overflow-y: auto;
+    grid-auto-flow: row;
+}
+
+.container.main-container header {
+    background: #FFFFFF;
+    position: sticky;
+    top: 0;
+}
+
+.container.main-container .form-wrapper:not(:first-of-type) {
+    border-top: 1px solid #000000;
+    padding-top: 2rem;
+}
+
+.container.main-container footer {
+    column-gap: 1rem;
+    display: flex;
+    padding: 1rem 0;
+    row-gap: 0.5rem;
+}
+
+webc-app-container {
+    --background: #FFFFFF;
+}
+
+webc-app-container .container {
+    width: 100%;
+}
+
+.center-align {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    width: 100%;
+    column-gap: 0.5rem;
+    row-gap: 0.5rem;
+}
+
+.no-data {
+    color: #008798;
+    font-size: 1.75rem;
+    font-style: italic;
+    padding-top: 2rem;
+    text-align: center;
+}

@@ -23,6 +23,14 @@ class jenkinsService{
             return this._executeUninstallNetworkWithDefaultConfiguration(jenkinsData, callback);
         }
 
+        if (jenkinsData.clusterOperation === "upgradeNetworkUsingDefaultConfiguration") {
+            return this._executeUpgradeNetworkWithDefaultConfiguration(jenkinsData, callback);
+        }
+
+        if (jenkinsData.clusterOperation === "retryInitiateNetworkWithDefaultConfiguration") {
+            return this._executeRetryInitiateNetworkWithDefaultConfiguration(jenkinsData, callback);
+        }
+
         const err = `Invalid cluster operation requested: ${jenkinsData.clusterOperation}`;
         console.log(err);
         callback({
@@ -236,6 +244,94 @@ class jenkinsService{
 
             this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
         });
+
+        console.log('releasing the request');
+        callback(undefined, {
+            clusterOperation: jenkinsData.clusterOperation,
+            status: 'Operation started'
+        });
+    }
+
+    _executeUpgradeNetworkWithDefaultConfiguration(jenkinsData, callback) {
+        console.log(jenkinsData);
+        const blockchainNetwork = jenkinsData.blockchainNetwork;
+        const pipelines = ["clean_usecase_installation", "install_usecase_installation"];
+        const clusterOperationResult = {
+            clusterOperation: 'upgradeNetworkUsingDefaultConfiguration',
+            blockchainNetwork: blockchainNetwork,
+            pipelines: []
+        }
+
+        const jenkinsServer = this._getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
+
+        const __execPipeline = (pipelinesList, clusterResult) => {
+            if (!pipelinesList.length) {
+                return this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+            }
+
+            const pipeline = pipelinesList.shift();
+            const pipelineParameters = jenkinsData.parametrizedPipeline;
+            this._executeParametrizedPipeline(jenkinsServer, pipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
+                if (err) {
+                    return this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                }
+
+                __execPipeline(pipelinesList, clusterResult);
+            });
+        };
+
+        __execPipeline(pipelines);
+
+        console.log('releasing the request');
+        callback(undefined, {
+            clusterOperation: jenkinsData.clusterOperation,
+            status: 'Operation started'
+        });
+    }
+
+    _executeRetryInitiateNetworkWithDefaultConfiguration(jenkinsData, callback) {
+        console.log(jenkinsData);
+        const blockchainNetwork = jenkinsData.blockchainNetwork;
+        const pipelines = ["clean_usecase_installation", "install_usecase_installation"];
+        const clusterOperationResult = {
+            clusterOperation: 'retryInitiateNetworkWithDefaultConfiguration',
+            blockchainNetwork: blockchainNetwork,
+            pipelines: []
+        }
+
+        const jenkinsServer = this._getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
+
+        const __execPipeline = (pipelinesList, clusterResult) => {
+            if (!pipelinesList.length) {
+                return this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+            }
+
+            const pipeline = pipelinesList.shift();
+            const pipelineParameters = jenkinsData.parametrizedPipeline;
+            this._executeParametrizedPipeline(jenkinsServer, pipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
+                if (err) {
+                    return this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                }
+
+                __execPipeline(pipelinesList, clusterResult);
+            });
+        };
+
+        __execPipeline(pipelines);
 
         console.log('releasing the request');
         callback(undefined, {

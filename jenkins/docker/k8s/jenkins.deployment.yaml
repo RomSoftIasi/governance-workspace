@@ -36,7 +36,7 @@ spec:
                ls;
                cd /var/jenkins-backup;
                echo \"Copy data to Jenkins home\";
-               cp -r . /var/jenkins_home;
+               cp -a . /var/jenkins_home;
                cd /var/jenkins_home;
                echo \"Jenkins home data content\";
                ls;

@@ -15,12 +15,12 @@ class jenkinsService{
             return this._executeInitiateNetwork(jenkinsData, callback);
         }
 
-        if (jenkinsData.clusterOperation === "initiateNetworkWithParameters") {
-            return this._executeInitiateNetworkWithParameters(jenkinsData, callback);
+        if (jenkinsData.clusterOperation === "initiateNetworkWithDefaultConfiguration") {
+            return this._executeInitiateNetworkWithDefaultConfiguration(jenkinsData, callback);
         }
 
-        if (jenkinsData.clusterOperation === "removeNetworkWithParameters") {
-            return this._executeRemoveNetworkWithParameters(jenkinsData, callback);
+        if (jenkinsData.clusterOperation === "uninstallNetworkWithDefaultConfiguration") {
+            return this._executeUninstallNetworkWithDefaultConfiguration(jenkinsData, callback);
         }
 
         const err = `Invalid cluster operation requested: ${jenkinsData.clusterOperation}`;
@@ -174,11 +174,11 @@ class jenkinsService{
         });
     }
 
-    _executeInitiateNetworkWithParameters (jenkinsData, callback) {
+    _executeInitiateNetworkWithDefaultConfiguration (jenkinsData, callback) {
         console.log(jenkinsData);
         const blockchainNetwork = jenkinsData.blockchainNetwork;
         const clusterOperationResult = {
-            clusterOperation: 'initiateNetworkWithParameters',
+            clusterOperation: 'initiateNetworkWithDefaultConfiguration',
             blockchainNetwork: blockchainNetwork,
             pipelines: []
         }
@@ -209,11 +209,11 @@ class jenkinsService{
         });
     }
 
-    _executeRemoveNetworkWithParameters (jenkinsData, callback) {
+    _executeUninstallNetworkWithDefaultConfiguration (jenkinsData, callback) {
         console.log(jenkinsData);
         const blockchainNetwork = jenkinsData.blockchainNetwork;
         const clusterOperationResult = {
-            clusterOperation: 'removeNetworkWithParameters',
+            clusterOperation: 'uninstallNetworkWithDefaultConfiguration',
             blockchainNetwork: blockchainNetwork,
             pipelines: []
         }

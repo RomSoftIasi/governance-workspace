@@ -37,14 +37,17 @@ spec:
         git config --global user.name \"${GITHUB_USER}\";
         git config --global user.email \"${GITHUB_USER_EMAIL}\";
 
-        git push origin --delete $(date +%Y%m%d) &>/dev/null || true;
+
 
         mkdir $(date +%Y%m%d);
         cp -r /var/jenkins_home ./$(date +%Y%m%d);
-        rm -rf ./$(date +%Y%m%d)/jenkins_home/caches
+        rm -rf ./$(date +%Y%m%d)/jenkins_home/caches;
+        git remote add origin https://${GITHUB_USER}:${GITHUB_ACCESS_TOKEN}@github.com/${GITHUB_USER}/jenkins-backup.git;
+
+        git push origin --delete $(date +%Y%m%d) &>/dev/null || true;
+
         git add ./;
         git commit -m \"add jenkins data\";
-        git remote add origin https://${GITHUB_USER}:${GITHUB_ACCESS_TOKEN}@github.com/${GITHUB_USER}/jenkins-backup.git;
         git checkout -b $(date +%Y%m%d);
         git push --set-upstream origin $(date +%Y%m%d);
 

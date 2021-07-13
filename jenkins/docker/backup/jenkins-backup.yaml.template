@@ -38,7 +38,7 @@ spec:
 
         mkdir $(date +%Y%m%d);
         cp -r /var/jenkins_home ./$(date +%Y%m%d);
-
+        rm -rf ./$(date +%Y%m%d)/jenkins_home/caches
         git add ./;
         git commit -m \"add jenkins data\";
         git remote add origin https://${GITHUB_USER}:${GITHUB_ACCESS_TOKEN}@github.com/${GITHUB_USER}/jenkins-backup.git;

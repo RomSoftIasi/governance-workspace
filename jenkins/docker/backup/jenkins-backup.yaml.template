@@ -4,6 +4,7 @@ metadata:
   name: jenkins-backup
   namespace: jenkins
 spec:
+  restartPolicy: Never
   affinity:
     podAffinity:
       requiredDuringSchedulingIgnoredDuringExecution:

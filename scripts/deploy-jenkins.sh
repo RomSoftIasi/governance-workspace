@@ -4,6 +4,8 @@ echo 'Create namespaces'
 kubectl create namespace jenkins
 
 
+./scripts/configure_aws.sh
+
 echo 'Define RBAC''s'
 kubectl apply -f ./jenkins/rbac
 
@@ -16,3 +18,5 @@ kubectl apply -f ./jenkins/docker/k8s/jenkins.service.yaml
 kubectl apply -f ./jenkins/docker/k8s/ref-jenkins-service.yaml
 
 kubectl get pods -n jenkins
+
+

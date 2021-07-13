@@ -53,6 +53,7 @@ spec:
         git checkout -b $(date +%Y%m%d);
         git push --set-upstream origin $(date +%Y%m%d);
 
+        sleep 50m;
         "
       volumeMounts:
         - mountPath: /var/jenkins_home

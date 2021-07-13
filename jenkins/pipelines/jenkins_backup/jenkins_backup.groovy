@@ -37,14 +37,14 @@
                         stage ('Deploy jenkins backup container'){
                             container('kubectl'){
                                 sh 'cd governance-workspace/jenkins/docker/backup && kubectl apply -f . -n jenkins'
-                                sh 'sleep 5m'
+                                //sh 'sleep 5m'
                             }
                         }
 
 
                         stage ('Backup finished. Clean up'){
                             container('kubectl'){
-                                sh 'cd governance-workspace/jenkins/docker/backup && kubectl delete -f . -n jenkins'
+                               // sh 'cd governance-workspace/jenkins/docker/backup && kubectl delete -f . -n jenkins'
                             }
                         }
 

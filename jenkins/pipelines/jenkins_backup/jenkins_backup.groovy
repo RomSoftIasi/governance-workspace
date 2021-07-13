@@ -13,6 +13,19 @@
 
                       node(POD_LABEL){
 
+
+                        try{
+                            stage ('Clean'){
+                                container ('kubectl'){
+                                    sh 'kubectl delete pod jenkins-backup -n jenkins'
+                                }
+                            }
+                        }
+                        catch (err){
+
+                        }
+
+
                         stage ('Repository cloning'){
                             container('node'){
                                     sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
@@ -24,15 +37,14 @@
                         stage ('Deploy jenkins backup container'){
                             container('kubectl'){
                                 sh 'cd governance-workspace/jenkins/docker/backup && kubectl apply -f . -n jenkins'
-                                sh 'TODO : wait until container is completed'
-                                sh 'sleep 10m'
+                                sh 'sleep 5m'
                             }
                         }
 
 
                         stage ('Backup finished. Clean up'){
                             container('kubectl'){
-//                                sh 'cd governance-workspace/jenkins/docker/backup && kubectl delete -f . -n jenkins'
+                                sh 'cd governance-workspace/jenkins/docker/backup && kubectl delete -f . -n jenkins'
                             }
                         }
 

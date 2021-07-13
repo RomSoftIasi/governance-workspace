@@ -10,7 +10,6 @@ apihub-root/internal-volume/domains
 apihub-root/external-volume/domains
 menu-wallet-prototype
 governance-wallet-prototype
-bpd-ssapp
 dossier-explorer-wallet-prototype
 dossier-explorer-ssapp
 env.json.devel

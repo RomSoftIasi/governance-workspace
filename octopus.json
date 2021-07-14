@@ -54,32 +54,12 @@
             }]
         },
         {
-            "name": "menu-wallet-prototype",
-            "src": "http://github.com/privatesky/menu-wallet-prototype.git",
+            "name": "blue-fluorite-theme-install",
+            "src": "",
             "actions": [{
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd menu-wallet-prototype && npm install"
-                }
-            ]
-        },
-        {
-            "name": "apihub-root/bpd-wallet/loader",
-            "src": "http://github.com/privatesky/trust-loader.git",
-            "actions": [{
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/bpd-wallet/loader && npm install"
-                }
-            ]
+                "type": "execute",
+                "cmd": "cd themes/blue-fluorite-theme && npm install"
+            }]
         },
         {
             "name": "governance-wallet-prototype",
@@ -135,6 +115,21 @@
             ]
         },
         {
+            "name": "apihub-root/dsu-explorer/loader",
+            "src": "http://github.com/privatesky/trust-loader.git",
+            "actions": [
+                {
+                    "type": "smartClone",
+                    "target": ".",
+                    "collectLog": false
+                },
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
+                }
+            ]
+        },
+        {
             "name": "dossier-explorer-wallet-prototype",
             "src": "https://github.com/PrivateSky/dossier-explorer-wallet-prototype.git",
             "actions": [{
@@ -183,14 +178,6 @@
             "src": "",
             "actions": [{
                 "type": "execute",
-                "cmd": "cd themes/blue-fluorite-theme && npm install"
-            }]
-        },
-        {
-            "name": "blue-fluorite-theme-wallet-build",
-            "src": "",
-            "actions": [{
-                "type": "execute",
                 "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
             }]
         },
@@ -229,65 +216,6 @@
                 {
                     "type": "execute",
                     "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
-                }
-            ]
-        },
-        {
-            "name": "bpd-wallet_bind_to_bpd-ssapp",
-            "src": "",
-            "actions": [{
-                    "type": "execute",
-                    "cmd": "cd bpd-ssapp && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./bpd-ssapp/seed",
-                    "target": "./apihub-root/bpd-wallet/apps-patch/bpd-ssapp/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/bpd-wallet/apps-patch/bpd-ssapp/readme"
-                }
-            ]
-        },
-        {
-            "name": "bpd-wallet_bind_to_menu-wallet-prototype",
-            "src": "",
-            "actions": [{
-                    "type": "execute",
-                    "cmd": "cd menu-wallet-prototype && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./menu-wallet-prototype/seed",
-                    "target": "./apihub-root/bpd-wallet/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "bpd-wallet_bind_to_dossier-explorer-ssapp",
-            "src": "",
-            "actions": [{
-                    "type": "execute",
-                    "cmd": "cd dossier-explorer-ssapp && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./dossier-explorer-ssapp/seed",
-                    "target": "./apihub-root/bpd-wallet/apps-patch/dossier-explorer-ssapp/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/bpd-wallet/apps-patch/dossier-explorer-ssapp/readme"
                 }
             ]
         },
@@ -344,10 +272,7 @@
         },
         {
             "name": "copy-bundles",
-            "actions": [{
-                    "type": "execute",
-                    "cmd": "cd apihub-root/bpd-wallet/loader && npm install"
-                },
+            "actions": [
                 {
                     "type": "execute",
                     "cmd": "cd apihub-root/governance-wallet/loader && npm install"

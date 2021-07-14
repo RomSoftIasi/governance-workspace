@@ -11,3 +11,7 @@
     [Freeze]
     environment update
     environment update
+    Fix navigation from menu and ssapp components (issue #269)
+    [Freeze]
+    Included bricksledger tests.
+    Fix navigation from menu and ssapp components (issue #269)

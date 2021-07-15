@@ -39,26 +39,17 @@
         },
         {
             "name": "privatesky",
-            "src": "http://github.com/privatesky/privatesky.git",
+            "src": "https://github.com/PrivateSky/psk-release.git",
             "actions": [
                 {
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "ae35b138759c900e35c67a209551b2d5a2135302"
+                    "commit": "14ac8df06276d5788f1ac93c19d5370969208078"
                 },
                 {
                     "type": "execute",
                     "cmd": "cd privatesky && npm install"
-                }
-            ]
-        },
-        {
-            "name": "build privatesky",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm run build"
                 }
             ]
         },
@@ -105,7 +96,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "7315d4971c0ce9f4e929b12b93fb02baa2ade861"
+                    "commit": "5216d97f2e976788e22856f8f7759523168592ed"
                 },
                 {
                     "type": "execute",
@@ -121,7 +112,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "9af1e61e6441b7c575464ce3f174575aea846bca"
+                    "commit": "42de078da026221cd54935cd25baeb93eeaf5efb"
                 },
                 {
                     "type": "execute",
@@ -137,7 +128,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "7315d4971c0ce9f4e929b12b93fb02baa2ade861"
+                    "commit": "5216d97f2e976788e22856f8f7759523168592ed"
                 },
                 {
                     "type": "execute",

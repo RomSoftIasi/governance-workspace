@@ -12,7 +12,6 @@ class WalletService {
                 callback(null, keySSI);
             })
             .catch((err) => {
-                console.error(`Failed to load ${appName} app seed from ${path}`, err);
                 callback(err);
             });
     }
@@ -24,7 +23,6 @@ class WalletService {
                 callback(null, userDetails);
             })
             .catch((err) => {
-                console.error(`Failed to load user-details`, err);
                 callback(err);
             });
     }

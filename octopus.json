@@ -34,7 +34,7 @@
         },
         {
             "name": "privatesky",
-            "src": "http://github.com/privatesky/privatesky.git",
+            "src": "https://github.com/PrivateSky/psk-release.git",
             "actions": [{
                     "type": "smartClone",
                     "target": ".",
@@ -45,13 +45,6 @@
                     "cmd": "cd privatesky && npm install"
                 }
             ]
-        },
-        {
-            "name": "build privatesky",
-            "actions": [{
-                "type": "execute",
-                "cmd": "cd privatesky && npm run build"
-            }]
         },
         {
             "name": "blue-fluorite-theme-install",

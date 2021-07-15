@@ -6,7 +6,7 @@ function Deploy(server) {
     const operationListener = require('./strategies/operationsListeners')(jenkinsOperationStatus);
 
 
-    const { responseModifierMiddleware, requestBodyJSONMiddleware } = require('../privatesky/modules/apihub/utils/middlewares');
+    const { responseModifierMiddleware, requestBodyJSONMiddleware } = require('./middlewares');
 
     server.use(`/controlContainer/*`, responseModifierMiddleware);
 

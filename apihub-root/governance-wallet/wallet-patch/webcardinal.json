@@ -35,7 +35,7 @@
 			"name": "Logout",
 			"path": "/logout",
 			"tag": "logout",
-			"src": "./home.html"
+			"src": "./logout.html"
 		}
 	],
 	"pagesFallback": {

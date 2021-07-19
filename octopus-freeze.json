@@ -45,7 +45,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "14ac8df06276d5788f1ac93c19d5370969208078"
+                    "commit": "c2dd61c9c9a93472429cdfd18a15e170dc0466ef"
                 },
                 {
                     "type": "execute",
@@ -96,7 +96,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "5216d97f2e976788e22856f8f7759523168592ed"
+                    "commit": "84e1ee30f002fbc860473965e2fa47f78656876d"
                 },
                 {
                     "type": "execute",
@@ -128,7 +128,7 @@
                     "type": "smartClone",
                     "target": ".",
                     "collectLog": false,
-                    "commit": "5216d97f2e976788e22856f8f7759523168592ed"
+                    "commit": "84e1ee30f002fbc860473965e2fa47f78656876d"
                 },
                 {
                     "type": "execute",
@@ -295,6 +295,10 @@
         {
             "name": "copy-bundles",
             "actions": [
+                {
+                    "type": "execute",
+                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
+                },
                 {
                     "type": "execute",
                     "cmd": "cd apihub-root/governance-wallet/loader && npm install"

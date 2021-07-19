@@ -4,7 +4,7 @@ export default  {
   "agent": "browser",
   "system":   "any",
   "browser":  "any",
-  "mode":  "autologin",
+  "mode":  "secure",
   "domain":  "vault",
   "sw": true,
   "pwa": true,

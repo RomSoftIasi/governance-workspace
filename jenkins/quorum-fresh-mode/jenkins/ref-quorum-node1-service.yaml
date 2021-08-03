@@ -8,3 +8,17 @@ spec:
   externalName: quorum-node1.default.svc.cluster.local
   ports:
     - port: 8545
+
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: ref-eth-adapter
+  namespace: jenkins
+spec:
+  type: ExternalName
+  externalName: ethadapter-service.default.svc.cluster.local
+  ports:
+    - port: 3000

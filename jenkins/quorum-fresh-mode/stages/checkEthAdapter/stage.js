@@ -2,12 +2,12 @@ function check(){
     const http = require("http");
 
     const hostname="ref-eth-adapter";
-    //const port=3000;
+    const port=3000;
     const path="/check";
     const method="GET";
     const options = {
         hostname,
-      //  port,
+        port,
         path,
         method,
         headers : {

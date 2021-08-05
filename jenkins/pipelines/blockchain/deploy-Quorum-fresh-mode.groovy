@@ -1,6 +1,6 @@
 
-podTemplate(serviceAccount: 'jdevmns',namespace: 'jenkins',containers: [
-  containerTemplate(name: 'kubectl', image: 'mabdockerid/pharma-kubectl:latest', command: 'cat', ttyEnabled: true)
+podTemplate(serviceAccount: 'jdefaultmns',namespace: 'jenkins',containers: [
+  containerTemplate(name: 'kubectl', image: 'public.ecr.aws/n4q1q0z2/pharmaledger-kubectl-jenkins-agent:1.0', command: 'cat', ttyEnabled: true)
 ],
 volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
@@ -28,21 +28,21 @@ volumes: [
 
         container('kubectl') {
             stage('Deploy blockchain configuration'){
-                sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl apply -f ./k8s -n dev'
+                sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl apply -f ./k8s -n default'
             }
             stage('Deploy blockchain nodes'){
-                sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl apply -f ./k8s/deployments -n dev'
+                sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl apply -f ./k8s/deployments -n default'
             }
             stage('Deploy blockchain node connection'){
                 sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl apply -f ./jenkins -n jenkins'
             }
             stage('Get deployment status'){
-                sh 'cd k8s-wait-for && chmod 755 ./wait_for.sh && ./wait_for.sh pod -lname=quorum-node1-deployment -n dev'
-                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node2-deployment -n dev'
-                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node3-deployment -n dev'
-                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node4-deployment -n dev'
+                sh 'cd k8s-wait-for && chmod 755 ./wait_for.sh && ./wait_for.sh pod -lname=quorum-node1-deployment -n default'
+                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node2-deployment -n default'
+                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node3-deployment -n default'
+                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node4-deployment -n default'
                 sh 'sleep 30s'
-                sh "kubectl get pods -n dev"
+                sh "kubectl get pods"
             }
         }
 

@@ -9,41 +9,37 @@ volumes: [
 ]){
   node(label) {
     stage('Clean blockchain network') {
-        stage('Get quorum deployment'){
-            sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
-        }
+
 
         container('kubectl') {
         try{
-             stage('Remove blockchain nodes'){
-                 sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s/deployments -n default'
+             stage('Remove pods'){
+                 sh 'kubectl delete pod ethadapter -n default'
             }
          } catch (err){
             unstable (message: "${STAGE_NAME} is unstable.")
          }
+
          try{
-             stage('Remove blockchain configuration'){
-                 sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s -n default'
-             }
+             stage('Remove services'){
+                 sh 'kubectl delete service ethadapter-service -n default'
+            }
          } catch (err){
             unstable (message: "${STAGE_NAME} is unstable.")
          }
+
          try{
-             stage('Remove blockchain node connection'){
-                 sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./jenkins -n jenkins'
-             }
+             stage('Remove configmaps'){
+                 sh 'kubectl delete configmap ethadapter-configmap -n default'
+            }
          } catch (err){
             unstable (message: "${STAGE_NAME} is unstable.")
          }
-         try{
-             stage('Remove kubernetes secrets'){
-                sh ' kubectl delete secret eth-adapter-config -n default'
-             }
-         } catch (err){
-            unstable (message: "${STAGE_NAME} is unstable.")
-         }
+
          stage('Get deployment status'){
              sh "kubectl get pods -n default"
+             sh "kubectl get services -n default"
+             sh "kubectl get configmap -n default"
          }
         }
     }

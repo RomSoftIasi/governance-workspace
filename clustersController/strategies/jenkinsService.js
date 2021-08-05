@@ -11,6 +11,10 @@ class jenkinsService{
             return this._executeInitiateNetworkUsingBlockchain(jenkinsData, callback);
         }
 
+        if (jenkinsData.clusterOperation === "uninstallNetworkUsingBlockchain") {
+            return this._executeUninstallNetworkUsingBlockchain(jenkinsData, callback);
+        }
+
         if (jenkinsData.clusterOperation === "initiateNetworkWithDefaultConfiguration") {
             return this._executeInitiateNetworkWithDefaultConfiguration(jenkinsData, callback);
         }
@@ -84,8 +88,11 @@ class jenkinsService{
         console.log('executeClusterOperation started for : ',jenkinsData.clusterOperation);
         const pipelines = [];
         const blockchainNetwork = jenkinsData.blockchainNetwork;
+        const pipelineParameters = jenkinsData.parametrizedPipeline;
+
         pipelines.push('deploy-Quorum-fresh-mode');
         pipelines.push('deploy-eth-adaptor');
+        pipelines.push('deploy_usecase_using_blockchain');
 
         console.log('Planned pipelines',pipelines);
         const clusterOperationResult = {
@@ -134,7 +141,14 @@ class jenkinsService{
                         return this._execPipelineErrorSignal(err, clusterResult,currentPipeline,blockchainNetwork);
                     }
 
-                    this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+                    currentPipeline = pipelines.shift();
+                    this._executeParametrizedPipeline(jenkinsServer, currentPipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
+                        if (err) {
+                            return this._execPipelineErrorSignal(err, clusterResult, currentPipeline, blockchainNetwork);
+                        }
+
+                        this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+                    });
                 });
             });
         });
@@ -146,6 +160,60 @@ class jenkinsService{
         });
     }
 
+    _executeUninstallNetworkUsingBlockchain (jenkinsData, callback) {
+        console.log(jenkinsData);
+        const blockchainNetwork = jenkinsData.blockchainNetwork;
+        const clusterOperationResult = {
+            clusterOperation: 'uninstallNetworkUsingBlockchain',
+            blockchainNetwork: blockchainNetwork,
+            pipelines: []
+        }
+
+        const jenkinsServer = this._getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
+        const pipelineParameters = jenkinsData.parametrizedPipeline;
+        const pipelines = [];
+
+        pipelines.push('clean-eth-adaptor');
+        pipelines.push('cleanup-Quorum-fresh-mode');
+        pipelines.push('clean_usecase_using_blockchain');
+
+        let pipeline = pipelines.shift();
+
+        this._executePipeline(jenkinsServer, pipeline, clusterOperationResult, (err, clusterResult, executionResultData) => {
+            if (err) {
+                return this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+            }
+
+            pipeline = pipelines.shift();
+            this._executePipeline(jenkinsServer, pipeline, clusterOperationResult, (err, clusterResult, executionResultData) => {
+                if (err) {
+                    return this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                }
+
+                pipeline = pipelines.shift();
+                this._executeParametrizedPipeline(jenkinsServer, pipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
+                    if (err) {
+                        return this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                    }
+
+                    this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+                });
+            });
+        });
+
+        console.log('releasing the request');
+        callback(undefined, {
+            clusterOperation: jenkinsData.clusterOperation,
+            status: 'Operation started'
+        });
+    }
 
 
     _executeInitiateNetworkWithDefaultConfiguration (jenkinsData, callback) {

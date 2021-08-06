@@ -33,7 +33,7 @@ podTemplate(
                         stage ('Customize build'){
                             container('node'){
                                 stage ('Configure config-map'){
-                                    sh 'cd $workspace/docker/k8s/templates && sed "s/%domain%/$domain/g" configmap.yaml.template | sed "s/%subdomain%/$subdomain/g" | sed "s/%vaultdomain%/$vaultdomain/g" > configmap.yaml'
+                                    sh 'cd $workspace/docker/k8s/templates && sed "s/%domain%/$domain/g" configmap.yaml.template | sed "s/%bdns-entries%//g" | sed "s/%subdomain%/$subdomain/g" | sed "s/%vaultdomain%/$vaultdomain/g" > configmap.yaml'
                                     sh 'cat $workspace/docker/k8s/templates/configmap.yaml'
 
                                     sh 'cd $workspace/docker/k8s/templates && sed "s/%domain%/$domain/g" domains-configmap.yaml.template | sed "s/%subdomain%/$subdomain/g" | sed "s/%vaultdomain%/$vaultdomain/g" | sed "s/%anchoring%/FS/g" | sed "s/%anchoringEndPoint%/\\"enableBricksLedger\\": false/g" > domains-configmap.yaml'

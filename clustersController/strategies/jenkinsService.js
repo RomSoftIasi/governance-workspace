@@ -11,12 +11,12 @@ class jenkinsService{
             return this._executeInitiateNetworkUsingBlockchain(jenkinsData, callback);
         }
 
-        if (jenkinsData.clusterOperation === "uninstallNetworkUsingBlockchain") {
-            return this._executeUninstallNetworkUsingBlockchain(jenkinsData, callback);
-        }
-
         if (jenkinsData.clusterOperation === "initiateNetworkWithDefaultConfiguration") {
             return this._executeInitiateNetworkWithDefaultConfiguration(jenkinsData, callback);
+        }
+
+        if (jenkinsData.clusterOperation === "uninstallNetworkUsingBlockchain") {
+            return this._executeUninstallNetworkUsingBlockchain(jenkinsData, callback);
         }
 
         if (jenkinsData.clusterOperation === "uninstallNetworkWithDefaultConfiguration") {
@@ -27,8 +27,16 @@ class jenkinsService{
             return this._executeUpgradeNetworkWithDefaultConfiguration(jenkinsData, callback);
         }
 
+        if (jenkinsData.clusterOperation === "upgradeNetworkUsingBlockchain") {
+            return this._executeUpgradeNetworkWithBlockchain(jenkinsData, callback);
+        }
+
         if (jenkinsData.clusterOperation === "retryInitiateNetworkWithDefaultConfiguration") {
             return this._executeRetryInitiateNetworkWithDefaultConfiguration(jenkinsData, callback);
+        }
+
+        if (jenkinsData.clusterOperation === "retryInitiateNetworkWithBlockchain") {
+            return this._executeRetryInitiateNetworkWithBlockchain(jenkinsData, callback);
         }
 
         const err = `Invalid cluster operation requested: ${jenkinsData.clusterOperation}`;
@@ -83,20 +91,12 @@ class jenkinsService{
     }
     // end service access points
 
-
     _executeInitiateNetworkUsingBlockchain(jenkinsData, callback){
-        console.log('executeClusterOperation started for : ',jenkinsData.clusterOperation);
-        const pipelines = [];
         const blockchainNetwork = jenkinsData.blockchainNetwork;
-        const pipelineParameters = jenkinsData.parametrizedPipeline;
 
-        pipelines.push('deploy-Quorum-fresh-mode');
-        pipelines.push('deploy-eth-adaptor');
-        pipelines.push('deploy_usecase_using_blockchain');
 
-        console.log('Planned pipelines',pipelines);
         const clusterOperationResult = {
-            clusterOperation : 'initiateNetwork',
+            clusterOperation : jenkinsData.clusterOperation,
             blockchainNetwork: jenkinsData.blockchainNetwork,
             pipelines:[]
         }
@@ -109,10 +109,39 @@ class jenkinsService{
             });
         }
 
+        this._executeInitiateNetworkUsingBlockchainInternal(jenkinsServer,blockchainNetwork,clusterOperationResult, jenkinsData);
+
+        console.log('releasing the request');
+        callback(undefined,{
+            clusterOperation : jenkinsData.clusterOperation,
+            status: 'Operation started'
+        });
+    }
+
+    _executeInitiateNetworkUsingBlockchainInternal(jenkinsServer,blockchainNetwork,clusterOperationResult, jenkinsData, pipelineCallback){
+        if (!pipelineCallback){
+            pipelineCallback = (err, clusterResult) =>{
+                if (err){
+                    return;
+                }
+                this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+            };
+        }
+
+        console.log('executeClusterOperation started for : ',jenkinsData.clusterOperation);
+
+        const pipelineParameters = jenkinsData.parametrizedPipeline;
+        const pipelines = [];
+        pipelines.push('deploy-Quorum-fresh-mode');
+        pipelines.push('deploy-eth-adaptor');
+        pipelines.push('deploy_usecase_using_blockchain');
+        console.log('Planned pipelines',pipelines);
+
         let currentPipeline = pipelines.shift();
         this._executePipeline(jenkinsServer, currentPipeline, clusterOperationResult, (err, clusterResult, executionResultData) =>{
             if (err) {
-                return this._execPipelineErrorSignal(err, clusterResult, currentPipeline, blockchainNetwork);
+                this._execPipelineErrorSignal(err, clusterResult, currentPipeline, blockchainNetwork);
+                return pipelineCallback(err);
             }
 
             const downloadJsonData = {
@@ -123,7 +152,8 @@ class jenkinsService{
             };
             this._downloadArtefactAsText(downloadJsonData, (err, data) => {
                 if (err){
-                    return this._execPipelineErrorSignal(err, clusterResult,currentPipeline,blockchainNetwork);
+                    this._execPipelineErrorSignal(err, clusterResult,currentPipeline,blockchainNetwork);
+                    return pipelineCallback(err);
                 }
                 clusterResult.EthAdapterJoiningJSON = data;
                 const buffer = new Buffer(data);
@@ -138,33 +168,35 @@ class jenkinsService{
 
                 this._executePipelineWithFileParameter(jenkinsServer, currentPipeline,blockchainNetwork, clusterResult, formDataFile,(err, clusterResult ) => {
                     if (err) {
-                        return this._execPipelineErrorSignal(err, clusterResult,currentPipeline,blockchainNetwork);
+                        this._execPipelineErrorSignal(err, clusterResult,currentPipeline,blockchainNetwork);
+                        return pipelineCallback(err);
                     }
 
                     currentPipeline = pipelines.shift();
                     this._executeParametrizedPipeline(jenkinsServer, currentPipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
                         if (err) {
-                            return this._execPipelineErrorSignal(err, clusterResult, currentPipeline, blockchainNetwork);
+                            this._execPipelineErrorSignal(err, clusterResult, currentPipeline, blockchainNetwork);
+                            return pipelineCallback(err);
                         }
 
-                        this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+                        return pipelineCallback(undefined, clusterResult);
                     });
                 });
             });
         });
 
-        console.log('releasing the request');
-        callback(undefined,{
-            clusterOperation : jenkinsData.clusterOperation,
-            status: 'Operation started'
-        });
+
     }
 
-    _executeUninstallNetworkUsingBlockchain (jenkinsData, callback) {
+    _executeUpgradeNetworkWithBlockchain(jenkinsData, callback){
+        //currently they are the same. full uninstall and fresh install
+        this._executeRetryInitiateNetworkWithBlockchain(jenkinsData, callback);
+    }
+    _executeRetryInitiateNetworkWithBlockchain(jenkinsData, callback){
         console.log(jenkinsData);
         const blockchainNetwork = jenkinsData.blockchainNetwork;
         const clusterOperationResult = {
-            clusterOperation: 'uninstallNetworkUsingBlockchain',
+            clusterOperation: jenkinsData.clusterOperation,
             blockchainNetwork: blockchainNetwork,
             pipelines: []
         }
@@ -177,6 +209,64 @@ class jenkinsService{
                 jenkinsData: jenkinsData
             });
         }
+
+        this._executeUninstallNetworkUsingBlockchainInternal(jenkinsServer,clusterOperationResult,blockchainNetwork, jenkinsData, (err, clusterResult) =>{
+            if (err){
+                // failed to execute the pipeline and the execution was concluded
+                return;
+            }
+
+            this._executeInitiateNetworkUsingBlockchainInternal(jenkinsServer,blockchainNetwork,clusterOperationResult, jenkinsData, (err, clusterResult) => {
+                if (err){
+                    // failed to execute the pipeline and the execution was concluded
+                    return;
+                }
+
+                this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+            });
+        });
+
+        console.log('releasing the request');
+        callback(undefined, {
+            clusterOperation: jenkinsData.clusterOperation,
+            status: 'Operation started'
+        });
+    }
+
+    _executeUninstallNetworkUsingBlockchain (jenkinsData, callback){
+        console.log(jenkinsData);
+        const blockchainNetwork = jenkinsData.blockchainNetwork;
+        const clusterOperationResult = {
+            clusterOperation: jenkinsData.clusterOperation,
+            blockchainNetwork: blockchainNetwork,
+            pipelines: []
+        }
+
+        const jenkinsServer = this._getJenkinsServer(jenkinsData);
+        if (jenkinsServer.err) {
+            return callback({
+                errType: "internalError",
+                errMessage: jenkinsServer.err,
+                jenkinsData: jenkinsData
+            });
+        }
+
+        this._executeUninstallNetworkUsingBlockchainInternal(jenkinsServer,clusterOperationResult,blockchainNetwork, jenkinsData);
+
+        console.log('releasing the request');
+        callback(undefined, {
+            clusterOperation: jenkinsData.clusterOperation,
+            status: 'Operation started'
+        });
+    }
+    _executeUninstallNetworkUsingBlockchainInternal (jenkinsServer,clusterOperationResult,blockchainNetwork, jenkinsData, pipelineCallback) {
+        if (!pipelineCallback){
+            pipelineCallback = (err, clusterResult) =>{
+                if (err) { return;}
+                this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+            };
+        }
+
         const pipelineParameters = jenkinsData.parametrizedPipeline;
         const pipelines = [];
 
@@ -188,31 +278,30 @@ class jenkinsService{
 
         this._executePipeline(jenkinsServer, pipeline, clusterOperationResult, (err, clusterResult, executionResultData) => {
             if (err) {
-                return this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                return pipelineCallback(err);
             }
 
             pipeline = pipelines.shift();
             this._executePipeline(jenkinsServer, pipeline, clusterOperationResult, (err, clusterResult, executionResultData) => {
                 if (err) {
-                    return this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                    this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                    return pipelineCallback(err);
                 }
 
                 pipeline = pipelines.shift();
                 this._executeParametrizedPipeline(jenkinsServer, pipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
                     if (err) {
-                        return this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                        this._execPipelineErrorSignal(err, clusterResult, pipeline, blockchainNetwork);
+                        return pipelineCallback(err);
                     }
 
-                    this._finishPipelinesExecution(clusterResult, jenkinsData, blockchainNetwork);
+                    pipelineCallback(undefined, clusterResult);
                 });
             });
         });
 
-        console.log('releasing the request');
-        callback(undefined, {
-            clusterOperation: jenkinsData.clusterOperation,
-            status: 'Operation started'
-        });
+
     }
 
 
@@ -220,7 +309,7 @@ class jenkinsService{
         console.log(jenkinsData);
         const blockchainNetwork = jenkinsData.blockchainNetwork;
         const clusterOperationResult = {
-            clusterOperation: 'initiateNetworkWithDefaultConfiguration',
+            clusterOperation: jenkinsData.clusterOperation,
             blockchainNetwork: blockchainNetwork,
             pipelines: []
         }
@@ -255,7 +344,7 @@ class jenkinsService{
         console.log(jenkinsData);
         const blockchainNetwork = jenkinsData.blockchainNetwork;
         const clusterOperationResult = {
-            clusterOperation: 'uninstallNetworkWithDefaultConfiguration',
+            clusterOperation: jenkinsData.clusterOperation,
             blockchainNetwork: blockchainNetwork,
             pipelines: []
         }
@@ -289,9 +378,12 @@ class jenkinsService{
     _executeUpgradeNetworkWithDefaultConfiguration(jenkinsData, callback) {
         console.log(jenkinsData);
         const blockchainNetwork = jenkinsData.blockchainNetwork;
-        const pipelines = ["clean_usecase_installation", "install_usecase_installation"];
+        const pipelines = [
+            "clean_usecase_installation",
+            "install_usecase_installation"
+        ];
         const clusterOperationResult = {
-            clusterOperation: 'upgradeNetworkUsingDefaultConfiguration',
+            clusterOperation: jenkinsData.clusterOperation,
             blockchainNetwork: blockchainNetwork,
             pipelines: []
         }
@@ -335,7 +427,7 @@ class jenkinsService{
         const blockchainNetwork = jenkinsData.blockchainNetwork;
         const pipelines = ["clean_usecase_installation", "install_usecase_installation"];
         const clusterOperationResult = {
-            clusterOperation: 'retryInitiateNetworkWithDefaultConfiguration',
+            clusterOperation: jenkinsData.clusterOperation,
             blockchainNetwork: blockchainNetwork,
             pipelines: []
         }

@@ -40,7 +40,6 @@ volumes: [
                 sh 'cd k8s-wait-for && chmod 755 ./wait_for.sh && ./wait_for.sh pod -lname=quorum-node1-deployment -n default'
                 sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node2-deployment -n default'
                 sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node3-deployment -n default'
-                sh 'cd k8s-wait-for && ./wait_for.sh pod -lname=quorum-node4-deployment -n default'
                 sh 'sleep 30s'
                 sh "kubectl get pods"
             }

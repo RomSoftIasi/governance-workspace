@@ -70,7 +70,7 @@ spec:
            touch $QUORUM_DATA_DIR/password.txt;
            NETWORK_ID=10
            RPC_APIS=admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum
-           args=\" --gcmode archive --istanbul.blockperiod 3 --syncmode full --mine --minerthreads 1 \";
+           args=\" --gcmode archive --istanbul.blockperiod 3 --syncmode full --mine --miner.threads 1 \";
            RPC_APIS=\"$RPC_APIS,istanbul\";
            /usr/local/bin/geth \
            --datadir $QUORUM_DATA_DIR \
@@ -83,12 +83,12 @@ spec:
            --emitcheckpoints \
            --port 30303 \
 
-           --http \
-           --httpaddr 0.0.0.0 \
-           --http.port 8545 \
-           --httpapi $RPC_APIS \
-           --http.corsdomain=\"*\"   \
-           --http.vhosts=ref-quorum-node1   \
+           --rpc \
+           --rpcaddr 0.0.0.0 \
+           --rpcport 8545 \
+           --rpcapi $RPC_APIS \
+           --rpccorsdomain=\"*\"   \
+           --rpcvhosts=ref-quorum-node1   \
 
             2>&1 | tee -a /etc/quorum/qdata/logs/quorum.log;"
           ports:

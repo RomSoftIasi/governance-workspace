@@ -86,6 +86,10 @@ function loopUntilBuildFinishes(jenkinsServer, buildNo, callback){
         if (data)
         {
             console.log('Pipeline execution finished. Build No :', buildNo);
+            if (data.result && data.result === 'ABORTED')
+            {
+                return callback(new Error('Pipeline was aborted!'));
+            }
             return callback(undefined, data);
         }
         setTimeout( () =>{

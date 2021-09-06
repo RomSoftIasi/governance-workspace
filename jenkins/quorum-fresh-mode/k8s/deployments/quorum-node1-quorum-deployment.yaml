@@ -82,14 +82,12 @@ spec:
            --networkid $NETWORK_ID \
            --emitcheckpoints \
            --port 30303 \
-
            --rpc \
            --rpcaddr 0.0.0.0 \
            --rpcport 8545 \
            --rpcapi $RPC_APIS \
-           --rpccorsdomain=\"*\"   \
-           --rpcvhosts=ref-quorum-node1   \
-
+           --rpccorsdomain=\"*\" \
+           --rpcvhosts=ref-quorum-node1 \
             2>&1 | tee -a /etc/quorum/qdata/logs/quorum.log;"
           ports:
             - containerPort: 8545

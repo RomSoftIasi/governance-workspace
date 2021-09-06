@@ -35,7 +35,7 @@ function sendTransaction(web3, transaction, callback) {
                 from: accountInfo.account,
                 data: transaction.encodeABI(),
                 gas : estimatedGas,
-                "chainId": 1101
+                "chainId": 10
             };
 
             web3.eth.accounts.signTransaction(options, accountInfo.privateKey).then(

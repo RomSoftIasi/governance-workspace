@@ -1,12 +1,8 @@
-
-    
-
-
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  
+
   name: quorum-node1
   labels:
     app: qubernetes
@@ -17,39 +13,19 @@ spec:
     app: qubernetes
     tier: backend
     name: quorum-node1-deployment
-  # NodePort | ClusterIP | LoadBalancer
-  type: ClusterIP
+  # NodePort | ClusterIP | Loadbalancer
+  type: NodePort
   ports:
-    - name: tm-manager 
-      protocol: TCP
-      port: 9001
-      targetPort: 9001
-    # default 8545
-    - name: tm-tessera-third-part
-      protocol: TCP
-      port: 9080
-      targetPort: 9080
-    # default 8545
-    - name: rpc-listener
-      protocol: TCP
-      port: 8545
-      targetPort: 8545
     - name: quorum-listener
       protocol: TCP
       port: 30303
       targetPort: 30303
-    - name: raft
-      protocol: TCP
-      targetPort: 50401
-      port: 50401
-    
-
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  
+
   name: quorum-node2
   labels:
     app: qubernetes
@@ -60,39 +36,19 @@ spec:
     app: qubernetes
     tier: backend
     name: quorum-node2-deployment
-  # NodePort | ClusterIP | LoadBalancer
-  type: ClusterIP
+  # NodePort | ClusterIP | Loadbalancer
+  type: NodePort
   ports:
-    - name: tm-manager 
-      protocol: TCP
-      port: 9001
-      targetPort: 9001
-    # default 8545
-    - name: tm-tessera-third-part
-      protocol: TCP
-      port: 9080
-      targetPort: 9080
-    # default 8545
-    - name: rpc-listener
-      protocol: TCP
-      port: 8545
-      targetPort: 8545
     - name: quorum-listener
       protocol: TCP
       port: 30303
       targetPort: 30303
-    - name: raft
-      protocol: TCP
-      targetPort: 50401
-      port: 50401
-    
-
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  
+
   name: quorum-node3
   labels:
     app: qubernetes
@@ -103,71 +59,81 @@ spec:
     app: qubernetes
     tier: backend
     name: quorum-node3-deployment
-  # NodePort | ClusterIP | LoadBalancer
-  type: ClusterIP
+  # NodePort | ClusterIP | Loadbalancer
+  type: NodePort
   ports:
-    - name: tm-manager 
-      protocol: TCP
-      port: 9001
-      targetPort: 9001
-    # default 8545
-    - name: tm-tessera-third-part
-      protocol: TCP
-      port: 9080
-      targetPort: 9080
-    # default 8545
-    - name: rpc-listener
-      protocol: TCP
-      port: 8545
-      targetPort: 8545
     - name: quorum-listener
       protocol: TCP
       port: 30303
       targetPort: 30303
-    - name: raft
-      protocol: TCP
-      targetPort: 50401
-      port: 50401
-    
-
 
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  
-  name: quorum-node4
+
+  name: quorum-node1-rpc
   labels:
     app: qubernetes
     tier: backend
-    name: quorum-node4
+    name: quorum-node1-rpc
 spec:
   selector:
     app: qubernetes
     tier: backend
-    name: quorum-node4-deployment
-  # NodePort | ClusterIP | LoadBalancer
-  type: ClusterIP
+    name: quorum-node1-deployment
+  # NodePort | ClusterIP | Loadbalancer
+  type: NodePort
   ports:
-    - name: tm-manager 
-      protocol: TCP
-      port: 9001
-      targetPort: 9001
-    # default 8545
-    - name: tm-tessera-third-part
-      protocol: TCP
-      port: 9080
-      targetPort: 9080
     # default 8545
     - name: rpc-listener
       protocol: TCP
       port: 8545
       targetPort: 8545
-    - name: quorum-listener
+---
+apiVersion: v1
+kind: Service
+metadata:
+
+  name: quorum-node2-rpc
+  labels:
+    app: qubernetes
+    tier: backend
+    name: quorum-node2-rpc
+spec:
+  selector:
+    app: qubernetes
+    tier: backend
+    name: quorum-node2-deployment
+  # NodePort | ClusterIP | Loadbalancer
+  type: NodePort
+  ports:
+    # default 8545
+    - name: rpc-listener
       protocol: TCP
-      port: 30303
-      targetPort: 30303
-    - name: raft
+      port: 8545
+      targetPort: 8545
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+
+  name: quorum-node3-rpc
+  labels:
+    app: qubernetes
+    tier: backend
+    name: quorum-node3-rpc
+spec:
+  selector:
+    app: qubernetes
+    tier: backend
+    name: quorum-node3-deployment
+  # NodePort | ClusterIP | Loadbalancer
+  type: NodePort
+  ports:
+    # default 8545
+    - name: rpc-listener
       protocol: TCP
-      targetPort: 50401
-      port: 50401
+      port: 8545
+      targetPort: 8545

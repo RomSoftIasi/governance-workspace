@@ -5,7 +5,7 @@ metadata:
   namespace: jenkins
 spec:
   type: ExternalName
-  externalName: quorum-node1.default.svc.cluster.local
+  externalName: quorum-node1-rpc.default.svc.cluster.local
   ports:
     - port: 8545
 

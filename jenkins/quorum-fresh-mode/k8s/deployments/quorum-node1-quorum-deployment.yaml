@@ -87,7 +87,7 @@ spec:
            --rpcport 8545 \
            --rpcapi $RPC_APIS \
            --rpccorsdomain=\"*\" \
-           --rpcvhosts=ref-quorum-node1 \
+           --rpcvhosts=ref-quorum-node1,quorum-node1-rpc \
             2>&1 | tee -a /etc/quorum/qdata/logs/quorum.log;"
           ports:
             - containerPort: 8545

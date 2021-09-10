@@ -1,6 +1,13 @@
-FROM node:12.21.0
+FROM debian:latest
+
+RUN apt-get update && \
+	apt-get -y install nodejs && \
+	apt-get -y install npm --no-install-recommends
 
 RUN npm install -g node-gyp
+
+RUN apt-get -y install git
+
 
 ENV TARGET_FOLDER_NAME="gov-workspace"
 RUN git clone https://github.com/PharmaLedger-IMI/governance-workspace.git $TARGET_FOLDER_NAME

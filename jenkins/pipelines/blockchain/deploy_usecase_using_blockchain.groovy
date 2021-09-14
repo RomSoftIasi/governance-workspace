@@ -3,16 +3,6 @@
 //$KUBECTL_JENKINS_AGENT
 //$KUBECTL_JENKINS_AGENT_VERSION
 
-
-
-public.ecr.aws/n4q1q0z2/iot:imagebasename_shaversion
-$POD_DOCKER_REPOSITORY = "public.ecr.aws/n4q1q0z2/iot"
-$KUBECTL_JENKINS_AGENT = "kubectl_aws..."
-$KUBECTL_JENKINS_AGENT_VERSION = "1.0" sau sha pt usecase !!!!!!!!!!!!!!! TODO: parametrizare in pipeline
-
-
-
-
 def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"+'_'+"$KUBECTL_JENKINS_AGENT_VERSION"
 
   podTemplate(

@@ -11,11 +11,11 @@ then
   echo ''
   echo 'Help for build.sh'
   echo ''
-  echo 'aws            Creates the aws-config secret in order to be used by Jenkins docker pipelines and executes the docker login in order to push docker images'
-  echo '--build-all    Build and push docker images for Governance and Jenkins agents '
-  echo '--deploy-all   Deploy Jenkins and Governance '
-  echo '--clean-all    Remove Jenkins and Governance installations'
-  echo '--cbd-gov      Clean, build and deploy the Governance'
+  echo 'aws                     Creates the aws-config secret in order to be used by Jenkins docker pipelines and executes the docker login in order to push docker images'
+  echo '--build-all             Build and push docker images for Governance and Jenkins agents '
+  echo '--deploy-all            Deploy Jenkins and Governance '
+  echo '--clean-all             Remove Jenkins and Governance installations'
+  echo '--cbd-gov               Clean,build and deploy the Governance'
   echo ''
   exit 0
 fi
@@ -47,6 +47,7 @@ do
       ./scripts/gov/clean-gov.sh
       ./scripts/gov/build-gov.sh
       ./scripts/gov/deploy-gov.sh
+      ;;
   esac
 done
 

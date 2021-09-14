@@ -1,6 +1,6 @@
 export default  {
   "appName": "eGovernance",
-  "vault": "browser",
+  "vault": "server",
   "agent": "browser",
   "system":   "any",
   "browser":  "any",

@@ -42,15 +42,15 @@ def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"
 
                                 sh 'cd $workspace/docker/k8s/templates && sed "s/%subdomain%/$subdomain/g" service.yaml.template | sed "s/%domain%/$domain/g" > service.yaml'
                                 sh 'cat $workspace/docker/k8s/templates/service.yaml'
-
+                                script{
+                                   usecase_version = sh(  returnStdout: true, script: 'cd $workspace && git log -n 1 --format="%H"')
+                                }
                             }
                         }
                     }
 
                     stage ('Build and publish docker Image'){
-                         script{
-                                usecase_version = sh(  returnStdout: true, script: 'cd $workspace && git log -n 1 --format="%H"')
-                            }
+
                         def docker_image = "${ORGANISATION__DEPLOYMENT_PREFIX}-${domain}"
                         def dockerfile = readFile("${workspace}/docker/Dockerfile")
                         build job: 'build-and-push-docker-image',

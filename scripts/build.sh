@@ -15,6 +15,7 @@ then
   echo '--build-all    Build and push docker images for Governance and Jenkins agents '
   echo '--deploy-all   Deploy Jenkins and Governance '
   echo '--clean-all    Remove Jenkins and Governance installations'
+  echo '--cbd-gov      Clean, build and deploy the Governance'
   echo ''
   exit 0
 fi
@@ -42,6 +43,10 @@ do
       ./scripts/gov/clean-gov.sh
       ./scripts/jenkins/clean-jenkins.sh
       ;;
+    --cbd-gov)
+      ./scripts/gov/clean-gov.sh
+      ./scripts/gov/build-gov.sh
+      ./scripts/gov/deploy-gov.sh
   esac
 done
 

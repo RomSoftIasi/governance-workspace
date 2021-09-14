@@ -15,7 +15,7 @@ spec:
         app: %gov-app-label%
     spec:
       containers:
-        - image: public.ecr.aws/n4q1q0z2/pharmaledger-governance:%DOCKERIMAGEVERSION%
+        - image: %POD_DOCKER_REPOSITORY%/%GOV_DOCKER_IMAGE%_%GOV_DOCKER_IMAGE_VERSION%
           imagePullPolicy: Always
           name: governance
           ports:

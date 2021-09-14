@@ -1,5 +1,14 @@
+
+//Jenkins env variable
+//$POD_DOCKER_REPOSITORY
+//$KUBECTL_JENKINS_AGENT
+//$KUBECTL_JENKINS_AGENT_VERSION
+
+
+def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"+'_'+"$KUBECTL_JENKINS_AGENT_VERSION"
+
 podTemplate(serviceAccount: 'jdefaultmns',namespace: 'jenkins',containers: [
-      containerTemplate(name: 'kubectl', image: 'public.ecr.aws/n4q1q0z2/pharmaledger-kubectl-jenkins-agent:1.0', command: 'cat', ttyEnabled: true)
+      containerTemplate(name: 'kubectl', image: kubectl_image_source, command: 'cat', ttyEnabled: true)
     ],
     volumes: [
       hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')

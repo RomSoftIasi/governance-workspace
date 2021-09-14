@@ -271,7 +271,7 @@ class jenkinsService{
         const pipelines = [];
 
         pipelines.push('clean-eth-adaptor');
-        pipelines.push('cleanup-Quorum-fresh-mode');
+        pipelines.push('clean-Quorum-fresh-mode');
         pipelines.push('clean_usecase_using_blockchain');
 
         let pipeline = pipelines.shift();
@@ -323,7 +323,7 @@ class jenkinsService{
             });
         }
 
-        const pipeline = "install_usecase_installation";
+        const pipeline = "deploy_usecase_installation";
         const pipelineParameters = jenkinsData.parametrizedPipeline;
         this._executeParametrizedPipeline(jenkinsServer, pipeline, pipelineParameters, clusterOperationResult, (err, clusterResult, executionResultData) => {
             if (err) {
@@ -380,7 +380,7 @@ class jenkinsService{
         const blockchainNetwork = jenkinsData.blockchainNetwork;
         const pipelines = [
             "clean_usecase_installation",
-            "install_usecase_installation"
+            "deploy_usecase_installation"
         ];
         const clusterOperationResult = {
             clusterOperation: jenkinsData.clusterOperation,
@@ -425,7 +425,7 @@ class jenkinsService{
     _executeRetryInitiateNetworkWithDefaultConfiguration(jenkinsData, callback) {
         console.log(jenkinsData);
         const blockchainNetwork = jenkinsData.blockchainNetwork;
-        const pipelines = ["clean_usecase_installation", "install_usecase_installation"];
+        const pipelines = ["clean_usecase_installation", "deploy_usecase_installation"];
         const clusterOperationResult = {
             clusterOperation: jenkinsData.clusterOperation,
             blockchainNetwork: blockchainNetwork,

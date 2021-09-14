@@ -1,12 +1,4 @@
-podTemplate(
-    containers: [
-        containerTemplate(name: 'docker', image: 'public.ecr.aws/n4q1q0z2/pharmaledger-docker-aws-jenkins-agent:1.0',alwaysPullImage:true , ttyEnabled: true, command: 'cat')
-    ],
-    volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')],
-    envVars: [secretEnvVar(key: 'aws_key_id', secretName: 'aws-config', secretKey: 'aws_key_id'),
-              secretEnvVar(key: 'aws_access_key', secretName: 'aws-config', secretKey: 'aws_access_key')
-             ]
-  ){
+
             podTemplate(
           containers: [
               containerTemplate(name: 'node', image: 'node:latest', ttyEnabled: true, command: 'cat')
@@ -22,16 +14,15 @@ podTemplate(
 
 
                   stage ('Build and publish docker Image'){
-                            container ('docker'){
-                                sh 'aws --version'
-                                sh 'aws configure set aws_access_key_id "$aws_key_id"'
-                                sh 'aws configure set aws_secret_access_key "$aws_access_key"'
-                                sh 'aws configure set default.region "eu-east-1"'
-                                sh 'aws configure set default.output \'NONE\''
-                                sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REGISTRY'
-                                sh 'cd governance-workspace/jenkins/docker/predefined && docker build --no-cache --network host -t $REGISTRY/$JENKINS_PREDIFINED_DATA_IMAGE_NAME:$JENKINS_PREDEFINED_DATA_IMAGE_VERSION .'
-                                sh 'docker push $REGISTRY/$JENKINS_PREDIFINED_DATA_IMAGE_NAME:$JENKINS_PREDEFINED_DATA_IMAGE_VERSION'
-                            }
+
+                        def dockerfile = readFile('governance-workspace/jenkins/docker/predefined/Dockerfile')
+                        build job: 'build-and-push-docker-image',
+                        parameters: [
+                                string(name: 'DATA_IMAGE_NAME', value:"$JENKINS_PREDEFINED_DATA_IMAGE_NAME"),
+                                string(name: 'DATA_IMAGE_VERSION', value:"$JENKINS_PREDEFINED_DATA_IMAGE_VERSION"),
+                                base64File(name: 'dockerfile', base64: Base64.encoder.encodeToString(dockerfile.bytes))
+                                ]
+
                         }
 
               }
@@ -41,4 +32,4 @@ podTemplate(
 
 
 
-  }
+

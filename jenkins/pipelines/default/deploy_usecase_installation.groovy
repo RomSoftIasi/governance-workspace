@@ -4,15 +4,6 @@
 //$KUBECTL_JENKINS_AGENT_VERSION
 
 
-
-public.ecr.aws/n4q1q0z2/iot:imagebasename_shaversion
-$POD_DOCKER_REPOSITORY = "public.ecr.aws/n4q1q0z2/iot"
-$KUBECTL_JENKINS_AGENT = "kubectl_aws..."
-$KUBECTL_JENKINS_AGENT_VERSION = "1.0" sau sha pt usecase !!!!!!!!!!!!!!! TODO: parametrizare in pipeline
-
-
-
-
 def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"+'_'+"$KUBECTL_JENKINS_AGENT_VERSION"
 
   podTemplate(
@@ -42,7 +33,7 @@ def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"
                                 sh 'cd $workspace/docker/k8s/templates && sed "s/%domain%/$domain/g" configmap.yaml.template | sed "s/%bdns-entries%//g" | sed "s/%subdomain%/$subdomain/g" | sed "s/%vaultdomain%/$vaultdomain/g" > configmap.yaml'
                                 sh 'cat $workspace/docker/k8s/templates/configmap.yaml'
 
-                                sh 'cd $workspace/docker/k8s/templates && sed "s/%domain%/$domain/g" domains-configmap.yaml.template | sed "s/%subdomain%/$subdomain/g" | sed "s/%vaultdomain%/$vaultdomain/g" | sed "s/%anchoring%/ETH/g" | sed "s/%anchoringEndPoint%/\\"endpoint\\": \\"http:\\/\\/ethadapter-service:3000\\"/g" > domains-configmap.yaml'
+                                sh 'cd $workspace/docker/k8s/templates && sed "s/%domain%/$domain/g" domains-configmap.yaml.template | sed "s/%subdomain%/$subdomain/g" | sed "s/%vaultdomain%/$vaultdomain/g" | sed "s/%anchoring%/FS/g" | sed "s/%anchoringEndPoint%/\\"enableBricksLedger\\": false/g" > domains-configmap.yaml'
                                 sh 'cat $workspace/docker/k8s/templates/domains-configmap.yaml'
                             }
                             stage ('Configure deployment'){
@@ -57,7 +48,7 @@ def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"
                     }
 
                     stage ('Build and publish docker Image'){
-                            script{
+                         script{
                                 usecase_version = sh(  returnStdout: true, script: 'cd $workspace && git log -n 1 --format="%H"')
                             }
                         def docker_image = "${ORGANISATION__DEPLOYMENT_PREFIX}-${domain}"

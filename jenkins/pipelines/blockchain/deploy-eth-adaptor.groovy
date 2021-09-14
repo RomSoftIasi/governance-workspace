@@ -1,21 +1,20 @@
+//Jenkins env variable
+//$POD_DOCKER_REPOSITORY
+//$KUBECTL_JENKINS_AGENT
+//$KUBECTL_JENKINS_AGENT_VERSION
+//$ETH_ADAPTER_DOCKER_IMAGE
+//$ETH_ADAPTER_DOCKER_IMAGE_VERSION
+
+
+
+def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"+'_'+"$KUBECTL_JENKINS_AGENT_VERSION"
+
 podTemplate(serviceAccount: 'jdefaultmns',namespace: 'jenkins',containers: [
-  containerTemplate(name: 'kubectl', image: 'public.ecr.aws/n4q1q0z2/pharmaledger-kubectl-jenkins-agent:1.0', command: 'cat', ttyEnabled: true)
+  containerTemplate(name: 'kubectl', image: kubectl_image_source, command: 'cat', ttyEnabled: true)
 ],
 volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]){
-
-podTemplate(
-    containers: [
-        containerTemplate(name: 'docker', image: 'public.ecr.aws/n4q1q0z2/pharmaledger-docker-aws-jenkins-agent:1.0',alwaysPullImage:true , ttyEnabled: true, command: 'cat')
-    ],
-    volumes: [hostPathVolume(hostPath: '/var/run/docker.sock', mountPath: '/var/run/docker.sock')],
-    envVars: [secretEnvVar(key: 'aws_key_id', secretName: 'aws-config', secretKey: 'aws_key_id'),
-              secretEnvVar(key: 'aws_access_key', secretName: 'aws-config', secretKey: 'aws_access_key')
-             ]
-  ){
-
-
       podTemplate(
           containers: [
               containerTemplate(name: 'node', image: 'node:latest', ttyEnabled: true, command: 'cat')
@@ -32,24 +31,13 @@ podTemplate(
                 }
 
                 stage ('Build docker image'){
-                container('docker'){
-                    stage ('Docker Login'){
-
-                        sh 'aws --version'
-                        sh 'aws configure set aws_access_key_id "$aws_key_id"'
-                        sh 'aws configure set aws_secret_access_key "$aws_access_key"'
-                        sh 'aws configure set default.region eu-east-1'
-                        sh 'aws configure set default.output \'NONE\''
-                        sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/n4q1q0z2'
-
-                    }
-
-
-                    stage ('Build and push docker image'){
-                        sh 'cd ethadapter/EthAdapter && docker build --no-cache --network host -t public.ecr.aws/n4q1q0z2/pharmaledger-ethadapter:1.0 -f dockerfile-dev .'
-                        sh 'docker push public.ecr.aws/n4q1q0z2/pharmaledger-ethadapter:1.0'
-                    }
-                }
+                    def dockerfile = readFile('ethadapter/EthAdapter/dockerfile-dev')
+                    build job: 'build-and-push-docker-image',
+                    parameters: [
+                            string(name: 'DATA_IMAGE_NAME', value:"$ETH_ADAPTER_DOCKER_IMAGE"),
+                            string(name: 'DATA_IMAGE_VERSION', value:"$ETH_ADAPTER_DOCKER_IMAGE_VERSION"),
+                            base64File(name: 'dockerfile', base64: Base64.encoder.encodeToString(dockerfile.bytes))
+                            ]
                 }
 
                 stage ('Prepare environment'){
@@ -80,5 +68,5 @@ podTemplate(
 
               }
           }
-    }
+
 }

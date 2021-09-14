@@ -37,8 +37,8 @@ podTemplate(
                                 sh 'aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin $POD_DOCKER_REPOSITORY'
                                     withFileParameter('dockerfile'){
                                         sh 'cat $dockerfile > Dockerfile'
-                                        sh 'docker build --no-cache --network host -t $POD_DOCKER_REPOSITORY:$DATA_IMAGE_NAME_$DATA_IMAGE_VERSION .'
-                                        sh 'docker push $POD_DOCKER_REPOSITORY:$DATA_IMAGE_NAME_$DATA_IMAGE_VERSION'
+                                        sh 'docker build --no-cache --network host -t ${POD_DOCKER_REPOSITORY}:${DATA_IMAGE_NAME}_${DATA_IMAGE_VERSION} .'
+                                        sh 'docker push ${POD_DOCKER_REPOSITORY}:${DATA_IMAGE_NAME}_${DATA_IMAGE_VERSION}'
 
                                     }
 

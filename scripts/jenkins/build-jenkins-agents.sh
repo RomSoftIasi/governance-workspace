@@ -1,4 +1,3 @@
-. ./scripts/.env
 . ./jenkins/modules/scripts/.env
 
 

@@ -53,6 +53,8 @@ volumes: [
                     container('node'){
                         sh 'cd governance-workspace/jenkins/quorum-fresh-mode && npm install'
                         sh 'cd governance-workspace/jenkins/quorum-fresh-mode && node ./stages/deployEthAdapter/stage.js'
+                        sh 'cd governance-workspace/jenkins/quorum-fresh-mode/k8s/ethAdapter && sed "s|%POD_DOCKER_REPOSITORY%|$POD_DOCKER_REPOSITORY|g" EthAdapter.yaml | sed "s|%ETH_ADAPTER_DOCKER_IMAGE%|$ETH_ADAPTER_DOCKER_IMAGE|g"  | sed "s|%ETH_ADAPTER_DOCKER_IMAGE_VERSION%|$ETH_ADAPTER_DOCKER_IMAGE_VERSION|g" > tmp && mv tmp EthAdapter.yaml '
+                        sh 'cat governance-workspace/jenkins/quorum-fresh-mode/k8s/ethAdapter/EthAdapter.yaml'
                     }
                     container('kubectl'){
                         sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl apply -n default -f ./k8s/ethAdapter && sleep 60'

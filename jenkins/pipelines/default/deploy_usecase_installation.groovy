@@ -38,9 +38,9 @@ def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"
                             }
                             stage ('Configure deployment'){
                                 script{
-                                     usecase_version = sh(  returnStdout: true, script: 'cd $workspace && git log -n 1 --format="%H"')
+                                     usecase_version = sh(  returnStdout: true, script: 'cd $workspace && git log -n 1 --format="%H"').trim()
                                 }
-                                sh 'cd $workspace/docker/k8s/templates && sed "s/%domain%/$domain/g" deployment.yaml.template | sed "s/%subdomain%/$subdomain/g" | sed "s/%vaultdomain%/$vaultdomain/g" | sed "s|%POD_DOCKER_REPOSITORY%|$POD_DOCKER_REPOSITORY|g" | sed "s|%ORGANISATION__DEPLOYMENT_PREFIX%|$ORGANISATION__DEPLOYMENT_PREFIX|g" | sed "s|%usecase_version%|$usecase_version|g" > deployment.yaml'
+                                sh "cd $workspace/docker/k8s/templates && sed 's/%domain%/$domain/g' deployment.yaml.template | sed 's/%subdomain%/$subdomain/g' | sed 's/%vaultdomain%/$vaultdomain/g' | sed 's|%POD_DOCKER_REPOSITORY%|$POD_DOCKER_REPOSITORY|g' | sed 's|%ORGANISATION__DEPLOYMENT_PREFIX%|$ORGANISATION__DEPLOYMENT_PREFIX|g' | sed 's|%usecase_version%|$usecase_version|g' > deployment.yaml"
                                 sh 'cat $workspace/docker/k8s/templates/deployment.yaml'
 
                                 sh 'cd $workspace/docker/k8s/templates && sed "s/%subdomain%/$subdomain/g" service.yaml.template | sed "s/%domain%/$domain/g" > service.yaml'

@@ -10,7 +10,7 @@ if [ "$1" = '--help' ]
 then
   echo ''
   echo 'Utility shell in order to help deploying Jenkins and Governance'
-  echo 'Shell will be executed from the root of Governance repository'
+  echo 'Shell will be executed relative to the Governance workspace directory'
   echo 'All customizations will be done in the already existing files from ./jenkins/modules directory and will be integrated in current execution automatically'
   echo 'Please review and customize as needed the ENVIRONMENT VARIABLES defined in ./jenkins/modules/scripts/.env'
   echo ''

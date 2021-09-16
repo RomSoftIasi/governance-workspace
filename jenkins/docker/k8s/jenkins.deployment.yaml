@@ -23,7 +23,7 @@ spec:
       serviceAccountName: jenkins
       initContainers:
         - name: defaultdata
-          image: public.ecr.aws/n4q1q0z2/pharmaledger-jenkins-predefined-data:1.4
+          image: public.ecr.aws/n4q1q0z2/pharmaledger-jenkins-predefined-data:1.7
           imagePullPolicy: Always
           command: [ "sh" ]
           args:

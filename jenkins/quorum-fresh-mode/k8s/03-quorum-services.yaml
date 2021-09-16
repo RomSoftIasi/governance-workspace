@@ -14,7 +14,7 @@ spec:
     tier: backend
     name: quorum-node1-deployment
   # NodePort | ClusterIP | Loadbalancer
-  type: NodePort
+  type: LoadBalancer
   ports:
     - name: quorum-listener
       protocol: TCP
@@ -37,7 +37,7 @@ spec:
     tier: backend
     name: quorum-node2-deployment
   # NodePort | ClusterIP | Loadbalancer
-  type: NodePort
+  type: LoadBalancer
   ports:
     - name: quorum-listener
       protocol: TCP
@@ -60,7 +60,7 @@ spec:
     tier: backend
     name: quorum-node3-deployment
   # NodePort | ClusterIP | Loadbalancer
-  type: NodePort
+  type: LoadBalancer
   ports:
     - name: quorum-listener
       protocol: TCP

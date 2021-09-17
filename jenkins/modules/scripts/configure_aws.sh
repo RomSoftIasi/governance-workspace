@@ -1,5 +1,5 @@
 . ./jenkins/modules/scripts/.env
-. ./scripts/.env
+
 
 
 
@@ -9,7 +9,7 @@ echo "Configure AWS"
 aws configure set aws_access_key_id "$AWS_ACCESS_KEY_ID"
 aws configure set aws_secret_access_key "$AWS_SECRET_ACCESS_KEY"
 aws configure set default.region "$DEFAULT_REGION"
-aws configure set default.output 'NONE'
+aws configure set default.output 'text'
 
 echo "Authenticate on AWS repository"
 aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin "$POD_DOCKER_REPOSITORY"

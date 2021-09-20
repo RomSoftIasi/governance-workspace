@@ -20,6 +20,14 @@ volumes: [
         }
 
         container('kubectl') {
+        try {
+            stage ('Remove explorer'){
+                sh 'cd governance-workspace/jenkins/modules/explorer && kubectl delete -f . -n default'
+            }
+        } catch (err){
+                unstable (message: "${STAGE_NAME} is unstable.")
+        }
+
         try{
              stage('Remove blockchain nodes'){
                  sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s/deployments -n default'

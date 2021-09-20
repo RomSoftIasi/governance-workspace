@@ -52,6 +52,9 @@ volumes: [
                 sh 'sleep 30s'
                 sh "kubectl get pods -n default"
             }
+            stage ('Deploy explorer'){
+                sh 'cd governance-workspace/jenkins/modules/explorer && kubectl apply -f . -n default'
+            }
         }
 
         container('node'){

@@ -77,7 +77,7 @@ spec:
            --permissioned \
            --nodiscover \
            --nat=none \
-           --verbosity 9 \
+           --verbosity 3 \
            --networkid $NETWORK_ID \
            --emitcheckpoints \
            --port 30303 \
@@ -109,7 +109,7 @@ spec:
             - name: quorum-persistent-storage
               mountPath: /etc/quorum/qdata
               subPath: quorum-node3
-            - name: quorum-persistent-storage
+            - name: quorum-persistent-storage-logs
               mountPath: /etc/quorum/qdata/logs
               subPath: quorum-node3-logs
             - name: genesis-config-persistent-storage
@@ -183,3 +183,6 @@ spec:
         - name: quorum-persistent-storage
           persistentVolumeClaim:
             claimName: quorum-node3-pvc
+        - name: quorum-persistent-storage-logs
+          persistentVolumeClaim:
+            claimName: quorum-node3-logs-pvc

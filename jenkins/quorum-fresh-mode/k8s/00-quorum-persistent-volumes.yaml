@@ -1,3 +1,18 @@
+---
+
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: "false"
+  name: gp2-ae
+parameters:
+  fsType: ext4
+  type: gp2
+provisioner: kubernetes.io/aws-ebs
+reclaimPolicy: Delete
+volumeBindingMode: WaitForFirstConsumer
+allowVolumeExpansion: true
 
 ---
 apiVersion: v1
@@ -5,13 +20,25 @@ kind: PersistentVolumeClaim
 metadata:
   name: quorum-node1-pvc
 spec:
-
+  storageClassName: "gp2-ae"
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 200Mi
+      storage: 1Gi
 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quorum-node1-logs-pvc
+spec:
+  storageClassName: "gp2-ae"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 
 ---
 apiVersion: v1
@@ -19,13 +46,37 @@ kind: PersistentVolumeClaim
 metadata:
   name: quorum-node2-pvc
 spec:
-
+  storageClassName: "gp2-ae"
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 200Mi
+      storage: 1Gi
 
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quorum-node2-logs-pvc
+spec:
+  storageClassName: "gp2-ae"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: quorum-node3-logs-pvc
+spec:
+  storageClassName: "gp2-ae"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
 
 ---
 apiVersion: v1
@@ -33,9 +84,9 @@ kind: PersistentVolumeClaim
 metadata:
   name: quorum-node3-pvc
 spec:
-
+  storageClassName: "gp2-ae"
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 200Mi
+      storage: 1Gi

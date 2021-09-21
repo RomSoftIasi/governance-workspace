@@ -40,7 +40,7 @@ rules:
   - apiGroups: ["storage.k8s.io"]
     resources:
       - storageclasses
-    verbs: ["list", "watch"]
+    verbs: ["create","update", "get", "list", "patch", "watch", "delete"]
   - apiGroups : ["networking.k8s.io"]
     resources: ["networkpolicies"]
     verbs: ["create","update", "get", "list", "patch", "watch", "delete"]

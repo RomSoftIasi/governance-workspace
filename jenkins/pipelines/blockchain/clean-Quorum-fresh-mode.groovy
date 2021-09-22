@@ -38,6 +38,8 @@ volumes: [
          try{
              stage('Remove blockchain configuration'){
                  sh 'cd governance-workspace/jenkins/quorum-fresh-mode && kubectl delete -f ./k8s -n default'
+                 sh 'kubectl delete configmaps genesis-config -n default'
+                 sh 'kubectl delete configmaps quorum-node1-account-key-config -n default'
              }
          } catch (err){
             unstable (message: "${STAGE_NAME} is unstable.")

@@ -3,6 +3,12 @@
 //$KUBECTL_JENKINS_AGENT
 //$KUBECTL_JENKINS_AGENT_VERSION
 
+//pipeline parameters
+//domain
+//subdomain
+//vaultdomain
+//usecaseRepository
+//workspace
 def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"+'_'+"$KUBECTL_JENKINS_AGENT_VERSION"
 
   podTemplate(

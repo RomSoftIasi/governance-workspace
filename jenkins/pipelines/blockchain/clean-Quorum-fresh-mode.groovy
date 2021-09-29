@@ -60,7 +60,9 @@ volumes: [
             unstable (message: "${STAGE_NAME} is unstable.")
          }
          stage('Get deployment status'){
+             sh 'sleep 60s'
              sh "kubectl get pods -n default"
+             sh "kubectl get svc -n default"
          }
         }
     }

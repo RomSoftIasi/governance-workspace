@@ -26,6 +26,7 @@ volumes: [
         stage('Get governance repo'){
             sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
             sh 'git clone https://github.com/groundnuty/k8s-wait-for.git'
+            sh 'git clone ${GOVERNANCE_TEMPLATE_REPOSITORY}'
         }
 
         container('node'){
@@ -53,7 +54,7 @@ volumes: [
                 sh "kubectl get pods -n default"
             }
             stage ('Deploy explorer'){
-                sh 'cd governance-workspace/jenkins/modules/explorer && kubectl apply -f . -n default'
+                sh 'basename=\$(basename \$GOVERNANCE_TEMPLATE_REPOSITORY) && filename=\${basename%.*} && cd \${filename} && cd ${GOVERNANCE_TEMPLATE_BLOCKCHAIN_EXPLORER} && kubectl apply -f . -n default'
             }
         }
 

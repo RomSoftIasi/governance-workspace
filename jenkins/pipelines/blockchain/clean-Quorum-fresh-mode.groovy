@@ -17,12 +17,13 @@ volumes: [
     stage('Clean blockchain network') {
         stage('Get quorum deployment'){
             sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
+            sh 'git clone ${GOVERNANCE_TEMPLATE_REPOSITORY}'
         }
 
         container('kubectl') {
         try {
             stage ('Remove explorer'){
-                sh 'cd governance-workspace/jenkins/modules/explorer && kubectl delete -f . -n default'
+                sh 'basename=\$(basename \$GOVERNANCE_TEMPLATE_REPOSITORY) && filename=\${basename%.*} && cd \${filename} && cd ${GOVERNANCE_TEMPLATE_BLOCKCHAIN_EXPLORER} && kubectl delete -f . -n default'
             }
         } catch (err){
                 unstable (message: "${STAGE_NAME} is unstable.")

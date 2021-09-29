@@ -1,4 +1,4 @@
-. ./jenkins/modules/scripts/.env
+. ./scripts/.env
 
 
 echo "Build and push Governance docker image"

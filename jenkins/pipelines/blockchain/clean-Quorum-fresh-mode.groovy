@@ -5,7 +5,6 @@
 
 
 def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"+'_'+"$KUBECTL_JENKINS_AGENT_VERSION"
-def label = "worker-${UUID.randomUUID().toString()}"
 
 podTemplate(label: label, serviceAccount: 'jdefaultmns',namespace: 'jenkins',containers: [
   containerTemplate(name: 'kubectl', image: kubectl_image_source, command: 'cat', ttyEnabled: true)
@@ -13,7 +12,7 @@ podTemplate(label: label, serviceAccount: 'jdefaultmns',namespace: 'jenkins',con
 volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]){
-  node(label) {
+  node(POD_LABEL) {
     stage('Clean blockchain network') {
         stage('Get quorum deployment'){
             sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'

@@ -3,8 +3,6 @@
 //$KUBECTL_JENKINS_AGENT
 //$KUBECTL_JENKINS_AGENT_VERSION
 
-def label = "worker-${UUID.randomUUID().toString()}"
-
 def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"+'_'+"$KUBECTL_JENKINS_AGENT_VERSION"
 
 podTemplate(label: label, serviceAccount: 'jdefaultmns',namespace: 'jenkins',containers: [
@@ -13,7 +11,7 @@ podTemplate(label: label, serviceAccount: 'jdefaultmns',namespace: 'jenkins',con
 volumes: [
   hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock')
 ]){
-  node(label) {
+  node(POD_LABEL) {
     stage('Clean blockchain network') {
 
 

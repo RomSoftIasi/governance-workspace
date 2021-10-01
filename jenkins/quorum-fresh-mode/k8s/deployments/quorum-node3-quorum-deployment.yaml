@@ -69,7 +69,7 @@ spec:
            touch $QUORUM_DATA_DIR/password.txt;
            NETWORK_ID=10
            RPC_APIS=admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum
-           args=\" --gcmode archive --istanbul.blockperiod 3 --syncmode full --mine --miner.threads 1 \";
+           args=\" --gcmode archive --istanbul.blockperiod 1 --syncmode full --mine --miner.threads 1 \";
            RPC_APIS=\"$RPC_APIS,istanbul\";
            /usr/local/bin/geth \
            --datadir $QUORUM_DATA_DIR \

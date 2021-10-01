@@ -1,3 +1,10 @@
+. ./scripts/.env
+
+echo 'Prepare jenkins deployment'
+echo ''
+JENKINS_PREDEFINED_DATA_IMAGE_LOCATION
+
+sed "s/%JENKINS_PREDEFINED_DATA_IMAGE_LOCATION%/$JENKINS_PREDEFINED_DATA_IMAGE_LOCATION/g" jenkins/docker/k8s/templates/jenkins.deployment.yaml.template  > jenkins/docker/k8s/jenkins.deployment.yaml
 
 echo 'Create namespaces'
 

@@ -1,0 +1,49 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+
+  name: quorum-%NODE_NO%
+  labels:
+    app: qubernetes
+    tier: backend
+    name: quorum-%NODE_NO%
+spec:
+  selector:
+    app: qubernetes
+    tier: backend
+    name: quorum-%NODE_NO%-deployment
+  # NodePort | ClusterIP | Loadbalancer
+  type: LoadBalancer
+  ports:
+    - name: quorum-listener
+      protocol: TCP
+      port: 30303
+      targetPort: 30303
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+
+  name: quorum-%NODE_NO%-rpc
+  labels:
+    app: qubernetes
+    tier: backend
+    name: quorum-%NODE_NO%-rpc
+spec:
+  selector:
+    app: qubernetes
+    tier: backend
+    name: quorum-%NODE_NO%-deployment
+  # NodePort | ClusterIP | Loadbalancer
+  type: NodePort
+  ports:
+    # default 8545
+    - name: rpc-listener
+      protocol: TCP
+      port: 8545
+      targetPort: 8545
+
+

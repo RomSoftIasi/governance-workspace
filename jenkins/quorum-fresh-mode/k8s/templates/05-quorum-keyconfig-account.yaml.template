@@ -3,11 +3,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: quorum-node1-account-key-config
+  name: quorum-%NODE_NO%-account-key-config
 
   labels:
     app: qubernetes
-    name: quorum-node1-account-key-config
+    name: quorum-%NODE_NO%-account-key-config
 data:
   key: |-
 

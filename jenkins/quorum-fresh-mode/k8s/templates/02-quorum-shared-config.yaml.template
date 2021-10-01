@@ -11,10 +11,7 @@ data:
   permissioned-nodes.json: |
 
     [
-      "enode://d51fc20f5ce9d6dd45e035471287d079f1c027e7b88328ff7a8e5e26819318078f6f1bbe0cd19d5902367961d32022c3bc3d24d640d3b098419df46000c811a6@quorum-node1:30303?discport=0&raftport=50401",
-        "enode://246f5003d339c5adc754137e5084d891e15854f548971c2177a3331ed9911cd03a054111ed0ada7c2f2b9585f4ababb9332fe9f2301100ca326f59035adbf621@quorum-node2:30303?discport=0&raftport=50401",
-        "enode://ee82417c7175c053b0dac6e00513ff5afcc2bccc5761d0ee27c4cdbea579f0cdaa4b502bcf79b2d3a43c2999052d9c3f43725220b1b900d3341327fa0a5523d8@quorum-node3:30303?discport=0&raftport=50401"
-
+      %ENODES_LIST%
     ]
 
 
@@ -65,9 +62,7 @@ data:
   istanbul-validator-config.toml: |-
     vanity = "0x00"
     validators = [
-    "0x675C45F552bf204948ABD9AC07eaA2701d373076",
-    "0x6876950D912F2Cdc8078c1275C2309e9cdf3466F",
-    "0x93698B9825De1Bd22Ef0cB26cbDC00846D2c9Ad4",
+      %VALIDATORS_LIST%
     ]
 
 ---

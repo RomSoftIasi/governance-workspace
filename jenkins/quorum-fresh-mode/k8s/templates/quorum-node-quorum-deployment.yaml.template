@@ -3,7 +3,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: quorum-node3-deployment
+  name: quorum-%NODE_NO%-deployment
 
 spec:
   strategy:
@@ -11,14 +11,14 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      name: quorum-node3-deployment
+      name: quorum-%NODE_NO%-deployment
   template:
     metadata:
-      name:  quorum-node3-deployment
+      name:  quorum-%NODE_NO%-deployment
       labels:
         app: qubernetes
         tier: backend
-        name: quorum-node3-deployment
+        name: quorum-%NODE_NO%-deployment
     spec:
       initContainers:
         - name: quorum-genesis-init-container
@@ -39,7 +39,7 @@ spec:
           volumeMounts:
             - name: quorum-persistent-storage
               mountPath:  /etc/quorum/qdata
-              subPath: quorum-node3
+              subPath: quorum-%NODE_NO%
             - name: genesis-config-persistent-storage
               mountPath: /etc/quorum/genesis/genesis-geth.json
               subPath: genesis-geth.json
@@ -65,6 +65,7 @@ spec:
 
            cat /etc/quorum/genesis/genesis-geth.json;
 
+           chmod 644 $QUORUM_DATA_DIR/keystore/key;
 
            touch $QUORUM_DATA_DIR/password.txt;
            NETWORK_ID=10
@@ -86,7 +87,7 @@ spec:
            --rpcport 8545 \
            --rpcapi $RPC_APIS \
            --rpccorsdomain=\"*\" \
-           --rpcvhosts=quorum-node3-rpc \
+           --rpcvhosts=ref-quorum-%NODE_NO%,quorum-%NODE_NO%-rpc \
             2>&1 | tee -a /etc/quorum/qdata/logs/quorum.log;"
           ports:
             - containerPort: 8545
@@ -102,16 +103,16 @@ spec:
             - name: QHOME
               value: /etc/quorum/qdata
             - name: THIS_NODE_ID
-              value: quorum-node3
+              value: quorum-%NODE_NO%
             - name: THIS_ENODE
-              value: ee82417c7175c053b0dac6e00513ff5afcc2bccc5761d0ee27c4cdbea579f0cdaa4b502bcf79b2d3a43c2999052d9c3f43725220b1b900d3341327fa0a5523d8
+              value: %THIS_ENODE%
           volumeMounts:
             - name: quorum-persistent-storage
               mountPath: /etc/quorum/qdata
-              subPath: quorum-node3
+              subPath: quorum-%NODE_NO%
             - name: quorum-persistent-storage-logs
               mountPath: /etc/quorum/qdata/logs
-              subPath: quorum-node3-logs
+              subPath: quorum-%NODE_NO%-logs
             - name: genesis-config-persistent-storage
               mountPath: /etc/quorum/genesis/genesis-geth.json
               subPath: genesis-geth.json
@@ -148,13 +149,13 @@ spec:
                 path: genesis-geth.json
         - name: quorum-nodekey
           configMap:
-            name: quorum-node3-nodekey-config
+            name: quorum-%NODE_NO%-nodekey-config
             items:
               - key: nodekey
                 path: nodekey
         - name: quorum-enode
           configMap:
-            name: quorum-node3-enode-config
+            name: quorum-%NODE_NO%-enode-config
             items:
               - key: enode
                 path: enode
@@ -182,7 +183,7 @@ spec:
         # PVC (configurable) https://kubernetes.io/docs/concepts/storage/persistent-volumes/#claims-as-volumes
         - name: quorum-persistent-storage
           persistentVolumeClaim:
-            claimName: quorum-node3-pvc
+            claimName: quorum-%NODE_NO%-pvc
         - name: quorum-persistent-storage-logs
           persistentVolumeClaim:
-            claimName: quorum-node3-logs-pvc
+            claimName: quorum-%NODE_NO%-logs-pvc

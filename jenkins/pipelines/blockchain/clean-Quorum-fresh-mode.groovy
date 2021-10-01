@@ -3,6 +3,7 @@
 //$KUBECTL_JENKINS_AGENT
 //$KUBECTL_JENKINS_AGENT_VERSION
 
+// delete by using the patterns and subdomain :  kubectl get deployments --no-headers=true | awk '/quorum-node-nvs/{print $1}'| xargs kubectl delete deployment
 
 def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"+'_'+"$KUBECTL_JENKINS_AGENT_VERSION"
 

@@ -11,7 +11,9 @@
   "devDependencies": {
     "keythereum": "^1.2.0",
     "web3": "^1.3.5",
-    "eth-crypto": "^2.1.0"
+    "eth-crypto": "^2.1.0",
+    "minimist": "^1.2.5",
+    "secp256k1": "^4.0.2"
   },
   "dependencies": {
     "ethereumjs-tx": "^2.1.2",

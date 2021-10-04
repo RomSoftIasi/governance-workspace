@@ -31,7 +31,7 @@ function generateSharedConfig(validators) {
     cfg = replaceAll(cfg,"%VALIDATORS_LIST%", validatorsAdressList);
 
     fs.writeFileSync('./k8s/02-quorum-shared-config.yaml',cfg);
-
+    fs.writeFileSync('./stages/Validators/validators.txt', validatorsAdressList);
 
 
 }

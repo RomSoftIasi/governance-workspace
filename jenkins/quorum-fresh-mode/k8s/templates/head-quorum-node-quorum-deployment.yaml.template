@@ -140,13 +140,13 @@ spec:
       volumes:
         - name: quorum-permissioned-config
           configMap:
-            name: quorum-permissioned-config
+            name: %SUBDOMAIN%-quorum-permissioned-config
             items:
               - key: permissioned-nodes.json
                 path: permissioned-nodes.json
         - name: genesis-config-persistent-storage
           configMap:
-            name: genesis-config
+            name: %SUBDOMAIN%-genesis-config
             items:
               - key: genesis-geth.json
                 path: genesis-geth.json
@@ -170,7 +170,7 @@ spec:
                 path: enode
         - name: geth-helpers
           configMap:
-            name: geth-helpers
+            name: %SUBDOMAIN%-geth-helpers
             items:
               - key: geth-attach.sh
                 path: geth-attach.sh
@@ -179,10 +179,10 @@ spec:
             defaultMode: 0777
         - name: istanbul-validator-config
           configMap:
-            name: istanbul-validator-config.toml
+            name: %SUBDOMAIN%-istanbul-validator-config.toml
         - name: node-management
           configMap:
-            name: node-management
+            name: %SUBDOMAIN%-node-management
             items:
               - key: ibft_propose.sh
                 path: ibft_propose.sh

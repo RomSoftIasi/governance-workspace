@@ -2,11 +2,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: quorum-permissioned-config
+  name: %SUBDOMAIN%-quorum-permissioned-config
 
   labels:
     app: qubernetes
-    name: quorum-permissioned-config
+    name: %SUBDOMAIN%-quorum-permissioned-config
 data:
   permissioned-nodes.json: |
 
@@ -19,11 +19,11 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: node-management
+  name: %SUBDOMAIN%-node-management
 
   labels:
     app: qubernetes
-    name: node-management
+    name: %SUBDOMAIN%-node-management
 data:
   ibft_propose.sh: |-
     #/bin/ash
@@ -53,11 +53,11 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: istanbul-validator-config.toml
+  name: %SUBDOMAIN%-istanbul-validator-config.toml
 
   labels:
     app: qubernetes
-    name: istanbul-validator-config
+    name: %SUBDOMAIN%-istanbul-validator-config
 data:
   istanbul-validator-config.toml: |-
     vanity = "0x00"
@@ -69,11 +69,11 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: geth-helpers
+  name: %SUBDOMAIN%-geth-helpers
 
   labels:
     app: qubernetes
-    name: geth-helpers
+    name: %SUBDOMAIN%-geth-helpers
 data:
   geth-attach.sh: |-
     #!/bin/sh

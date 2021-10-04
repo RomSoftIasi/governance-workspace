@@ -126,6 +126,19 @@ function fixHeadNodeAccount(validators) {
     }
 }
 
+function updateFileWithSubdomain(filename, subdomain){
+    const fs =  require('fs');
+    let cfg = fs.readFileSync(filename).toString('utf8');
+    let svc = replaceAll(cfg,"%SUBDOMAIN%", subdomain);
+    fs.writeFileSync(filename,svc);
+}
+function updateConfigMapsAndDeployments(subdomain) {
+    updateFileWithSubdomain('./k8s/templates/01-quorum-genesis.yaml.template', subdomain);
+    updateFileWithSubdomain('./k8s/templates/02-quorum-shared-config.yaml.template', subdomain);
+    updateFileWithSubdomain('./k8s/templates/head-quorum-node-quorum-deployment.yaml.template', subdomain);
+    updateFileWithSubdomain('./k8s/templates/quorum-node-quorum-deployment.yaml.template', subdomain);
+}
+
 function generateValidators(no, subdomain){
     //console.log('go', no, subdomain);
     const validators = new Map();
@@ -143,6 +156,7 @@ function generateValidators(no, subdomain){
         validators.set(i,validator);
     }
 
+    updateConfigMapsAndDeployments(subdomain);
     generatePvc(validators);
     generateSharedConfig(validators);
     generateServices(validators);

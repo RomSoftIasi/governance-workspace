@@ -133,7 +133,7 @@ function updateFileWithSubdomain(filename, subdomain){
     fs.writeFileSync(filename,svc);
 }
 function updateConfigMapsAndDeployments(subdomain) {
-    updateFileWithSubdomain('./k8s/templates/01-quorum-genesis.yaml.template', subdomain);
+    updateFileWithSubdomain('./k8s/01-quorum-genesis.yaml', subdomain);
     updateFileWithSubdomain('./k8s/templates/02-quorum-shared-config.yaml.template', subdomain);
     updateFileWithSubdomain('./k8s/templates/head-quorum-node-quorum-deployment.yaml.template', subdomain);
     updateFileWithSubdomain('./k8s/templates/quorum-node-quorum-deployment.yaml.template', subdomain);

@@ -1,0 +1,2 @@
+require('./genIBFTPropose').genExecuteJoin()
+

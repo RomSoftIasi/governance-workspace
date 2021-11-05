@@ -1,0 +1,15 @@
+# ethereum / geth account keys (keystore)
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: quorum-%NODE_NO%-account-key-config
+
+  labels:
+    app: qubernetes
+    name: quorum-%NODE_NO%-account-key-config
+data:
+  key: |-
+
+
+    %Account-Key-Config

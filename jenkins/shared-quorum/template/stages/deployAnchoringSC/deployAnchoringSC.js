@@ -122,7 +122,7 @@ function waitForTransactionToFinish(web3, hash, callback) {
 
 function executeAnchoringSCDeployment() {
     const Web3 = require('web3');
-    const web3 = new Web3('http://127.0.0.1:22000'); // your geth
+    const web3 = new Web3('http://ref-quorum-node-0:8545'); // your geth
     deployAnchoringSC(web3,"anchoringSC", [], (err, data) =>{
         if (err){
             console.log(err);

@@ -27,14 +27,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/PharmaLedger-IMI/governance-workspace.git"
+        "url": "git+https://github.com/RomSoftIasi/governance-workspace.git"
     },
     "author": "",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/PharmaLedger-IMI/governance-workspace/issues"
+        "url": "https://github.com/RomSoftIasi/governance-workspace/issues"
     },
-    "homepage": "https://github.com/PharmaLedger-IMI/governance-workspace#readme",
+    "homepage": "https://github.com/RomSoftIasi/governance-workspace#readme",
     "dependencies": {
         "octopus": "git+http://github.com/privatesky/octopus.git"
     }

@@ -7,7 +7,7 @@
 
 
 
-def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+':'+"$KUBECTL_JENKINS_AGENT"+'_'+"$KUBECTL_JENKINS_AGENT_VERSION"
+def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+'/'+"$KUBECTL_JENKINS_AGENT"+':'+"$KUBECTL_JENKINS_AGENT_VERSION"
 
 podTemplate(serviceAccount: 'jdefaultmns',namespace: 'jenkins',containers: [
   containerTemplate(name: 'kubectl', image: kubectl_image_source, command: 'cat', ttyEnabled: true)

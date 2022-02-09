@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - image: %POD_DOCKER_REPOSITORY%/%GOV_DOCKER_IMAGE%:%GOV_DOCKER_IMAGE_VERSION%
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           name: governance
           ports:
             - containerPort: 8080

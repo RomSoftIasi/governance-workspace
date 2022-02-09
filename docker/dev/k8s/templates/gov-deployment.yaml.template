@@ -15,8 +15,8 @@ spec:
         app: %gov-app-label%
     spec:
       containers:
-        - image: %POD_DOCKER_REPOSITORY%:%GOV_DOCKER_IMAGE%_%GOV_DOCKER_IMAGE_VERSION%
-          imagePullPolicy: Always
+        - image: %POD_DOCKER_REPOSITORY%/%GOV_DOCKER_IMAGE%:%GOV_DOCKER_IMAGE_VERSION%
+          imagePullPolicy: IfNotPresent
           name: governance
           ports:
             - containerPort: 8080

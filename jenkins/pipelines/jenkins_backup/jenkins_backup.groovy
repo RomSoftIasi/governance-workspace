@@ -9,7 +9,10 @@ def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+'/'+"$KUBECTL_JENKINS_AGENT"
       podTemplate(
           containers: [
               containerTemplate(name: 'node', image: 'node:latest', ttyEnabled: true, command: 'cat')
-              ]
+              ],
+              envVars: [
+                        secretEnvVar(key: 'GITHUB_REPO_TOKEN', secretName: 'docker-config', secretKey: 'GITHUB_REPO_TOKEN'),
+                       ]
           ){
 
             podTemplate(serviceAccount: 'jdefaultmns',namespace: 'jenkins',containers: [
@@ -36,7 +39,7 @@ def kubectl_image_source = "$POD_DOCKER_REPOSITORY"+'/'+"$KUBECTL_JENKINS_AGENT"
 
                         stage ('Repository cloning'){
                             container('node'){
-                                    sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
+                                    sh 'git clone https://${GITHUB_REPO_TOKEN}:x-oauth-basic@github.com/RomSoftIasi/governance-workspace.git'
                                     sh 'cd governance-workspace/jenkins/docker/backup && sed "s,%GITHUB_USER%,${GITHUB_USER},g" jenkins-backup.yaml.template | sed "s,%GITHUB_USER_EMAIL%,${GITHUB_USER_EMAIL},g" | sed "s,%GITHUB_ACCESS_TOKEN%,${GITHUB_ACCESS_TOKEN},g" > jenkins-backup.yaml'
                                     sh 'cat governance-workspace/jenkins/docker/backup/jenkins-backup.yaml'
                             }

@@ -42,7 +42,7 @@ volumes: [
 
                 stage ('Prepare environment'){
                     container('node'){
-                        sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
+                        sh 'git clone https://github.com/RomSoftIasi/governance-workspace.git'
                         sh 'cp -a ethadapter/EthAdapter/k8s/. governance-workspace/jenkins/quorum-fresh-mode/k8s/ethAdapter/'
                         unstash 'ethJoinFile'
                         sh 'cp ethJoinFile governance-workspace/jenkins/quorum-fresh-mode/k8s/ethAdapter/templates/ethAdapterJoiningJSON.json'

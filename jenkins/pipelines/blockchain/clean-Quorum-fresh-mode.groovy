@@ -15,7 +15,7 @@ volumes: [
   node(POD_LABEL) {
     stage('Clean blockchain network') {
         stage('Get quorum deployment'){
-            sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
+            sh 'git clone https://github.com/RomSoftIasi/governance-workspace.git'
             sh 'git clone ${GOVERNANCE_TEMPLATE_REPOSITORY}'
         }
 

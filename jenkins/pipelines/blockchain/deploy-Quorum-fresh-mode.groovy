@@ -24,7 +24,7 @@ volumes: [
   node(POD_LABEL) {
     stage('Deploy blockchain network') {
         stage('Get governance repo'){
-            sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
+            sh 'git clone https://github.com/RomSoftIasi/governance-workspace.git'
             sh 'git clone https://github.com/groundnuty/k8s-wait-for.git'
             sh 'git clone ${GOVERNANCE_TEMPLATE_REPOSITORY}'
         }

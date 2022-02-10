@@ -7,7 +7,7 @@
               node(POD_LABEL){
 
                   stage ('Git clone'){
-                      sh 'git clone https://github.com/PharmaLedger-IMI/governance-workspace.git'
+                      sh 'git clone https://github.com/RomSoftIasi/governance-workspace.git'
                       sh 'cd governance-workspace/jenkins/docker/predefined && sed "s,%BACKUP_BRANCH_NAME%,${BRANCH},g" Dockerfile.template | sed "s,%JENKINS_BACKUP_REPOSITORY%,${JENKINS_BACKUP_REPOSITORY},g" > Dockerfile'
                       sh 'cat governance-workspace/jenkins/docker/predefined/Dockerfile'
                   }

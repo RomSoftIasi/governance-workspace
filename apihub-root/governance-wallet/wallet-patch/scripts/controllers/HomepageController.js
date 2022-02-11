@@ -38,7 +38,7 @@ export default class HomepageController extends WebcController {
         }
 
         const logoElement = document.createElement("img");
-        logoElement.src = "/assets/images/pharma_logo.png";
+        logoElement.src = "/assets/images/logo.png";
         logoElement.width = 100;
 
         const linkElement = document.createElement("a");

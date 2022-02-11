@@ -46,7 +46,7 @@ webc-app-menu[mode=horizontal] .app-menu webc-app-menu-item,
 webc-app-menu[mode=horizontal] .app-menu webc-app-menu-item a {
     color: #FFFFFF;
     padding: 0.125rem 0.75rem;
-    background: #008798;
+    background: #00345B;
     border-radius: 0.25rem;
     border: 1px solid transparent;
     font-size: 18px;
@@ -63,7 +63,7 @@ webc-app-menu[mode=horizontal] .app-menu webc-app-menu-item:focus,
 webc-app-menu[mode=horizontal] .app-menu webc-app-menu-item:active {
     color: #000000;
     background: transparent;
-    border-color: #008798;
+    border-color: #00345B;
 }
 
 webc-app-menu[mode=horizontal] .app-menu webc-app-menu-item:hover a,
@@ -86,12 +86,7 @@ webc-app-menu[mode=horizontal] .app-menu webc-app-menu-item:active a {
 label.home-title {
     font-size: 2.5rem;
     font-weight: bold;
-    background: #FFFFFF;
-    background: linear-gradient(rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%), linear-gradient(0deg, #EF193F, #EF193F);
-    background: -webkit-linear-gradient(rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%), -webkit-linear-gradient(0deg, #EF193F, #EF193F);
-    background: -moz-linear-gradient(rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0) 100%), -moz-linear-gradient(0deg, #EF193F, #EF193F);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    color: #00345B;
 }
 
 .home-button-group {
@@ -103,7 +98,7 @@ label.home-title {
 }
 
 .home-button-group button {
-    background: #008798;
+    background: #00345B;
     border: 1px solid transparent;
     border-radius: 0.5rem;
     color: #FFFFFF;
@@ -123,7 +118,7 @@ label.home-title {
 .home-button-group button:active,
 .home-button-group button:focus {
     background: transparent;
-    border: 1px solid #008798;
+    border: 1px solid #00345B;
     color: #000000;
 }
 
@@ -242,7 +237,7 @@ webc-app-container .container {
 }
 
 .no-data {
-    color: #008798;
+    color: #00345B;
     font-size: 1.75rem;
     font-style: italic;
     padding-top: 2rem;

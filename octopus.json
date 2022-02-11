@@ -95,7 +95,7 @@
         },
         {
             "name": "bpd-ssapp",
-            "src": "https://github.com/PrivateSky/bpd.git",
+            "src": "https://github.com/RomSoftIasi/bpd.git",
             "actions": [{
                     "type": "smartClone",
                     "target": ".",

@@ -28,7 +28,7 @@ Clean the configured Amazon access keys from the file <i>./scripts/.env</i> <br>
 ## Amazon resources
 The usecase docker image is published to the Amazon repository.<br/>
 It is build using the convention <i> pharmaledger-maindomain </i>, where :
-    <li> maindomain : the blockchain domain - main domain configuration (eg.epi, epiqa, etc.)  </li>
+    <li> maindomain : the blockchain domain - main domain configuration (eg.epi, dltqa, etc.)  </li>
 <br>
 For example, if the maindomain is configured as <i>epi</i>, in Amazon there must a repository with the name  <i>pharmaledger-epi</i>.
  

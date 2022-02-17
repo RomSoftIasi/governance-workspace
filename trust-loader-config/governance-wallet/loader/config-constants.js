@@ -49,8 +49,8 @@ let LOADER_GLOBALS = {
 		}
 	],
 	LABELS_DICTIONARY: {
-		APP_NAME: "eGovernance wallet",
-		APP_DESCRIPTION: "Prepare to access Governance world",
+		APP_NAME: "Blockchain Deployment Platform wallet",
+		APP_DESCRIPTION: "Prepare to access the Blockchain Deployment Platform world",
 		NEW_WALLET: "New Wallet",
 		ACCESS_WALLET: "Access Wallet",
 		WALLET_AUTHORIZATION: "Wallet Authorization",

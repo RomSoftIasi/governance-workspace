@@ -1,14 +1,14 @@
 {
 	"pages": [
 		{
-			"name": "eGovernance Solutions",
+			"name": "Blockchain Deployment Platform",
 			"path": "/home",
 			"tag": "home",
 			"src": "./home.html",
 			"indexed": false
 		},
 		{
-			"name": "Governance Dashboard",
+			"name": "Blockchain Deployment Platform Dashboard",
 			"path": "/governance-dashboard",
 			"tag": "governance-dashboard",
 			"src": "./governance-dashboard.html"

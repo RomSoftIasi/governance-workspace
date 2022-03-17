@@ -1,4 +1,6 @@
 {
+  "logLevel": "none",
+  "translations": false,
   "pages": [
     {
       "name": "Blockchain Deployment Platform",

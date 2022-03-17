@@ -1,45 +1,57 @@
 {
-	"pages": [
-		{
-			"name": "Blockchain Deployment Platform",
-			"path": "/home",
-			"tag": "home",
-			"src": "./home.html",
-			"indexed": false
-		},
-		{
-			"name": "Blockchain Deployment Platform Dashboard",
-			"path": "/governance-dashboard",
-			"tag": "governance-dashboard",
-			"src": "./governance-dashboard.html"
-		},
-		{
-			"name": "Organizations",
-			"path": "/organizations",
-			"tag": "organizations",
-			"src": "./organizations.html"
-		},
-		{
-			"name": "Tools",
-			"path": "/tools",
-			"tag": "tools",
-			"src": "./tools.html"
-		},
-		{
-			"name": "Help",
-			"path": "/help",
-			"tag": "help",
-			"src": "./help.html"
-		},
-		{
-			"name": "Logout",
-			"path": "/logout",
-			"tag": "logout",
-			"src": "./logout.html"
-		}
-	],
-	"pagesFallback": {
-		"name": "404",
-		"src": "./home.html"
-	}
+  "pages": [
+    {
+      "name": "Blockchain Deployment Platform",
+      "path": "/home",
+      "tag": "home",
+      "src": "./home.html",
+      "indexed": false
+    },
+    {
+      "name": "Blockchain Deployment Platform Dashboard",
+      "path": "/governance-dashboard",
+      "tag": "governance-dashboard",
+      "src": "./governance-dashboard.html"
+    },
+    {
+      "name": "Organizations",
+      "path": "/organizations",
+      "tag": "organizations",
+      "src": "./organizations.html"
+    },
+    {
+      "name": "Tools",
+      "path": "/tools",
+      "tag": "tools",
+      "src": "./tools.html"
+    },
+    {
+      "name": "Monitoring",
+      "path": "/monitoring",
+      "tag": "monitoring",
+      "src": "./monitoring.html"
+    },
+    {
+      "name": "Performance Testing",
+      "path": "/performance-testing",
+      "tag": "performance-testing",
+      "src": "./performance-testing.html"
+    },
+    {
+      "name": "Help",
+      "path": "/help",
+      "tag": "help",
+      "src": "./help.html"
+    },
+    {
+      "name": "Logout",
+      "path": "/logout",
+      "tag": "logout",
+      "src": "./logout.html"
+    }
+  ],
+  "pagesFallback": {
+    "name": "404",
+    "src": "./home.html"
+  }
 }

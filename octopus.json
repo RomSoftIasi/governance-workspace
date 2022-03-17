@@ -1,279 +1,301 @@
 {
-    "workDir": ".",
-    "dependencies": [{
-            "name": "cardinal",
-            "src": "http://github.com/privatesky/cardinal.git",
-            "actions": [{
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd cardinal && npm run build"
-                }
-            ]
+  "workDir": ".",
+  "dependencies": [
+    {
+      "name": "cardinal",
+      "src": "http://github.com/privatesky/cardinal.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
         },
         {
-            "name": "webcardinal",
-            "src": "https://github.com/webcardinal/webcardinal-bundler",
-            "actions": [{
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run build"
-                }
-            ]
+          "type": "execute",
+          "cmd": "cd cardinal && npm install"
         },
         {
-            "name": "privatesky",
-            "src": "https://github.com/PrivateSky/psk-release.git",
-            "actions": [{
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd privatesky && npm install"
-                }
-            ]
-        },
-        {
-            "name": "blue-fluorite-theme-install",
-            "src": "",
-            "actions": [{
-                "type": "execute",
-                "cmd": "cd themes/blue-fluorite-theme && npm install"
-            }]
-        },
-        {
-            "name": "governance-wallet-prototype",
-            "src": "http://github.com/privatesky/menu-wallet-prototype.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd governance-wallet-prototype && npm install"
-                },
-                {
-                    "type": "remove",
-                    "target": "./governance-wallet-prototype/bin/build.file"
-                },
-                {
-                    "type": "copy",
-                    "src": "./apihub-root/governance-wallet/build/build.file",
-                    "target": "./governance-wallet-prototype/bin/build.file"
-                }
-            ]
-        },
-        {
-            "name": "apihub-root/governance-wallet/loader",
-            "src": "http://github.com/privatesky/trust-loader.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/governance-wallet/loader && npm install"
-                }
-            ]
-        },
-        {
-            "name": "bpd-ssapp",
-            "src": "https://github.com/RomSoftIasi/bpd.git",
-            "actions": [{
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd bpd-ssapp && npm install"
-                }
-            ]
-        },
-        {
-            "name": "apihub-root/dsu-explorer/loader",
-            "src": "http://github.com/privatesky/trust-loader.git",
-            "actions": [
-                {
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
-                }
-            ]
-        },
-        {
-            "name": "dossier-explorer-wallet-prototype",
-            "src": "https://github.com/PrivateSky/dossier-explorer-wallet-prototype.git",
-            "actions": [{
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd dossier-explorer-wallet-prototype && npm install"
-                }
-            ]
-        },
-        {
-            "name": "dossier-explorer-ssapp",
-            "src": "https://github.com/PrivateSky/dossier-explorer-ssapp.git",
-            "actions": [{
-                    "type": "smartClone",
-                    "target": ".",
-                    "collectLog": false
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd dossier-explorer-ssapp && npm install"
-                }
-            ]
+          "type": "execute",
+          "cmd": "cd cardinal && npm run build"
         }
-    ],
-    "build": [{
-            "name": "cardinal-wallet-build",
-            "src": "",
-            "actions": [{
-                "type": "execute",
-                "cmd": "cd cardinal && npm run build-dossier"
-            }]
+      ]
+    },
+    {
+      "name": "webcardinal",
+      "src": "https://github.com/webcardinal/webcardinal-bundler",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
         },
         {
-            "name": "webcardinal-wallet-build",
-            "actions": [{
-                "type": "execute",
-                "cmd": "cd webcardinal && npm run build-dossier"
-            }]
-        },
-        {
-            "name": "blue-fluorite-theme-wallet-build",
-            "src": "",
-            "actions": [{
-                "type": "execute",
-                "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
-            }]
-        },
-        {
-            "name": "dossier-explorer-wallet-prototype-build",
-            "src": "",
-            "actions": [{
-                    "type": "execute",
-                    "cmd": "cd dossier-explorer-wallet-prototype && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./dossier-explorer-wallet-prototype/seed",
-                    "target": "./apihub-root/dsu-explorer/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "dsu-explorer_bind_to_dossier-explorer-ssapp",
-            "src": "",
-            "actions": [{
-                    "type": "execute",
-                    "cmd": "cd dossier-explorer-ssapp && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./dossier-explorer-ssapp/seed",
-                    "target": "./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
-                }
-            ]
-        },
-        {
-            "name": "governance-wallet_bind_to_governance-wallet-prototype",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd governance-wallet-prototype && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./governance-wallet-prototype/seed",
-                    "target": "./apihub-root/governance-wallet/wallet-patch/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                }
-            ]
-        },
-        {
-            "name": "governance-wallet_bind_to_bpd-ssapp",
-            "src": "",
-            "actions": [
-                {
-                    "type": "execute",
-                    "cmd": "cd bpd-ssapp && npm run build"
-                },
-                {
-                    "type": "copy",
-                    "src": "./bpd-ssapp/seed",
-                    "target": "./apihub-root/governance-wallet/apps-patch/bpd-ssapp/seed",
-                    "options": {
-                        "overwrite": true
-                    }
-                },
-                {
-                    "type": "execute",
-                    "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/governance-wallet/apps-patch/bpd-ssapp/readme"
-                }
-            ]
-        },
-        {
-            "name": "trust-loader-config",
-            "actions": [{
-                "type": "copy",
-                "src": "./trust-loader-config",
-                "target": "./apihub-root",
-                "options": {
-                    "overwrite": true
-                }
-            }]
-        },
-        {
-            "name": "copy-bundles",
-            "actions": [{
-                "type": "execute",
-                "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
-                },
-                {
-                    "type": "execute",
-                    "cmd": "cd apihub-root/governance-wallet/loader && npm install"
-                }
-            ]
+          "type": "execute",
+          "cmd": "cd webcardinal && npm install && npm run bundle-all && npm run build"
         }
-    ]
+      ]
+    },
+    {
+      "name": "privatesky",
+      "src": "https://github.com/PrivateSky/psk-release.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false,
+          "commit": "767d9f15d539ee5fd0b137fd15a6e7cdbdb02e53"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd privatesky && npm install"
+        }
+      ]
+    },
+    {
+      "name": "blue-fluorite-theme-install",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd themes/blue-fluorite-theme && npm install"
+        }
+      ]
+    },
+    {
+      "name": "governance-wallet-prototype",
+      "src": "http://github.com/privatesky/menu-wallet-prototype.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd governance-wallet-prototype && npm install"
+        },
+        {
+          "type": "remove",
+          "target": "./governance-wallet-prototype/bin/build.file"
+        },
+        {
+          "type": "copy",
+          "src": "./apihub-root/governance-wallet/build/build.file",
+          "target": "./governance-wallet-prototype/bin/build.file"
+        }
+      ]
+    },
+    {
+      "name": "apihub-root/governance-wallet/loader",
+      "src": "http://github.com/privatesky/trust-loader.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/governance-wallet/loader && npm install"
+        }
+      ]
+    },
+    {
+      "name": "bpd-ssapp",
+      "src": "https://github.com/RomSoftIasi/bpd.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd bpd-ssapp && npm install"
+        }
+      ]
+    },
+    {
+      "name": "apihub-root/dsu-explorer/loader",
+      "src": "http://github.com/privatesky/trust-loader.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
+        }
+      ]
+    },
+    {
+      "name": "dossier-explorer-wallet-prototype",
+      "src": "https://github.com/PrivateSky/dossier-explorer-wallet-prototype.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd dossier-explorer-wallet-prototype && npm install"
+        }
+      ]
+    },
+    {
+      "name": "dossier-explorer-ssapp",
+      "src": "https://github.com/PrivateSky/dossier-explorer-ssapp.git",
+      "actions": [
+        {
+          "type": "smartClone",
+          "target": ".",
+          "collectLog": false
+        },
+        {
+          "type": "execute",
+          "cmd": "cd dossier-explorer-ssapp && npm install"
+        }
+      ]
+    }
+  ],
+  "build": [
+    {
+      "name": "cardinal-wallet-build",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd cardinal && npm run build-dossier"
+        }
+      ]
+    },
+    {
+      "name": "webcardinal-wallet-build",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd webcardinal && npm run build-dossier"
+        }
+      ]
+    },
+    {
+      "name": "blue-fluorite-theme-wallet-build",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd themes/blue-fluorite-theme && npm run build-dossier"
+        }
+      ]
+    },
+    {
+      "name": "dossier-explorer-wallet-prototype-build",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd dossier-explorer-wallet-prototype && npm run build"
+        },
+        {
+          "type": "copy",
+          "src": "./dossier-explorer-wallet-prototype/seed",
+          "target": "./apihub-root/dsu-explorer/wallet-patch/seed",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "dsu-explorer_bind_to_dossier-explorer-ssapp",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd dossier-explorer-ssapp && npm run build"
+        },
+        {
+          "type": "copy",
+          "src": "./dossier-explorer-ssapp/seed",
+          "target": "./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "execute",
+          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/dsu-explorer/apps-patch/dossier-explorer-ssapp/readme"
+        }
+      ]
+    },
+    {
+      "name": "governance-wallet_bind_to_governance-wallet-prototype",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd governance-wallet-prototype && npm run build"
+        },
+        {
+          "type": "copy",
+          "src": "./governance-wallet-prototype/seed",
+          "target": "./apihub-root/governance-wallet/wallet-patch/seed",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "governance-wallet_bind_to_bpd-ssapp",
+      "src": "",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd bpd-ssapp && npm run build"
+        },
+        {
+          "type": "copy",
+          "src": "./bpd-ssapp/seed",
+          "target": "./apihub-root/governance-wallet/apps-patch/bpd-ssapp/seed",
+          "options": {
+            "overwrite": true
+          }
+        },
+        {
+          "type": "execute",
+          "cmd": "echo Use this folder template in order to customize the application instance by adding configuration, pages etc. > ./apihub-root/governance-wallet/apps-patch/bpd-ssapp/readme"
+        }
+      ]
+    },
+    {
+      "name": "trust-loader-config",
+      "actions": [
+        {
+          "type": "copy",
+          "src": "./trust-loader-config",
+          "target": "./apihub-root",
+          "options": {
+            "overwrite": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "copy-bundles",
+      "actions": [
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/dsu-explorer/loader && npm install"
+        },
+        {
+          "type": "execute",
+          "cmd": "cd apihub-root/governance-wallet/loader && npm install"
+        }
+      ]
+    }
+  ]
 }

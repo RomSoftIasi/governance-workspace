@@ -4,7 +4,7 @@ export default  {
   "agent": "browser",
   "system": "any",
   "browser": "any",
-  "mode": "external-autologin",
+  "mode": "secure",
   "vaultDomain": "vault",
   "didDomain": "vault",
   "enclaveType": "WalletDBEnclave",

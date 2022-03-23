@@ -1,6 +1,7 @@
 {
   "logLevel": "none",
   "translations": false,
+	"theme": "blue-fluorite-theme",
   "pages": [
     {
       "name": "Blockchain Deployment Platform",
@@ -31,13 +32,15 @@
       "name": "Monitoring",
       "path": "/monitoring",
       "tag": "monitoring",
-      "src": "./monitoring.html"
+      "src": "./monitoring.html",
+      "indexed": false
     },
     {
       "name": "Performance Testing",
       "path": "/performance-testing",
       "tag": "performance-testing",
-      "src": "./performance-testing.html"
+      "src": "./performance-testing.html",
+      "indexed": false
     },
     {
       "name": "Help",

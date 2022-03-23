@@ -243,3 +243,14 @@ webc-app-container .container {
     padding-top: 2rem;
     text-align: center;
 }
+
+webc-ssapp {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/**temporary**/
+webc-ssapp iframe {
+    height:calc(100% - 8px) !important;
+}

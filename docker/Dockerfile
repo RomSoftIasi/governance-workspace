@@ -1,10 +1,11 @@
 FROM debian:latest AS Builder
 ARG GHCODE
+
+RUN npm install -g node-gyp
+
 RUN apt-get update && \
 	apt-get -y install nodejs && \
 	apt-get -y install npm --no-install-recommends
-
-RUN npm install -g node-gyp
 
 RUN apt-get -y install git
 
